@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Application width="1024" height="768" layout="absolute" backgroundColor="FFFFFF" backgroundImage="..\\data\\background_1024x768.png" frameRate="60">
+	<Canvas />
+	<Button />
+	<Button />
+</Application>

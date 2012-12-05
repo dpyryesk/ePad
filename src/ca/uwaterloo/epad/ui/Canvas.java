@@ -1,7 +1,14 @@
 package ca.uwaterloo.epad.ui;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import processing.core.PGraphics;
 import processing.core.PImage;
+import vialab.SMT.Touch;
 import vialab.SMT.Zone;
+import ca.uwaterloo.epad.painting.Stroke;
 
 
 public class Canvas extends Zone {
@@ -10,14 +17,20 @@ public class Canvas extends Zone {
 	
 	public int state;
 	
+	private HashMap<Long, Stroke> strokes;
+	private PGraphics drawing;
 	private PImage textureImage;
 	//public ResizeBar leftBar;
 	
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		state = MOVING;
+		state = PAINTING;
 		
 		textureImage = applet.loadImage("data/textures/deep sea.jpg");
+		
+		drawing = applet.createGraphics(width, height, P2D);
+		
+		strokes = new HashMap<Long, Stroke>();
 		
 		//leftBar = new ResizeBar(this, ResizeBar.LEFT);
 		//add(leftBar);
@@ -34,7 +47,7 @@ public class Canvas extends Zone {
 		
 		noStroke();
 		fill(255);
-		rect(0, 0, width, height, 10);
+		rect(0, 0, width, height);
 		
 		pg.textureMode(NORMAL);
 		pg.textureWrap(REPEAT);
@@ -47,13 +60,13 @@ public class Canvas extends Zone {
 		vertex(width, 0, 2, 0);
 		endShape();
 		
-		//image(textureImage, -100, -100);
+		image(drawing, 0, 0, width, height);
 	}
 	
 	protected void pickDrawImpl() {
 		if (state == MOVING) {
 			rect(-30, -30, width+60, height+60, 30);
-		} else {
+		} else if (state == PAINTING) {
 			rect(0, 0, width, height);
 		}
 	}
@@ -61,6 +74,32 @@ public class Canvas extends Zone {
 	protected void touchImpl() {
 		if (state == MOVING) {
 			rst();
+		} else if (state == PAINTING) {
+			addStroke();
+		}
+	}
+	
+	protected void addStroke() {
+		if (!activeTouches.isEmpty()) {
+			Set<Long> keys = activeTouches.keySet();
+			Iterator<Long> it = keys.iterator();
+			
+			while(it.hasNext()) {
+				Long id = it.next();
+				Touch t = activeTouches.get(id);
+				
+				if (strokes.containsKey(id)) {
+					// update stroke
+					Stroke s = strokes.get(id);
+					s.update(t);
+					s.render(drawing);
+				} else {
+					// new stroke
+					Stroke s = new Stroke(t, this);
+					strokes.put(id, s);
+					s.render(drawing);
+				}
+			}
 		}
 	}
 }

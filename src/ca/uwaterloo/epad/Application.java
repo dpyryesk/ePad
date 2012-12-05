@@ -1,13 +1,9 @@
 package ca.uwaterloo.epad;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PShape;
 import vialab.SMT.TouchClient;
@@ -45,10 +41,6 @@ public class Application extends PApplet {
 	
 	private boolean hasLoadedParams = false;
 	private static PImage bg;
-	
-	private Canvas c;
-	private RotatingDrawer leftDrawer;
-	private RotatingDrawer rightDrawer;
 
 	public void setup() {
 		loadParameters();
@@ -72,13 +64,13 @@ public class Application extends PApplet {
 		Button b = new Button(displayWidth - 110, 10, 100, 60, "exit", 16, null, 0);
 		client.add(b);
 		
-		c = new Canvas(300, 100, 800, 600);
+		Canvas c = new Canvas(100, 100, 800, 600);
 		client.add(c);
 		
-		leftDrawer = RotatingDrawer.makeLeftDrawer(this);
+		RotatingDrawer leftDrawer = RotatingDrawer.makeLeftDrawer(this);
 		client.add(leftDrawer);
 		
-		rightDrawer = RotatingDrawer.makeRightDrawer(this);
+		RotatingDrawer rightDrawer = RotatingDrawer.makeRightDrawer(this);
 		client.add(rightDrawer);
 		
 		// add sample items to drawers

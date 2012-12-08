@@ -26,9 +26,22 @@ public class Canvas extends Zone {
 		super(x, y, width, height);
 		state = PAINTING;
 		
-		textureImage = applet.loadImage("data/textures/deep sea.jpg");
+		textureImage = applet.loadImage("data/textures/eggshell.jpg");
 		
 		drawing = applet.createGraphics(width, height, P2D);
+		drawing.smooth();
+		drawing.beginDraw();
+		drawing.beginShape();
+		drawing.textureMode(IMAGE);
+		drawing.textureWrap(REPEAT);
+		drawing.texture(textureImage);
+		drawing.noStroke();
+		drawing.vertex(0, 0, 0, 0);
+		drawing.vertex(0, height, 0, height);
+		drawing.vertex(width, height, width, height);
+		drawing.vertex(width, 0, width, 0);
+		drawing.endShape();
+		drawing.endDraw();
 		
 		strokes = new HashMap<Long, Stroke>();
 		
@@ -49,6 +62,7 @@ public class Canvas extends Zone {
 		fill(255);
 		rect(0, 0, width, height);
 		
+		/*
 		pg.textureMode(NORMAL);
 		pg.textureWrap(REPEAT);
 		
@@ -59,8 +73,10 @@ public class Canvas extends Zone {
 		vertex(width, height, 2, 2);
 		vertex(width, 0, 2, 0);
 		endShape();
+		*/
 		
 		image(drawing, 0, 0, width, height);
+		//blend(drawing, 0, 0, width, height, 0, 0, width, height, OVERLAY);
 	}
 	
 	protected void pickDrawImpl() {

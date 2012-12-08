@@ -8,9 +8,12 @@ import processing.core.PImage;
 import processing.core.PShape;
 import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
+import ca.uwaterloo.epad.painting.BristleBrush;
+import ca.uwaterloo.epad.painting.Brush;
+import ca.uwaterloo.epad.painting.Paint;
+import ca.uwaterloo.epad.painting.Pencil;
 import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Canvas;
-import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
 
 public class Application extends PApplet {
@@ -26,9 +29,6 @@ public class Application extends PApplet {
 	private static final String ATTR_BACKGROUNDCOLOR = "backgroundColor";
 	private static final String ATTR_BACKGROUNDIMAGE = "backgroundImage";
 	
-	// Common elements
-	public static PShape moveIcon, deleteIcon;
-	
 	// Fields
 	public String name;
 	public int width = 1024;
@@ -37,10 +37,16 @@ public class Application extends PApplet {
 	public int backgroundColor = 0xFFFFFF;
 	public String backgroundImage; //"..\\data\\background_1024x768.png"
 	
-	private TouchClient client;
+	// Common graphics
+	public static PShape moveIcon, deleteIcon;
+	public static PImage paintCan;
 	
-	private boolean hasLoadedParams = false;
+	// Misc variables
+	private TouchClient client;
+	private static boolean hasLoadedParams = false;
 	private static PImage bg;
+	private static Brush currentBrush;
+	private static Paint currentPaint;
 
 	public void setup() {
 		loadParameters();
@@ -52,6 +58,7 @@ public class Application extends PApplet {
 		// Load common graphics
 		moveIcon = loadShape("..\\data\\vector\\move.svg");
 		deleteIcon = loadShape("..\\data\\vector\\x.svg");
+		paintCan = loadImage("..\\data\\images\\paintCan.png");
 		
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			bg = this.loadImage(backgroundImage);
@@ -59,7 +66,7 @@ public class Application extends PApplet {
 		
 		TouchClient.setWarnUnimplemented(false);
 		client = new TouchClient(this, TouchSource.MOUSE);
-		client.setDrawTouchPoints(true);
+		client.setDrawTouchPoints(true, 1);
 		
 		Button b = new Button(displayWidth - 110, 10, 100, 60, "exit", 16, null, 0);
 		client.add(b);
@@ -73,48 +80,29 @@ public class Application extends PApplet {
 		RotatingDrawer rightDrawer = RotatingDrawer.makeRightDrawer(this);
 		client.add(rightDrawer);
 		
-		// add sample items to drawers
-		leftDrawer.addItem(new MoveableItem("1", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("2", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("3", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("4", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("5", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("6", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("7", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("8", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("9", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("10", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("11", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("12", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("13", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("14", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("15", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("16", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("17", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("18", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("19", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("20", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("21", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("22", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("23", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("24", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("25", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("26", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("27", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("28", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("29", 0, 0, 150, 150));
-		leftDrawer.addItem(new MoveableItem("30", 0, 0, 150, 150));
+		leftDrawer.addItem(new Pencil(1));
+		leftDrawer.addItem(new Pencil(3));
+		leftDrawer.addItem(new Pencil(5));
+		leftDrawer.addItem(new Pencil(10));
+		leftDrawer.addItem(new BristleBrush(30));
+		leftDrawer.addItem(new BristleBrush(50));
+		leftDrawer.addItem(new BristleBrush(100));
 		
-		rightDrawer.addItem(new MoveableItem("1", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("2", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("3", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("4", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("5", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("6", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("7", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("8", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("9", 0, 0, 150, 150));
-		rightDrawer.addItem(new MoveableItem("10", 0, 0, 150, 150));
+		rightDrawer.addItem(new Paint(0xFF006884));
+		rightDrawer.addItem(new Paint(0xFF00909E));
+		rightDrawer.addItem(new Paint(0xFF89DBEC));
+		rightDrawer.addItem(new Paint(0xFFED0026));
+		rightDrawer.addItem(new Paint(0xFFFA9D00));
+		rightDrawer.addItem(new Paint(0xFFFFD08D));
+		rightDrawer.addItem(new Paint(0xFFB00051));
+		rightDrawer.addItem(new Paint(0xFFF68370));
+		rightDrawer.addItem(new Paint(0xFFFEABB9));
+		rightDrawer.addItem(new Paint(0xFF6E006C));
+		rightDrawer.addItem(new Paint(0xFF91278F));
+		rightDrawer.addItem(new Paint(0xFFCF97D7));
+		rightDrawer.addItem(new Paint(0xFF000000));
+		rightDrawer.addItem(new Paint(0xFF5B5B5B));
+		rightDrawer.addItem(new Paint(0xFFD4D4D4));
 	}
 	
 	public void draw() {
@@ -184,4 +172,28 @@ public class Application extends PApplet {
 		}
 	}
 	*/
+	
+	public static void setPaint(Paint p) {
+		if (currentPaint != null)
+			currentPaint.deselect();
+		currentPaint = p;
+		if (currentPaint != null)
+			currentPaint.select();
+	}
+	
+	public static Paint getPaint() {
+		return currentPaint;
+	}
+	
+	public static void setBrush(Brush b) {
+		if (currentBrush != null)
+			currentBrush.deselect();
+		currentBrush = b;
+		if (currentBrush != null)
+			currentBrush.select();
+	}
+	
+	public static Brush getBrush() {
+		return currentBrush;
+	}
 }

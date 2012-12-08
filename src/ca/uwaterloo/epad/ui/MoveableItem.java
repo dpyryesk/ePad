@@ -1,29 +1,23 @@
 package ca.uwaterloo.epad.ui;
 
-import processing.core.PMatrix3D;
 import processing.core.PVector;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 
 public class MoveableItem extends Zone {
-	private boolean isInDrawer = false;
-	private boolean isAboveTrash = false;
+	protected boolean isInDrawer = false;
+	protected boolean isAboveTrash = false;
+	protected boolean isSelected;
 	
 	public int primaryColour = 255;
 	public int secondaryColour = 0;
 	public int deleteColour = 0xFFCC0000;
-	private RotatingContainer container;
-	private RotatingDrawer drawer;
+	protected RotatingContainer container;
+	protected RotatingDrawer drawer;
 	
 	public MoveableItem (int x, int y, int width, int height) {
-		super(x, y, width, height);
-	}
-	
-	public MoveableItem (int x, int y, int width, int height, PMatrix3D matrix) {
-		super(x, y, width, height);
-		this.name = "copy";
-		this.matrix = matrix;
+		this("", x, y, width, height);
 	}
 	
 	public MoveableItem (String name, int x, int y, int width, int height) {
@@ -31,9 +25,20 @@ public class MoveableItem extends Zone {
 		this.name = name;
 	}
 	
+	public MoveableItem (MoveableItem original) {
+		this(original.x, original.y, original.width, original.height);
+		matrix = original.getGlobalMatrix();
+		drawer = original.drawer;
+		container = original.container;
+		primaryColour = original.primaryColour;
+		secondaryColour = original.secondaryColour;
+		name = "copy of " + original.name;
+	}
+	
 	protected void drawImpl() {
 		pushMatrix();
 		
+		// Set stroke colour
 		if (drawer.isOpen()) {
 			if (isAboveTrash)
 				stroke(deleteColour);
@@ -44,21 +49,24 @@ public class MoveableItem extends Zone {
 			noStroke();
 		}
 		
-		fill(0x22000000);
+		// Set background colour
+		if (isSelected)
+			fill(color(red(secondaryColour), green(secondaryColour), blue(secondaryColour), 200));
+		else
+			fill(0x22000000);
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
 		
-		fill(secondaryColour);
-		noStroke();
-		rectMode(CENTER);
-		rect(width/2, height/2, 100, 100);
-		line(width/2-10, height/2, width/2+10, height/2);
-		line(width/2, height/2-10, width/2, height/2+10);
+		// Draw the item
+		pushStyle();
+		pushMatrix();
+		drawItem();
+		popMatrix();
+		popStyle();
 		
-		fill(0);
-		text(name, 30, 30);
-		
+		// Draw the icon
 		if (!isInDrawer && drawer.isOpen()) {
+			noStroke();
 			fill(primaryColour);
 			ellipse(0, 0, 30, 30);
 			
@@ -77,6 +85,9 @@ public class MoveableItem extends Zone {
 		popMatrix();
 	}
 	
+	protected void drawItem() {
+	}
+	
 	protected void pickDrawImpl() {
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
@@ -84,7 +95,6 @@ public class MoveableItem extends Zone {
 			ellipse(0, 0, 30, 30);
 		}
 	}
-	
 	
 	protected void touchImpl() {
 		if (!isInDrawer && drawer.isOpen()) {
@@ -101,7 +111,12 @@ public class MoveableItem extends Zone {
 	protected void touchDownImpl(Touch touch) {
 		if (drawer.isOpen()) {
 			if (isInDrawer) {
-				client.add(copyAndAssignTouch(this, touch));
+				Zone copy = clone(this.getClass());
+				if (copy != null) {
+					copy.assign(touch);
+					this.unassign(touch);
+					client.add(copy);
+				}
 			} else {
 				client.putZoneOnTop(this);
 			}
@@ -111,32 +126,41 @@ public class MoveableItem extends Zone {
 	}
 	
 	protected void touchUpImpl(Touch touch) {
-		if (drawer.isOpen() && !isInDrawer && isAboveTrash)
+		if (drawer.isOpen() && !isInDrawer && isAboveTrash) {
 			client.remove(this);
+			doTouchUp(touch);
+		}
 	}
 	
-	private MoveableItem copyAndAssignTouch(MoveableItem oldItem, Touch touch) {
-		MoveableItem copy = new MoveableItem(x, y, width, height, getGlobalMatrix());
-		copy.drawer = drawer;
-		copy.container = container;
-		copy.primaryColour = primaryColour;
-		copy.secondaryColour = secondaryColour;
+	private Zone clone(Object enclosingClass) {
+		Zone clone;
+		try {
+			// if inner class, call its constructor properly by passing its
+			// enclosing class too
+			if (this.getClass().getEnclosingClass() != null
+					&& this.getClass().getEnclosingClass() == enclosingClass.getClass()) {
+				// clone a Zone using a copy constructor
+				clone = this.getClass()
+						.getConstructor(this.getClass().getEnclosingClass(), this.getClass())
+						.newInstance(enclosingClass, this);
+			}
+			else {
+				// clone a Zone using a copy constructor
+				clone = this.getClass().getConstructor(this.getClass()).newInstance(this);
+			}
+		}
+		catch (Exception e) {
+			clone = null;
+			System.err.println("Unable to clone zone " + enclosingClass.getClass().getCanonicalName());
+		}
 		
-		copy.assign(touch);
-		oldItem.unassign(touch);
-		
-		// apply additional actions
-		copyImpl(oldItem, copy);
-		
-		return copy;
-	}
-	
-	protected void copyImpl(MoveableItem oldItem, MoveableItem newItem) {
-		newItem.name = "copy of " + oldItem.name;
+		return clone;
 	}
 	
 	protected void doTouchDown(Touch touch) {
-		System.out.println("Touched: " + name);
+	}
+	
+	protected void doTouchUp(Touch touch) {
 	}
 	
 	public void putIntoDrawer(RotatingDrawer drawer) {
@@ -144,7 +168,23 @@ public class MoveableItem extends Zone {
 		this.drawer = drawer;
 	}
 	
+	public void setDrawer(RotatingDrawer drawer) {
+		this.drawer = drawer;
+	}
+	
 	public void setContainer(RotatingContainer container) {
 		this.container = container;
+	}
+	
+	public void select() {
+		isSelected = true;
+	}
+	
+	public void deselect() {
+		isSelected = false;
+	}
+	
+	public boolean isSelected() {
+		return isSelected;
 	}
 }

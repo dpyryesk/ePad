@@ -37,4 +37,10 @@ public class StrokePoint {
 		motionSpeed = t.motionSpeed;
 		motionAcceleration = t.motionAcceleration;
 	}
+	
+	public float dist(StrokePoint p) {
+		float dx = x - p.x;
+	    float dy = y - p.y;
+	    return (float) Math.sqrt(dx*dx + dy*dy);
+	}
 }

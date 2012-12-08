@@ -42,10 +42,21 @@ public class BristleBrush extends Brush {
 		int length = s.getPath().size();
 		if (length == 0) return;
 		
+		// wash colour out as stroke gets longer
+		/*
+		int alpha = 255 - length*3;
+		if (alpha <= 0) alpha = 1;
+		
+		int red = (colour >> 16) & 0xFF;
+		int green = (colour >> 8) & 0xFF;
+		int blue = colour & 0xFF;
+		*/
+		
 		StrokePoint p = s.getPath().get(length-1);
 		
 		g.beginDraw();
 		g.noStroke();
+		//g.fill(red, green, blue, alpha);
 		g.fill(colour);
 		g.shapeMode(CENTER);
 		g.shape(brushShape, p.x, p.y, size, size);

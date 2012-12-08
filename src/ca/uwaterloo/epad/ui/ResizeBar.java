@@ -64,7 +64,7 @@ public class ResizeBar extends Zone {
 	
 	// Override drag
 	public void drag(boolean dragX, boolean dragY) {
-		if (!activeTouches.isEmpty()) {
+		if (!getTouchMap().isEmpty()) {
 			List<TouchPair> pairs = getTouchPairs(1);
 			TouchPair pair = pairs.get(0);
 			

@@ -12,6 +12,7 @@ import ca.uwaterloo.epad.painting.BristleBrush;
 import ca.uwaterloo.epad.painting.Brush;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.painting.Pencil;
+import ca.uwaterloo.epad.painting.SpiderBrush;
 import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
@@ -87,6 +88,7 @@ public class Application extends PApplet {
 		leftDrawer.addItem(new BristleBrush(30));
 		leftDrawer.addItem(new BristleBrush(50));
 		leftDrawer.addItem(new BristleBrush(100));
+		leftDrawer.addItem(new SpiderBrush());
 		
 		rightDrawer.addItem(new Paint(0xFF006884));
 		rightDrawer.addItem(new Paint(0xFF00909E));

@@ -20,7 +20,6 @@ public class Canvas extends Zone {
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
 	private PImage textureImage;
-	//public ResizeBar leftBar;
 	
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -29,6 +28,8 @@ public class Canvas extends Zone {
 		textureImage = applet.loadImage("data/textures/eggshell.jpg");
 		
 		drawing = applet.createGraphics(width, height, P2D);
+		
+		/*
 		drawing.smooth();
 		drawing.beginDraw();
 		drawing.beginShape();
@@ -42,11 +43,9 @@ public class Canvas extends Zone {
 		drawing.vertex(width, 0, width, 0);
 		drawing.endShape();
 		drawing.endDraw();
+		*/
 		
 		strokes = new HashMap<Long, Stroke>();
-		
-		//leftBar = new ResizeBar(this, ResizeBar.LEFT);
-		//add(leftBar);
 	}
 	
 	protected void drawImpl() {
@@ -62,21 +61,7 @@ public class Canvas extends Zone {
 		fill(255);
 		rect(0, 0, width, height);
 		
-		/*
-		pg.textureMode(NORMAL);
-		pg.textureWrap(REPEAT);
-		
-		beginShape();
-		texture(textureImage);
-		vertex(0, 0, 0, 0);
-		vertex(0, height, 0, 2);
-		vertex(width, height, 2, 2);
-		vertex(width, 0, 2, 0);
-		endShape();
-		*/
-		
 		image(drawing, 0, 0, width, height);
-		//blend(drawing, 0, 0, width, height, 0, 0, width, height, OVERLAY);
 	}
 	
 	protected void pickDrawImpl() {
@@ -96,13 +81,13 @@ public class Canvas extends Zone {
 	}
 	
 	protected void addStroke() {
-		if (!activeTouches.isEmpty()) {
-			Set<Long> keys = activeTouches.keySet();
+		if (!getTouchMap().isEmpty()) {
+			Set<Long> keys = getTouchMap().keySet();
 			Iterator<Long> it = keys.iterator();
 			
 			while(it.hasNext()) {
 				Long id = it.next();
-				Touch t = activeTouches.get(id);
+				Touch t = getTouchMap().get(id);
 				
 				if (strokes.containsKey(id)) {
 					// update stroke

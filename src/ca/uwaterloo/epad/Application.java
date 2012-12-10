@@ -36,7 +36,7 @@ public class Application extends PApplet {
 	public int height = 768;
 	public String layout;
 	public int backgroundColor = 0xFFFFFF;
-	public String backgroundImage; //"..\\data\\background_1024x768.png"
+	public String backgroundImage; //"..\\data\\textures\\background_1024x768.png"
 	
 	// Common graphics
 	public static PShape moveIcon, deleteIcon;

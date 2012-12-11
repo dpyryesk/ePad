@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import processing.core.PGraphics;
-import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Stroke;
@@ -19,19 +18,24 @@ public class Canvas extends Zone {
 	
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
-	private PImage textureImage;
+	//private PImage textureImage;
 	
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		state = PAINTING;
 		
-		textureImage = applet.loadImage("data/textures/eggshell.jpg");
+		//textureImage = applet.loadImage("data/textures/eggshell.jpg");
 		
 		drawing = applet.createGraphics(width, height, P2D);
+		drawing.beginDraw();
+		drawing.noStroke();
+		drawing.fill(255);
+		drawing.rect(0, 0, width, height);
+		drawing.endDraw();
 		
 		/*
-		drawing.smooth();
 		drawing.beginDraw();
+		drawing.smooth();
 		drawing.beginShape();
 		drawing.textureMode(IMAGE);
 		drawing.textureWrap(REPEAT);
@@ -56,10 +60,6 @@ public class Canvas extends Zone {
 			fill(0x88333333);
 			rect(-30, -30, width+60, height+60, 30);
 		}
-		
-		noStroke();
-		fill(255);
-		rect(0, 0, width, height);
 		
 		image(drawing, 0, 0, width, height);
 	}

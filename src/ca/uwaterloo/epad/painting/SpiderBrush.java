@@ -11,9 +11,10 @@ public class SpiderBrush extends Brush {
 	private ArrayList<StrokePoint> pointList = new ArrayList<StrokePoint>();
 	private float minDistance = 10;
 	private float connectionRadius = 150;
-	private float lineWeight = 1;
+	private float lineWeight = 3;
+	private float lineWeight2 = 1;
 	private float lineAlpha = 128;
-	private float lineAlpha2 = 50;
+	private float lineAlpha2 = 64;
 
 	public SpiderBrush() {
 		super(1, 1);
@@ -66,6 +67,7 @@ public class SpiderBrush extends Brush {
 				//g.tint(255, imageAlpha);
 				g.line(from.x, from.y, to.x, to.y);
 				
+				g.strokeWeight(lineWeight2);
 				g.stroke(colour, lineAlpha2);
 				Iterator<StrokePoint> it = pointList.iterator();
 				while(it.hasNext()) {

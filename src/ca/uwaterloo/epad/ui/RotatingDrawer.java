@@ -18,8 +18,6 @@ public class RotatingDrawer extends Zone {
 		RotatingDrawer instance = new RotatingDrawer(-parent.height*2, -parent.height/2, parent.height*2, LEFT);
 		
 		instance.container = new RotatingContainer(instance);
-		instance.container.primaryColour = 0xFF99CC00;
-		instance.container.secondaryColour = 0xFF669900;
 		instance.add(instance.container);
 		
 		return instance;
@@ -29,8 +27,6 @@ public class RotatingDrawer extends Zone {
 		RotatingDrawer instance = new RotatingDrawer(parent.width, -parent.height/2, parent.height*2, RIGHT);
 		
 		instance.container = new RotatingContainer(instance);
-		instance.container.primaryColour = 0xFFFFBB33;
-		instance.container.secondaryColour = 0xFFFF8800;
 		instance.add(instance.container);
 		
 		return instance;
@@ -139,5 +135,25 @@ public class RotatingDrawer extends Zone {
 	
 	public boolean isOpen() {
 		return isOpen;
+	}
+	
+	public void setColourScheme(int primary, int secondary) {
+		container.setColourScheme(primary, secondary);
+	}
+	
+	public void setColourScheme(int primary, int secondary, int background) {
+		container.setColourScheme(primary, secondary, background);
+	}
+	
+	public int getPrimaryColour() {
+		return container.getPrimaryColour();
+	}
+	
+	public int getSecondaryColour() {
+		return container.getSecondaryColour();
+	}
+	
+	public int getBackgroundColour() {
+		return container.getBackgroundColour();
 	}
 }

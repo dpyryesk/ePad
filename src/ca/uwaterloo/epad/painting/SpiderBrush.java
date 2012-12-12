@@ -8,7 +8,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 
 public class SpiderBrush extends Brush {
-	private ArrayList<StrokePoint> pointList = new ArrayList<StrokePoint>();
+	private static ArrayList<StrokePoint> pointList = new ArrayList<StrokePoint>();
 	private float minDistance = 10;
 	private float connectionRadius = 150;
 	private float lineWeight = 3;
@@ -24,18 +24,6 @@ public class SpiderBrush extends Brush {
 	public SpiderBrush(SpiderBrush original) {
 		super(original);
 		name = "SpiderBrush";
-	}
-
-	protected void drawItem() {
-		fill(secondaryColour);
-		noStroke();
-		rectMode(CENTER);
-		rect(width / 2, height / 2, 100, 100);
-		line(width / 2 - 10, height / 2, width / 2 + 10, height / 2);
-		line(width / 2, height / 2 - 10, width / 2, height / 2 + 10);
-
-		fill(0);
-		text(name, 30, 30);
 	}
 
 	public void renderStroke(Stroke s, int colour, PGraphics g) {

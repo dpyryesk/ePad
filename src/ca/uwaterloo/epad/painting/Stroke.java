@@ -52,31 +52,6 @@ public class Stroke {
 		
 		if (brush != null)
 			brush.renderStroke(this, colour, g);
-		
-		/*
-		int length = getPath().size();
-		if (length == 0) return;
-		if (length == 1) {
-			StrokePoint p = getPath().get(length-1);
-			g.beginDraw();
-			g.noStroke();
-			g.fill(colour);
-			g.ellipseMode(PConstants.CENTER);
-			g.line(p.x, p.y, 3, 3);
-			g.endDraw();
-		} else {
-			StrokePoint from = getPath().get(length-2);
-			StrokePoint to = getPath().get(length-1);
-			
-			g.beginDraw();
-			g.strokeJoin(PConstants.ROUND);
-			g.strokeCap(PConstants.ROUND);
-			g.stroke(colour);
-			g.strokeWeight(3);
-			g.line(from.x, from.y, to.x, to.y);
-			g.endDraw();
-		}
-		*/
 	}
 
 	public Vector<StrokePoint> getPath() {

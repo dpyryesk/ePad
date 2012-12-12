@@ -44,7 +44,7 @@ public class SplashScreen extends Frame {
 			return;
 		}
 		if (mt.isErrorID(0)) {
-			System.err.println("Couldn't load image file " + filename);
+			System.err.println("Couldn't load itemImage file " + filename);
 			return;
 		}
 		

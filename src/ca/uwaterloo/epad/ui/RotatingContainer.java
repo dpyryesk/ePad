@@ -13,8 +13,9 @@ public class RotatingContainer extends Zone  {
 	private static int offsetDistance = 15;	//distance between rows of items
 	private static int itemCountMax = 2 * 360 / offsetAngle;	//maximum number of items container may hold
 	
-	public int primaryColour = 255;
-	public int secondaryColour = 1;
+	private int primaryColour = 255;
+	private int secondaryColour = 1;
+	private int backgroundColour = 0x33000000;
 	
 	private int diameter;
 	private Map<Integer, MoveableItem> items;
@@ -33,8 +34,7 @@ public class RotatingContainer extends Zone  {
 		
 		item.width = itemWidth;
 		item.height = itemHeight;
-		item.primaryColour = primaryColour;
-		item.secondaryColour = secondaryColour;
+		item.setColourScheme(primaryColour, secondaryColour);
 		item.setContainer(this);
 		
 		float angle = itemCount * offsetAngle * DEG_TO_RAD;
@@ -60,7 +60,7 @@ public class RotatingContainer extends Zone  {
 		noStroke();
 		
 		ellipseMode(CENTER);
-		fill(0x22000000);
+		fill(backgroundColour);
 		ellipse(0, 0, diameter, diameter);
 		fill(primaryColour);
 		ellipse(0, 0, diameter/2+100, diameter/2+100);
@@ -82,5 +82,28 @@ public class RotatingContainer extends Zone  {
 	
 	protected void touchImpl() {
 		rotateAboutCentre();
+	}
+	
+	public void setColourScheme(int primary, int secondary) {
+		primaryColour = primary;
+		secondaryColour = secondary;
+	}
+	
+	public void setColourScheme(int primary, int secondary, int background) {
+		primaryColour = primary;
+		secondaryColour = secondary;
+		backgroundColour = background;
+	}
+	
+	public int getPrimaryColour() {
+		return primaryColour;
+	}
+	
+	public int getSecondaryColour() {
+		return secondaryColour;
+	}
+	
+	public int getBackgroundColour() {
+		return backgroundColour;
 	}
 }

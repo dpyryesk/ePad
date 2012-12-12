@@ -3,19 +3,22 @@ package ca.uwaterloo.epad.painting;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 
-public class Pencil extends Brush {
+public class Eraser extends Brush {
 	protected int size;
+	private int canvasColour;
 
-	public Pencil(int size) {
+	public Eraser(int size, int canvasColour) {
 		super(size, size);
 		this.size = size;
-		name = "Pencil " + size;
+		this.canvasColour = canvasColour;
+		name = "Eraser " + size;
 	}
 	
-	public Pencil(Pencil original) {
+	public Eraser(Eraser original) {
 		super(original);
 		size = original.size;
-		name = "Pencil " + size;
+		canvasColour = original.canvasColour;
+		name = original.name;
 	}
 	
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
@@ -26,7 +29,7 @@ public class Pencil extends Brush {
 			
 			g.beginDraw();
 			g.noStroke();
-			g.fill(colour);
+			g.fill(canvasColour);
 			g.ellipseMode(PConstants.CENTER);
 			g.ellipse(p.x, p.y, size, size);
 			g.endDraw();
@@ -37,7 +40,7 @@ public class Pencil extends Brush {
 			g.beginDraw();
 			g.strokeJoin(PConstants.ROUND);
 			g.strokeCap(PConstants.ROUND);
-			g.stroke(colour);
+			g.stroke(canvasColour);
 			g.strokeWeight(size);
 			g.line(from.x, from.y, to.x, to.y);
 			g.endDraw();

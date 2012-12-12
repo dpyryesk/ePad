@@ -5,42 +5,39 @@ import java.util.ArrayList;
 import processing.core.PGraphics;
 
 public class BristleBrush extends Brush {
-	protected int size;
-	//private PShape brushShape;
+	protected int diameter;
 	private ArrayList<Bristle> bristleList;
 	private int numBristles = 100;
 	private float bristleSizeMin = 2;
 	private float bristleSizeMax = 5;
+	private int brushShape;
 	
-	public BristleBrush(int size) {
-		super(size, size);
-		this.size = size;
-		name = "BristleBrush " + size;
+	public BristleBrush(int diameter) {
+		super(diameter, diameter);
+		this.diameter = diameter;
+		name = "BristleBrush " + diameter;
+		brushShape = ELLIPSE;
+	}
+	
+	public BristleBrush(int width, int height) {
+		super(width, height);
+		diameter = 0;
+		name = "BristleBrush " + width + " x " + height;
+		brushShape = RECT;
 	}
 	
 	public BristleBrush(BristleBrush original) {
 		super(original);
-		size = original.size;
-		numBristles = size * 3;
-		name = "BristleBrush " + size;
-		
-		//brushShape = applet.loadShape("..\\data\\vector\\brush1.svg");
-		//brushShape.disableStyle();
+		diameter = original.diameter;
+		brushShape = original.brushShape;
+		name = original.name;
+		if (brushShape == ELLIPSE)
+			numBristles = diameter * 2;
+		else if (brushShape == RECT)
+			numBristles = (brushWidth + brushHeight)*2;
 		
 		bristleList = new ArrayList<Bristle>();
 		makeBristles();
-	}
-	
-	protected void drawItem() {
-		fill(secondaryColour);
-		noStroke();
-		rectMode(CENTER);
-		rect(width/2, height/2, 100, 100);
-		line(width/2-10, height/2, width/2+10, height/2);
-		line(width/2, height/2-10, width/2, height/2+10);
-		
-		fill(0);
-		text(name, 30, 30);
 	}
 	
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
@@ -68,28 +65,33 @@ public class BristleBrush extends Brush {
 		for (Bristle b : bristleList) {
 			b.draw(g);
 		}
-		//g.shapeMode(CENTER);
-		//g.shape(brushShape, p.x, p.y, size, size);
 		g.endDraw();
 	}
 	
 	private void makeBristles() {
 		if (bristleList == null) {
-			System.out.println("BristleBrush: bristleList is not initialized");
+			System.err.println("BristleBrush: bristleList is not initialized");
 			return;
 		} else {
 			bristleList.clear();
 		}
 		
-		float x, y, width;
+		float x, y, size;
 		for (int i=0; i<numBristles; i++) {
-			x = applet.random(-size/2, size/2);
-			y = applet.random(-size/2, size/2);
-			if (Math.sqrt(x*x + y*y) > size/2) {
-				i--;
-			} else {
-				width = applet.random(bristleSizeMin, bristleSizeMax);
-				bristleList.add(new Bristle(x, y, width));
+			if (brushShape == ELLIPSE) {
+				x = applet.random(-diameter/2, diameter/2);
+				y = applet.random(-diameter/2, diameter/2);
+				if (Math.sqrt(x*x + y*y) > diameter/2) {
+					i--;
+				} else {
+					size = applet.random(bristleSizeMin, bristleSizeMax);
+					bristleList.add(new Bristle(x, y, size));
+				}
+			} else if (brushShape == RECT) {
+				x = applet.random(-brushWidth/2, brushWidth/2);
+				y = applet.random(-brushHeight/2, brushHeight/2);
+				size = applet.random(bristleSizeMin, bristleSizeMax);
+				bristleList.add(new Bristle(x, y, size));
 			}
 		}
 	}

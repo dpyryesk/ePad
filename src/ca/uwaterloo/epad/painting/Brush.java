@@ -31,7 +31,19 @@ public abstract class Brush extends MoveableItem {
 		Application.setBrush(null);
 	}
 	
-	protected abstract void drawItem();
+	protected void drawItem() {
+		if (itemImage == null) {
+			fill(secondaryColour);
+			noStroke();
+			rectMode(CENTER);
+			rect(width / 2, height / 2, 100, 100);
+			fill(0);
+			text(name, 30, 30);
+		} else {
+			imageMode(CENTER);
+			image(itemImage, width / 2, height / 2, 100, 100);
+		}
+	}
 	
 	public abstract void renderStroke(Stroke s, int colour, PGraphics g);
 }

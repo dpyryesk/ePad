@@ -15,6 +15,7 @@ public class Canvas extends Zone {
 	private static final int MOVING = 1;
 	
 	public int state;
+	public int backgroundColour = 255;
 	
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
@@ -27,9 +28,11 @@ public class Canvas extends Zone {
 		//textureImage = applet.loadImage("data/textures/eggshell.jpg");
 		
 		drawing = applet.createGraphics(width, height, P2D);
+		
+		
 		drawing.beginDraw();
 		drawing.noStroke();
-		drawing.fill(255);
+		drawing.fill(backgroundColour);
 		drawing.rect(0, 0, width, height);
 		drawing.endDraw();
 		
@@ -60,6 +63,10 @@ public class Canvas extends Zone {
 			fill(0x88333333);
 			rect(-30, -30, width+60, height+60, 30);
 		}
+		
+		noStroke();
+		fill(backgroundColour);
+		rect(0, 0, width, height);
 		
 		image(drawing, 0, 0, width, height);
 	}

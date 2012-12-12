@@ -1,20 +1,33 @@
 package ca.uwaterloo.epad.ui;
 
+import processing.core.PImage;
+import processing.core.PShape;
 import processing.core.PVector;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
-import ca.uwaterloo.epad.Application;
 
 public class MoveableItem extends Zone {
+	// Position parameters
 	protected boolean isInDrawer = false;
 	protected boolean isAboveTrash = false;
 	protected boolean isSelected;
 	
-	public int primaryColour = 255;
-	public int secondaryColour = 0;
-	public int deleteColour = 0xFFCC0000;
+	// Parent containers
 	protected RotatingContainer container;
 	protected RotatingDrawer drawer;
+	
+	// Item's image
+	protected PImage itemImage;
+	
+	// Common graphics
+	protected static PShape moveIcon, deleteIcon;
+	
+	// Colour scheme
+	protected int primaryColour = 255;
+	protected int secondaryColour = 0;
+	protected int highlightColour = 128;
+	protected int backgroundColour = 0x33000000;
+	protected int deleteColour = 0xFFCC0000;
 	
 	public MoveableItem (int x, int y, int width, int height) {
 		this("", x, y, width, height);
@@ -23,6 +36,14 @@ public class MoveableItem extends Zone {
 	public MoveableItem (String name, int x, int y, int width, int height) {
 		super(x, y, width, height);
 		this.name = name;
+		
+		// Load shapes
+		if (moveIcon == null)
+			moveIcon = applet.loadShape("..\\data\\vector\\move.svg");
+		if (deleteIcon == null) {
+			deleteIcon = applet.loadShape("..\\data\\vector\\x.svg");
+			deleteIcon.disableStyle();
+		}
 	}
 	
 	public MoveableItem (MoveableItem original) {
@@ -32,7 +53,20 @@ public class MoveableItem extends Zone {
 		container = original.container;
 		primaryColour = original.primaryColour;
 		secondaryColour = original.secondaryColour;
-		name = "copy of " + original.name;
+		highlightColour = original.highlightColour;
+		backgroundColour = original.backgroundColour;
+		deleteColour = original.deleteColour;
+		name = original.name;
+		itemImage = original.itemImage;
+	}
+	
+	public void setImage(String filename) {
+		try {
+			itemImage = applet.loadImage(filename);
+		} catch (Exception e) {
+			e.printStackTrace();
+			itemImage = null;
+		}
 	}
 	
 	protected void drawImpl() {
@@ -51,9 +85,10 @@ public class MoveableItem extends Zone {
 		
 		// Set background colour
 		if (isSelected)
-			fill(color(red(secondaryColour), green(secondaryColour), blue(secondaryColour), 200));
+			//fill(color(red(secondaryColour), green(secondaryColour), blue(secondaryColour), 0xCC));
+			fill(highlightColour);
 		else
-			fill(0x22000000);
+			fill(backgroundColour);
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
 		
@@ -72,14 +107,12 @@ public class MoveableItem extends Zone {
 			
 			if (isAboveTrash) {
 				//draw delete icon
-				Application.deleteIcon.disableStyle();
 				fill(deleteColour);
-				shape(Application.deleteIcon, -15, -15, 30, 30);
+				shape(deleteIcon, -15, -15, 30, 30);
 			} else {
 				//draw move icon
-				shape(Application.moveIcon, -15, -15, 30, 30);
+				shape(moveIcon, -15, -15, 30, 30);
 			}
-			
 		}
 		
 		popMatrix();
@@ -186,5 +219,38 @@ public class MoveableItem extends Zone {
 	
 	public boolean isSelected() {
 		return isSelected;
+	}
+	
+	public void setColourScheme(int primary, int secondary) {
+		primaryColour = primary;
+		secondaryColour = secondary;
+		highlightColour = secondaryColour - 0x33000000;
+	}
+	
+	public void setColourScheme(int primary, int secondary, int background) {
+		primaryColour = primary;
+		secondaryColour = secondary;
+		highlightColour = secondaryColour - 0x33000000;
+		backgroundColour = background;
+	}
+	
+	public void setColourScheme(int primary, int secondary, int background, int delete) {
+		primaryColour = primary;
+		secondaryColour = secondary;
+		highlightColour = secondaryColour - 0x33000000;
+		backgroundColour = background;
+		deleteColour = delete;
+	}
+	
+	public int getPrimaryColour() {
+		return primaryColour;
+	}
+	
+	public int getSecondaryColour() {
+		return secondaryColour;
+	}
+	
+	public int getBackgroundColour() {
+		return backgroundColour;
 	}
 }

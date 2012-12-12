@@ -1,15 +1,19 @@
 package ca.uwaterloo.epad;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
-import processing.core.PShape;
 import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
 import ca.uwaterloo.epad.painting.BristleBrush;
 import ca.uwaterloo.epad.painting.Brush;
+import ca.uwaterloo.epad.painting.Eraser;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.painting.Pencil;
 import ca.uwaterloo.epad.painting.SpiderBrush;
@@ -36,13 +40,9 @@ public class Application extends PApplet {
 	public int height = 768;
 	public String layout;
 	public int backgroundColor = 0xFFFFFF;
-	public String backgroundImage; //"..\\data\\textures\\background_1024x768.png"
+	public String backgroundImage;
 	
-	// Common graphics
-	public static PShape moveIcon, deleteIcon;
-	public static PImage paintCan;
-	
-	// Misc variables
+	// Misc. variables
 	private TouchClient client;
 	private static boolean hasLoadedParams = false;
 	private static PImage bg;
@@ -56,11 +56,6 @@ public class Application extends PApplet {
 		frameRate(60);
 		smooth();
 		
-		// Load common graphics
-		moveIcon = loadShape("..\\data\\vector\\move.svg");
-		deleteIcon = loadShape("..\\data\\vector\\x.svg");
-		paintCan = loadImage("..\\data\\images\\paintCan.png");
-		
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			bg = this.loadImage(backgroundImage);
 		}
@@ -69,17 +64,58 @@ public class Application extends PApplet {
 		client = new TouchClient(this, TouchSource.MOUSE);
 		client.setDrawTouchPoints(true, 1);
 		
-		Button b = new Button(displayWidth - 110, 10, 100, 60, "exit", 16, null, 0);
+		Button b = new Button(width - 110, 10, 100, 60, "exit", 16, null, 0);
 		client.add(b);
 		
 		Canvas c = new Canvas(100, 100, 800, 600);
 		client.add(c);
 		
 		RotatingDrawer leftDrawer = RotatingDrawer.makeLeftDrawer(this);
+		leftDrawer.setColourScheme(0xFF99CC00, 0xFF669900);
 		client.add(leftDrawer);
 		
 		RotatingDrawer rightDrawer = RotatingDrawer.makeRightDrawer(this);
+		rightDrawer.setColourScheme(0xFFFFBB33, 0xFFFF8800);
 		client.add(rightDrawer);
+		
+		// test brushes
+		Pencil p1 = new Pencil(3);
+		p1.setImage("..\\data\\images\\brushes\\pencil1.png");
+		leftDrawer.addItem(p1);
+		
+		BristleBrush b1 = new BristleBrush(60);
+		b1.setImage("..\\data\\images\\brushes\\brush1.png");
+		leftDrawer.addItem(b1);
+		
+		/*
+		Pencil p2 = new Pencil(20);
+		p2.setImage("..\\data\\images\\brushes\\brush2.png");
+		leftDrawer.addItem(p2);
+		*/
+		
+		BristleBrush b2 = new BristleBrush(10);
+		b2.setImage("..\\data\\images\\brushes\\brush2.png");
+		leftDrawer.addItem(b2);
+		
+		BristleBrush b3 = new BristleBrush(30);
+		b3.setImage("..\\data\\images\\brushes\\brush3.png");
+		leftDrawer.addItem(b3);
+		
+		BristleBrush b4 = new BristleBrush(20, 50);
+		b4.setImage("..\\data\\images\\brushes\\brush4.png");
+		leftDrawer.addItem(b4);
+		
+		BristleBrush b5 = new BristleBrush(30, 90);
+		b5.setImage("..\\data\\images\\brushes\\brush5.png");
+		leftDrawer.addItem(b5);
+		
+		SpiderBrush s = new SpiderBrush();
+		s.setImage("..\\data\\images\\brushes\\spider.png");
+		leftDrawer.addItem(s);
+		
+		Eraser e = new Eraser(50, c.backgroundColour);
+		e.setImage("..\\data\\images\\brushes\\eraser.png");
+		leftDrawer.addItem(e);
 		
 		leftDrawer.addItem(new Pencil(1));
 		leftDrawer.addItem(new Pencil(3));
@@ -88,6 +124,9 @@ public class Application extends PApplet {
 		leftDrawer.addItem(new BristleBrush(30));
 		leftDrawer.addItem(new BristleBrush(50));
 		leftDrawer.addItem(new BristleBrush(100));
+		leftDrawer.addItem(new BristleBrush(10, 30));
+		leftDrawer.addItem(new BristleBrush(30, 50));
+		leftDrawer.addItem(new BristleBrush(30, 100));
 		leftDrawer.addItem(new SpiderBrush());
 		
 		rightDrawer.addItem(new Paint(0xFF006884));
@@ -113,10 +152,9 @@ public class Application extends PApplet {
 		background(backgroundColor);
 	    if (backgroundImage != null && backgroundImage.length() > 0) {
 		    imageMode(CORNER);
-	    	//SMTUtilities.aspectImage(this, bg, 0, 0, displayWidth, displayHeight);
 	    	image(bg, 0, 0, displayWidth, displayHeight);
 	    }
-		text(Math.round(frameRate) + "fps, # of zones: " + client.getZones().length, width / 2, 10);
+		text(Math.round(frameRate) + "fps, # of zones: " + client.getZones().length, 10, 10);
 	}
 	
 	private void loadParameters () {
@@ -155,7 +193,6 @@ public class Application extends PApplet {
 		}
 	}
 	
-	/*
 	public final void keyPressed() {
 		if (key == '`') {
 			Date now = new Date();
@@ -166,14 +203,14 @@ public class Application extends PApplet {
 			PGraphics pg;
 			pg = createGraphics(width, height, P3D);
 			pg.beginDraw();
-			pg.image(g.get(), 0, 0);
+			draw();
+			client.draw();
 			pg.endDraw();
 			pg.save(filename);
 			
 			System.out.println("Screenshot Saved: " + filename);
 		}
 	}
-	*/
 	
 	public static void setPaint(Paint p) {
 		if (currentPaint != null)

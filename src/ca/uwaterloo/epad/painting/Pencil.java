@@ -2,12 +2,14 @@ package ca.uwaterloo.epad.painting;
 
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Pencil extends Brush {
-	protected int size;
+	@XmlAttribute public int size;
 
 	public Pencil(int size) {
-		super(size, size);
+		super();
 		this.size = size;
 		name = "Pencil " + size;
 	}
@@ -15,6 +17,11 @@ public class Pencil extends Brush {
 	public Pencil(Pencil original) {
 		super(original);
 		size = original.size;
+		name = "Pencil " + size;
+	}
+	
+	public Pencil(MoveableItem original) {
+		super(original);
 		name = "Pencil " + size;
 	}
 	

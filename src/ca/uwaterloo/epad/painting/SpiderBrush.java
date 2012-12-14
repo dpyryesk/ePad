@@ -3,6 +3,8 @@ package ca.uwaterloo.epad.painting;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import ca.uwaterloo.epad.ui.MoveableItem;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -17,13 +19,17 @@ public class SpiderBrush extends Brush {
 	private float lineAlpha2 = 64;
 
 	public SpiderBrush() {
-		super(1, 1);
+		super();
 		name = "SpiderBrush";
 	}
 
 	public SpiderBrush(SpiderBrush original) {
 		super(original);
 		name = "SpiderBrush";
+	}
+	
+	public SpiderBrush(MoveableItem original) {
+		super(original);
 	}
 
 	public void renderStroke(Stroke s, int colour, PGraphics g) {

@@ -1,5 +1,6 @@
 package ca.uwaterloo.epad.ui;
 
+import ca.uwaterloo.epad.Application;
 import processing.core.PImage;
 import processing.core.PShape;
 import processing.core.PVector;
@@ -11,6 +12,7 @@ public class MoveableItem extends Zone {
 	protected boolean isInDrawer = false;
 	protected boolean isAboveTrash = false;
 	protected boolean isSelected;
+	protected int drawerId;
 	
 	// Parent containers
 	protected RotatingContainer container;
@@ -18,6 +20,7 @@ public class MoveableItem extends Zone {
 	
 	// Item's image
 	protected PImage itemImage;
+	protected String itemImageFilename;
 	
 	// Common graphics
 	protected static PShape moveIcon, deleteIcon;
@@ -51,6 +54,7 @@ public class MoveableItem extends Zone {
 		matrix = original.getGlobalMatrix();
 		drawer = original.drawer;
 		container = original.container;
+		drawerId = original.drawerId;
 		primaryColour = original.primaryColour;
 		secondaryColour = original.secondaryColour;
 		highlightColour = original.highlightColour;
@@ -58,15 +62,7 @@ public class MoveableItem extends Zone {
 		deleteColour = original.deleteColour;
 		name = original.name;
 		itemImage = original.itemImage;
-	}
-	
-	public void setImage(String filename) {
-		try {
-			itemImage = applet.loadImage(filename);
-		} catch (Exception e) {
-			e.printStackTrace();
-			itemImage = null;
-		}
+		itemImageFilename = original.itemImageFilename;
 	}
 	
 	protected void drawImpl() {
@@ -196,17 +192,28 @@ public class MoveableItem extends Zone {
 	protected void doTouchUp(Touch touch) {
 	}
 	
-	public void putIntoDrawer(RotatingDrawer drawer) {
-		isInDrawer = true;
-		this.drawer = drawer;
+	public void setDrawer(int drawerId, boolean isInDrawer) {
+		this.isInDrawer = isInDrawer;
+		this.drawerId = drawerId;
+		
+		switch(drawerId) {
+			case Application.TOP_DRAWER: drawer = Application.topDrawer; break;
+			case Application.BOTTOM_DRAWER: drawer = Application.bottomDrawer; break;
+			case Application.LEFT_DRAWER: drawer = Application.leftDrawer; break;
+			case Application.RIGHT_DRAWER: drawer = Application.rightDrawer; break;
+		}
+		
+		container = drawer.getContainer();
+		setColourScheme(container.getPrimaryColour(), container.getSecondaryColour());
+		
+		if (isInDrawer) {
+			boolean success = container.addItem(this);
+			if (!success) System.err.println("Failed to add an item to container");
+		}
 	}
 	
-	public void setDrawer(RotatingDrawer drawer) {
-		this.drawer = drawer;
-	}
-	
-	public void setContainer(RotatingContainer container) {
-		this.container = container;
+	public void addToScreen() {
+		client.add(this);
 	}
 	
 	public void select() {
@@ -252,5 +259,23 @@ public class MoveableItem extends Zone {
 	
 	public int getBackgroundColour() {
 		return backgroundColour;
+	}
+	
+	public String getImage() {
+		return itemImageFilename;
+	}
+	
+	public void setImage(String filename) {
+		try {
+			itemImageFilename = filename;
+			itemImage = applet.loadImage(filename);
+		} catch (Exception e) {
+			e.printStackTrace();
+			itemImage = null;
+		}
+	}
+	
+	public int getDrawerId() {
+		return drawerId;
 	}
 }

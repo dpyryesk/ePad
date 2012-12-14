@@ -1,5 +1,6 @@
 package ca.uwaterloo.epad.painting;
 
+import processing.core.PVector;
 import vialab.SMT.Touch;
 
 public class StrokePoint {
@@ -27,9 +28,9 @@ public class StrokePoint {
 		motionAcceleration = p.motionAcceleration;
 	}
 	
-	public StrokePoint(Touch t) {
-		x = t.x;
-		y = t.y;
+	public StrokePoint(Touch t, PVector offseVector) {
+		x = t.x + offseVector.x;
+		y = t.y + offseVector.y;
 		width = 1;
 		height = 1;
 		xSpeed = t.xSpeed;

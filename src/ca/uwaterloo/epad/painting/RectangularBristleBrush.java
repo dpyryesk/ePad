@@ -2,42 +2,34 @@ package ca.uwaterloo.epad.painting;
 
 import java.util.ArrayList;
 
+import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.xml.XmlAttribute;
+
 import processing.core.PGraphics;
 
-public class BristleBrush extends Brush {
-	protected int diameter;
+public class RectangularBristleBrush extends Brush {
+	@XmlAttribute public int brushWidth, brushHeight;
+	
 	private ArrayList<Bristle> bristleList;
 	private int numBristles = 100;
 	private float bristleSizeMin = 2;
 	private float bristleSizeMax = 5;
-	private int brushShape;
 	
-	public BristleBrush(int diameter) {
-		super(diameter, diameter);
-		this.diameter = diameter;
-		name = "BristleBrush " + diameter;
-		brushShape = ELLIPSE;
-	}
-	
-	public BristleBrush(int width, int height) {
-		super(width, height);
-		diameter = 0;
+	public RectangularBristleBrush(int width, int height) {
+		brushWidth = width;
+		brushHeight = height;
 		name = "BristleBrush " + width + " x " + height;
-		brushShape = RECT;
 	}
 	
-	public BristleBrush(BristleBrush original) {
+	public RectangularBristleBrush(RectangularBristleBrush original) {
 		super(original);
-		diameter = original.diameter;
-		brushShape = original.brushShape;
+		brushWidth = original.brushWidth;
+		brushHeight = original.brushHeight;
 		name = original.name;
-		if (brushShape == ELLIPSE)
-			numBristles = diameter * 2;
-		else if (brushShape == RECT)
-			numBristles = (brushWidth + brushHeight)*2;
-		
-		bristleList = new ArrayList<Bristle>();
-		makeBristles();
+	}
+	
+	public RectangularBristleBrush(MoveableItem original) {
+		super(original);
 	}
 	
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
@@ -69,30 +61,20 @@ public class BristleBrush extends Brush {
 	}
 	
 	private void makeBristles() {
+		numBristles = (brushWidth + brushHeight)*2;
+		
 		if (bristleList == null) {
-			System.err.println("BristleBrush: bristleList is not initialized");
-			return;
+			bristleList = new ArrayList<Bristle>();
 		} else {
 			bristleList.clear();
 		}
 		
 		float x, y, size;
 		for (int i=0; i<numBristles; i++) {
-			if (brushShape == ELLIPSE) {
-				x = applet.random(-diameter/2, diameter/2);
-				y = applet.random(-diameter/2, diameter/2);
-				if (Math.sqrt(x*x + y*y) > diameter/2) {
-					i--;
-				} else {
-					size = applet.random(bristleSizeMin, bristleSizeMax);
-					bristleList.add(new Bristle(x, y, size));
-				}
-			} else if (brushShape == RECT) {
-				x = applet.random(-brushWidth/2, brushWidth/2);
-				y = applet.random(-brushHeight/2, brushHeight/2);
-				size = applet.random(bristleSizeMin, bristleSizeMax);
-				bristleList.add(new Bristle(x, y, size));
-			}
+			x = applet.random(-brushWidth/2, brushWidth/2);
+			y = applet.random(-brushHeight/2, brushHeight/2);
+			size = applet.random(bristleSizeMin, bristleSizeMax);
+			bristleList.add(new Bristle(x, y, size));
 		}
 	}
 	

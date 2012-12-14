@@ -6,20 +6,19 @@ import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.MoveableItem;
 
 public abstract class Brush extends MoveableItem {
-	protected int brushWidth, brushHeight;
-	
-	public Brush(int width, int height) {
+	public Brush() {
 		super(0, 0, 150, 150);
-		brushWidth = width;
-		brushHeight = height;
 		isSelected = false;
 		name = ""+width+"x"+height;
 	}
 	
 	public Brush(Brush original) {
 		super(original);
-		brushWidth = original.brushWidth;
-		brushHeight = original.brushHeight;
+		isSelected = false;
+	}
+	
+	public Brush(MoveableItem original) {
+		super(original);
 		isSelected = false;
 	}
 	

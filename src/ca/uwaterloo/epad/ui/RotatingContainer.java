@@ -7,11 +7,11 @@ import vialab.SMT.Zone;
 
 public class RotatingContainer extends Zone  {
 	// Layout parameters
-	private static int itemWidth = 125;		//width of each item
-	private static int itemHeight = 125;	//height of each item
-	private static int offsetAngle = 15;	//angular offset between items in degrees
-	private static int offsetDistance = 15;	//distance between rows of items
-	private static int itemCountMax = 2 * 360 / offsetAngle;	//maximum number of items container may hold
+	public static final int ITEM_WIDTH = 125;		//width of each item
+	public static final int ITEM_HEIGHT = 125;	//height of each item
+	public static final int OFFSET_ANGLE = 15;	//angular offset between items in degrees
+	public static final int OFFSET_DIST = 15;	//distance between rows of items
+	public static final int ITEM_COUNT_MAX = 2 * 360 / OFFSET_ANGLE;	//maximum number of items container may hold
 	
 	private int primaryColour = 255;
 	private int secondaryColour = 1;
@@ -25,24 +25,22 @@ public class RotatingContainer extends Zone  {
 		super(0, 0, parent.getDiameter(), parent.getDiameter());
 		diameter = parent.getDiameter() - 50;
 		
-		items = new HashMap<Integer, MoveableItem>(itemCountMax/2);
+		items = new HashMap<Integer, MoveableItem>(ITEM_COUNT_MAX/2);
 	}
 	
 	public boolean addItem(MoveableItem item) {
-		if (itemCount >= itemCountMax)
+		if (itemCount >= ITEM_COUNT_MAX)
 			return false;
 		
-		item.width = itemWidth;
-		item.height = itemHeight;
-		item.setColourScheme(primaryColour, secondaryColour);
-		item.setContainer(this);
+		item.width = ITEM_WIDTH;
+		item.height = ITEM_HEIGHT;
 		
-		float angle = itemCount * offsetAngle * DEG_TO_RAD;
+		float angle = itemCount * OFFSET_ANGLE * DEG_TO_RAD;
 		item.rotateAbout(angle, width/2, height/2);
-		if (itemCount < 360 / offsetAngle)
-			item.translate(width/2 - itemWidth/2, height/2 + diameter/2 - (itemHeight + offsetDistance));
+		if (itemCount < 360 / OFFSET_ANGLE)
+			item.translate(width/2 - ITEM_WIDTH/2, height/2 + diameter/2 - (ITEM_HEIGHT + OFFSET_DIST));
 		else
-			item.translate(width/2 - itemWidth/2, height/2 + diameter/2 - 2 * (itemHeight + offsetDistance));
+			item.translate(width/2 - ITEM_WIDTH/2, height/2 + diameter/2 - 2 * (ITEM_HEIGHT + OFFSET_DIST));
 		
 		add(item);
 		

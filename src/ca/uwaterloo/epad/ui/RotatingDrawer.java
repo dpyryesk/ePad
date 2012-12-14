@@ -59,11 +59,6 @@ public class RotatingDrawer extends Zone {
 		rotateAbout(angle, CENTER);
 	}
 	
-	public boolean addItem(MoveableItem item) {
-		item.putIntoDrawer(this);
-		return container.addItem(item);
-	}
-	
 	protected void drawImpl() {
 		pushMatrix();
 		

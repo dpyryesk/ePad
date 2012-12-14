@@ -4,10 +4,12 @@ import processing.core.PImage;
 import vialab.SMT.Touch;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Paint extends MoveableItem {
+	@XmlAttribute public int paintColour;
+	
 	protected static PImage paintImage;
-	protected int paintColour;
 
 	public Paint(int colour) {
 		super(0, 0, 150, 150);
@@ -23,6 +25,13 @@ public class Paint extends MoveableItem {
 		super(original);
 		paintColour = original.paintColour;
 		isSelected = false;
+	}
+	
+	public Paint(MoveableItem original) {
+		super(original);
+		
+		if (paintImage == null)
+			paintImage = applet.loadImage("..\\data\\images\\paintCan.png");
 	}
 	
 	protected void drawItem() {

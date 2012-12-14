@@ -34,7 +34,7 @@ public class SplashScreen extends Frame {
 		text = "Loading...";
 
 		img = Toolkit.getDefaultToolkit().getImage(filename);
-		Image icon = Toolkit.getDefaultToolkit().getImage("data/e.png");
+		Image icon = Toolkit.getDefaultToolkit().getImage("data\\images\\e.png");
 		MediaTracker mt = new MediaTracker(this);
 		mt.addImage(img, 0);
 		try {

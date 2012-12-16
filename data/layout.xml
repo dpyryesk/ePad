@@ -30,4 +30,19 @@
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15553238" width="125" x="0" y="0">
 <matrix m00="1.0318623" m01="0.02309064" m02="0.0" m03="0.79107666" m10="-0.02309064" m11="1.0318623" m12="0.0" m13="635.9256" m20="0.0" m21="0.0" m22="1.0321205" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="" stampFile="..\data\vector\snowflakes.svg" width="125" x="0" y="0">
+<matrix m00="-4.371139E-8" m01="1.0" m02="0.0" m03="826.0" m10="-1.0" m11="-4.371139E-8" m12="0.0" m13="476.99994" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1748224" width="125" x="0" y="0">
+<matrix m00="0.10659772" m01="-0.99430215" m02="0.0" m03="128.82898" m10="0.99430215" m11="0.10659772" m12="0.0" m13="491.63092" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-32506" width="125" x="0" y="0">
+<matrix m00="0.45607707" m01="-0.8899401" m02="0.0" m03="97.091675" m10="0.8899401" m11="0.45607707" m12="0.0" m13="377.84045" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-11495" width="125" x="0" y="0">
+<matrix m00="-0.30678758" m01="-0.9517779" m02="0.0" m03="149.1012" m10="0.9517779" m11="-0.30678758" m12="0.0" m13="335.99902" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-192" width="125" x="0" y="0">
+<matrix m00="0.024929792" m01="-0.9996892" m02="0.0" m03="135.64258" m10="0.9996892" m11="0.024929792" m12="0.0" m13="208.05292" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
 </Layout>

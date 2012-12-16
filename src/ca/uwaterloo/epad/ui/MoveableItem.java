@@ -5,6 +5,7 @@ import processing.core.PImage;
 import processing.core.PShape;
 import processing.core.PVector;
 import vialab.SMT.Touch;
+import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 
 public class MoveableItem extends Zone {
@@ -81,7 +82,6 @@ public class MoveableItem extends Zone {
 		
 		// Set background colour
 		if (isSelected)
-			//fill(color(red(secondaryColour), green(secondaryColour), blue(secondaryColour), 0xCC));
 			fill(highlightColour);
 		else
 			fill(backgroundColour);
@@ -144,10 +144,10 @@ public class MoveableItem extends Zone {
 				if (copy != null) {
 					copy.assign(touch);
 					this.unassign(touch);
-					client.add(copy);
+					TouchClient.add(copy);
 				}
 			} else {
-				client.putZoneOnTop(this);
+				TouchClient.putZoneOnTop(this);
 			}
 		} else {
 			doTouchDown(touch);
@@ -156,7 +156,7 @@ public class MoveableItem extends Zone {
 	
 	protected void touchUpImpl(Touch touch) {
 		if (drawer.isOpen() && !isInDrawer && isAboveTrash) {
-			client.remove(this);
+			TouchClient.remove(this);
 			doTouchUp(touch);
 		}
 	}
@@ -213,7 +213,7 @@ public class MoveableItem extends Zone {
 	}
 	
 	public void addToScreen() {
-		client.add(this);
+		TouchClient.add(this);
 	}
 	
 	public void select() {

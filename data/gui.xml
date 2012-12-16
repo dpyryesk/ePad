@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Application backgroundColour="#FFFFFF" backgroundImage="..\\data\\textures\\background_1024x768.png" height="768" targetFPS="60.0" width="1024">
+<Application backgroundColour="#FFFFFF" backgroundImage="data\textures\background_1024x768.png" height="768" targetFPS="60.0" width="1024">
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="..\data\images\brushes\pencil1.png" size="3"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="..\data\images\brushes\brush1.png" diameter="60"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="..\data\images\brushes\brush2.png" diameter="15"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="..\data\images\brushes\brush3.png" diameter="30"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="..\data\images\brushes\brush4.png" brushWidth="20" brushHeight="50"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="..\data\images\brushes\brush5.png" brushWidth="30" brushHeight="90"/>
-		<MoveableItem class="ca.uwaterloo.epad.painting.SpiderBrush" image="..\data\images\brushes\spider.png"/>
-		<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" image="..\data\images\brushes\eraser.png" size="30"/>
+	    <!-- Brushes -->
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="data\images\brushes\pencil1.png" size="3"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush1.png" diameter="60"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush2.png" diameter="15"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush3.png" diameter="30"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="data\images\brushes\brush4.png" brushWidth="20" brushHeight="50"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="data\images\brushes\brush5.png" brushWidth="30" brushHeight="90"/>
+		<MoveableItem class="ca.uwaterloo.epad.painting.SpiderBrush" image="data\images\brushes\spider.png"/>
+		<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" image="data\images\brushes\eraser.png" size="30"/>
+		
+		<!-- Stamps -->
+		<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\cat.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\crow.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\finch.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\seahorse.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\snowflakes.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\coffee.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\cup.svg"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="data\vector\fish.svg"/>
 	</RotatingDrawer>
 	<RotatingDrawer position="right" primaryColour="#FFBB33" secondaryColour="#FF8800">
 	    <!-- Red -->

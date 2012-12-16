@@ -12,17 +12,17 @@ public class SMTTest extends PApplet {
 		size(1024, 768, P3D);
 		frameRate(60);
 		client = new TouchClient(this, TouchSource.MOUSE);
-		client.setDrawTouchPoints(true);
+		TouchClient.setDrawTouchPoints(true);
 		SubZone z = new SubZone( 100, 100, 200, 200);
 		SuperZone z2 = new SuperZone( 400, 400, 200, 200);
-		client.add(z);
-		client.add(z2);
+		TouchClient.add(z);
+		TouchClient.add(z2);
 	}
 
 	public void draw() {
 		background(79, 129, 189);
 		fill(0);
-		text(round(frameRate) + "fps, # of zones: " + client.getZones().length, width / 2, 10);
+		text(round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, width / 2, 10);
 	}
 	
 	private class SuperZone extends Zone {

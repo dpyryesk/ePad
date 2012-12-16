@@ -37,8 +37,6 @@ public class Application extends PApplet {
 	@XmlAttribute public int backgroundColour = 0xFFFFFFFF;
 	@XmlAttribute public String backgroundImage = null;
 
-	// Misc. variables
-	private TouchClient client;
 	private static PImage bg;
 
 	// GUI
@@ -60,12 +58,12 @@ public class Application extends PApplet {
 		frameRate(targetFPS);
 		smooth();
 
+		TouchClient client = new TouchClient(this, TouchSource.MOUSE);
 		TouchClient.setWarnUnimplemented(false);
-		client = new TouchClient(this, TouchSource.MOUSE);
-		client.setDrawTouchPoints(true);
+		TouchClient.setDrawTouchPoints(true, 0);
 
 		canvas = new Canvas(100, 100, 800, 600);
-		client.add(canvas);
+		TouchClient.add(canvas);
 
 		try {
 			SimpleMarshaller.unmarshallGui(this, new File(guiFile));
@@ -89,7 +87,8 @@ public class Application extends PApplet {
 			imageMode(CORNER);
 			image(bg, 0, 0, displayWidth, displayHeight);
 		}
-		text(Math.round(frameRate) + "fps, # of zones: " + client.getZones().length, 10, 10);
+		
+		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
 	}
 
 	public final void keyPressed() {
@@ -103,11 +102,23 @@ public class Application extends PApplet {
 			pg = createGraphics(width, height, P3D);
 			pg.beginDraw();
 			draw();
-			client.draw();
+			TouchClient.draw();
 			pg.endDraw();
-			pg.save(filename);
+			
+			if (pg.save(filename))
+				System.out.println("Screenshot saved: " + filename);
+			else
+				System.err.println("Failed to save screenshot");
+		} else if (key == ' ') {
+			Date now = new Date();
+			SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
 
-			System.out.println("Screenshot Saved: " + filename);
+			String filename = "data\\drawing_" + sdt.format(now) + ".png";
+
+			if (canvas.getDrawing().save(filename))
+				System.out.println("Drawing saved: " + filename);
+			else
+				System.err.println("Failed to save drawing");
 		} else if (key == 's') {
 			try {
 				SimpleMarshaller.marshallLayout(this, new File(defaultLayoutFile));
@@ -142,7 +153,7 @@ public class Application extends PApplet {
 	}
 
 	public Zone[] getChildren() {
-		return client.getZones();
+		return TouchClient.getZones();
 	}
 
 	public void setDrawer(RotatingDrawer drawer, int drawerId) {
@@ -160,6 +171,6 @@ public class Application extends PApplet {
 			rightDrawer = drawer;
 			break;
 		}
-		client.add(drawer);
+		TouchClient.add(drawer);
 	}
 }

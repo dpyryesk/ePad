@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import processing.core.PGraphics;
+import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Stroke;
@@ -18,14 +19,13 @@ public class Canvas extends Zone {
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
-
-	// private PImage textureImage;
+	private PImage overlayImage;
 
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		state = PAINTING;
 
-		// textureImage = applet.loadImage("data/textures/eggshell.jpg");
+		overlayImage = applet.loadImage("data\\images\\house.png");
 
 		drawing = applet.createGraphics(width, height, P2D);
 
@@ -34,15 +34,6 @@ public class Canvas extends Zone {
 		drawing.fill(backgroundColour);
 		drawing.rect(0, 0, width, height);
 		drawing.endDraw();
-
-		/*
-		 * drawing.beginDraw(); drawing.smooth(); drawing.beginShape();
-		 * drawing.textureMode(IMAGE); drawing.textureWrap(REPEAT);
-		 * drawing.texture(textureImage); drawing.noStroke(); drawing.vertex(0,
-		 * 0, 0, 0); drawing.vertex(0, height, 0, height); drawing.vertex(width,
-		 * height, width, height); drawing.vertex(width, 0, width, 0);
-		 * drawing.endShape(); drawing.endDraw();
-		 */
 
 		strokes = new HashMap<Long, Stroke>();
 	}
@@ -61,6 +52,7 @@ public class Canvas extends Zone {
 		rect(0, 0, width, height);
 
 		image(drawing, 0, 0, width, height);
+		image(overlayImage, 0, 0, width, height);
 	}
 
 	protected void pickDrawImpl() {
@@ -101,5 +93,9 @@ public class Canvas extends Zone {
 				}
 			}
 		}
+	}
+	
+	public PGraphics getDrawing() {
+		return drawing;
 	}
 }

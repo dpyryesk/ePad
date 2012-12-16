@@ -3,6 +3,7 @@ package ca.uwaterloo.epad.ui;
 import processing.core.PApplet;
 import processing.core.PVector;
 import vialab.SMT.Touch;
+import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 
 public class RotatingDrawer extends Zone {
@@ -113,7 +114,7 @@ public class RotatingDrawer extends Zone {
 	}
 	
 	protected void touchDownImpl(Touch touch) {
-		client.putZoneOnTop(this);
+		TouchClient.putZoneOnTop(this);
 	}
 
 	public int getDiameter() {

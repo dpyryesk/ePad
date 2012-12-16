@@ -9,7 +9,7 @@ import processing.core.PGraphics;
 public class Eraser extends Brush {
 	@XmlAttribute public int size;
 
-	public Eraser(int size, int canvasColour) {
+	public Eraser(int size) {
 		super();
 		this.size = size;
 		name = "Eraser " + size;

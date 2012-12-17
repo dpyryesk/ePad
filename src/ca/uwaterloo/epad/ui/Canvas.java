@@ -19,17 +19,21 @@ public class Canvas extends Zone {
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
-	private PImage overlayImage;
+	private PImage textureImage, overlayImage;
+	private boolean useTexture = false;
+	private boolean useOverlay = false;
 
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		state = PAINTING;
-
+		
+		textureImage = applet.loadImage("data\\textures\\eggshell.jpg");
 		overlayImage = applet.loadImage("data\\images\\house.png");
 
 		drawing = applet.createGraphics(width, height, P2D);
 
 		drawing.beginDraw();
+		drawing.background(0, 0);
 		drawing.noStroke();
 		drawing.fill(backgroundColour);
 		drawing.rect(0, 0, width, height);
@@ -46,13 +50,27 @@ public class Canvas extends Zone {
 			fill(0x88333333);
 			rect(-30, -30, width + 60, height + 60, 30);
 		}
-
-		noStroke();
-		fill(backgroundColour);
-		rect(0, 0, width, height);
+		
+		if (useTexture) {
+			beginShape();
+			textureMode(IMAGE);
+			texture(textureImage);
+			noStroke();
+			vertex(0, 0, 0, 0);
+			vertex(0, height, 0, height);
+			vertex(width, height, width, height);
+			vertex(width, 0, width, 0);
+			endShape();
+		} else {
+			noStroke();
+			fill(backgroundColour);
+			rect(0, 0, width, height);
+		}
 
 		image(drawing, 0, 0, width, height);
-		image(overlayImage, 0, 0, width, height);
+		
+		if (useOverlay)
+			image(overlayImage, 0, 0, width, height);
 	}
 
 	protected void pickDrawImpl() {

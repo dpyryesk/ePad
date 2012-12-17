@@ -76,6 +76,10 @@ public class Application extends PApplet {
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			bg = this.loadImage(backgroundImage);
 		}
+		
+		TouchClient.putZoneOnTop(leftDrawer);
+		TouchClient.putZoneOnTop(rightDrawer);
+		//TouchClient.putZoneOnTop(topDrawer);
 	}
 
 	public void draw() {

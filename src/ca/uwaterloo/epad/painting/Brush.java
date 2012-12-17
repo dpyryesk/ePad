@@ -40,7 +40,7 @@ public abstract class Brush extends MoveableItem {
 			text(name, 30, 30);
 		} else {
 			imageMode(CENTER);
-			image(itemImage, width / 2, height / 2, 100, 100);
+			image(itemImage, width / 2, height / 2, 125, 125);
 		}
 	}
 	

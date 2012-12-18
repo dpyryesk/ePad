@@ -2,23 +2,15 @@ package ca.uwaterloo.epad.ui;
 
 import processing.core.PApplet;
 import processing.core.PVector;
-import vialab.SMT.Touch;
-import vialab.SMT.TouchClient;
-import vialab.SMT.Zone;
 
-public class RotatingDrawer extends Zone {
-	private boolean isOpen;
-	private int position;
+public class RotatingDrawer extends Drawer {
 	private int diameter;
 	private float angle;
-	private int dragXMin, dragXMax, dragYMin, dragYMax;
-	private boolean dragX, dragY;
-	private RotatingContainer container;
 	
 	public static RotatingDrawer makeLeftDrawer(PApplet parent) {
 		RotatingDrawer instance = new RotatingDrawer(-parent.height*2, -parent.height/2, parent.height*2, LEFT);
 		
-		instance.container = new RotatingContainer(instance);
+		instance.container = new RotatingContainer(instance, instance.diameter);
 		instance.add(instance.container);
 		
 		return instance;
@@ -27,15 +19,15 @@ public class RotatingDrawer extends Zone {
 	public static RotatingDrawer makeRightDrawer(PApplet parent) {
 		RotatingDrawer instance = new RotatingDrawer(parent.width, -parent.height/2, parent.height*2, RIGHT);
 		
-		instance.container = new RotatingContainer(instance);
+		instance.container = new RotatingContainer(instance, instance.diameter);
 		instance.add(instance.container);
 		
 		return instance;
 	}
 	
 	private RotatingDrawer (int x, int y, int diameter, int position) {
-		super(x, y, diameter, diameter);
-		isOpen = false;
+		super(x, y, diameter, diameter, position);
+		
 		this.position = position;
 		this.diameter = diameter;
 		
@@ -65,8 +57,6 @@ public class RotatingDrawer extends Zone {
 		
 		translate(width/2, height/2);
 		
-		//stroke(0xFF0099CC);
-		//strokeWeight(3);
 		noStroke();
 		fill(0xFF0099CC);
 		
@@ -95,10 +85,7 @@ public class RotatingDrawer extends Zone {
 		popMatrix();
 	}
 	
-	protected void touchImpl() {
-		drag(dragX, dragY, dragXMin, dragXMax, dragYMin, dragYMax);
-		
-		// figure out if the drawer is opened
+	public boolean isOpen() {
 		PVector p = fromZoneVector(new PVector(x, y));
 		float d = 0;
 		if (position == LEFT) {
@@ -107,49 +94,16 @@ public class RotatingDrawer extends Zone {
 			d = (x - p.x) + width + width/4;
 		}
 		if (d > 30) {
-			isOpen = true;
+			return true;
 		} else {
-			isOpen = false;
+			return false;
 		}
 	}
 	
-	protected void touchDownImpl(Touch touch) {
-		TouchClient.putZoneOnTop(this);
-	}
-
-	public int getDiameter() {
-		return diameter;
-	}
-	
-	public int getPosition() {
-		return position;
-	}
-
-	public RotatingContainer getContainer() {
-		return container;
-	}
-	
-	public boolean isOpen() {
-		return isOpen;
-	}
-	
-	public void setColourScheme(int primary, int secondary) {
-		container.setColourScheme(primary, secondary);
-	}
-	
-	public void setColourScheme(int primary, int secondary, int background) {
-		container.setColourScheme(primary, secondary, background);
-	}
-	
-	public int getPrimaryColour() {
-		return container.getPrimaryColour();
-	}
-	
-	public int getSecondaryColour() {
-		return container.getSecondaryColour();
-	}
-	
-	public int getBackgroundColour() {
-		return container.getBackgroundColour();
+	public boolean isItemAbove(MoveableItem item) {
+		PVector drawerCetre = getCentre();
+		PVector itemCentre = item.getCentre();
+		float d = drawerCetre.dist(itemCentre) - diameter/2;
+		return d < 0;
 	}
 }

@@ -1,4 +1,4 @@
-package ca.uwaterloo.epad.ui;
+package ca.uwaterloo.epad.painting;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +8,6 @@ import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
-import ca.uwaterloo.epad.painting.Stroke;
 
 public class Canvas extends Zone {
 	private static final int PAINTING = 0;
@@ -21,7 +20,7 @@ public class Canvas extends Zone {
 	private PGraphics drawing;
 	private PImage textureImage, overlayImage;
 	private boolean useTexture = false;
-	private boolean useOverlay = false;
+	private boolean useOverlay = true;
 
 	public Canvas(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -113,7 +112,14 @@ public class Canvas extends Zone {
 		}
 	}
 	
-	public PGraphics getDrawing() {
-		return drawing;
+	public PImage getDrawing() {
+		PGraphics result = applet.createGraphics(width, height, P2D);
+		result.beginDraw();
+		result.image(drawing, 0, 0, width, height);
+		if (useOverlay)
+			result.blend(overlayImage, 0, 0, width, height, 0, 0, width, height, DARKEST);
+		result.endDraw();
+		
+		return result.get();
 	}
 }

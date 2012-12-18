@@ -28,12 +28,14 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
+import ca.uwaterloo.epad.ui.SlidingDrawer;
 
 public class SimpleMarshaller {
 	private static final String NODE_ITEM = "MoveableItem";
 	private static final String NODE_LAYOUT = "Layout";
 	private static final String NODE_MATRIX = "matrix";
 	private static final String NODE_ROTATING_DRAWER = "RotatingDrawer";
+	private static final String NODE_SLIDING_DRAWER = "SlidingDrawer";
 	
 	private static final String ATTR_X = "x";
 	private static final String ATTR_Y = "y";
@@ -306,28 +308,43 @@ public class SimpleMarshaller {
 		// process children
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
-			if (child.getNodeName().equals(NODE_ROTATING_DRAWER)) {
+			Node childNode = children.item(i);
+			if (childNode.getNodeName().equals(NODE_ROTATING_DRAWER)) {
 				RotatingDrawer drawer = null;
 				int drawerId = -1;
-				attributeMap = child.getAttributes();
+				attributeMap = childNode.getAttributes();
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
 				switch (pos) {
 				case LEFT: drawer = RotatingDrawer.makeLeftDrawer(app); drawerId = Application.LEFT_DRAWER; break;
 				case RIGHT: drawer = RotatingDrawer.makeRightDrawer(app); drawerId = Application.RIGHT_DRAWER; break;
-				case TOP: drawerId = Application.TOP_DRAWER; break;
-				case BOTTOM: drawerId = Application.BOTTOM_DRAWER; break;
+				default: System.err.println("SimpleMarshaller: layout error, only left and right rotating drawers are supported");
+				throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
-				app.setDrawer(drawer, drawerId);
-				unmarshallDrawerItems(drawer, drawerId, child);
+				Application.addDrawer(drawer, drawerId);
+				unmarshallDrawerItems(drawerId, childNode);
+			} else if (childNode.getNodeName().equals(NODE_SLIDING_DRAWER)) {
+				SlidingDrawer drawer = null;
+				int drawerId = -1;
+				attributeMap = childNode.getAttributes();
+				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
+				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
+				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
+				switch (pos) {
+				case TOP: drawer = SlidingDrawer.makeTopDrawer(app); drawerId = Application.TOP_DRAWER; break;
+				default: System.err.println("SimpleMarshaller: layout error, only left and right rotating drawers are supported");
+				throw (new DOMException((short)0, "Layout error"));
+				}
+				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
+				Application.addDrawer(drawer, drawerId);
+				unmarshallDrawerItems(drawerId, childNode);
 			}
 		}
 	}
 	
-	private static void unmarshallDrawerItems(RotatingDrawer drawer, int drawerId, Node xml) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException, InstantiationException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private static void unmarshallDrawerItems(int drawerId, Node xml) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException, InstantiationException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		NodeList children = xml.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node childNode = children.item(i);
@@ -388,6 +405,7 @@ public class SimpleMarshaller {
 				}
 				
 				childInstance.setDrawer(drawerId, true);
+				childInstance.doInit();
 			}
 		}
 	}

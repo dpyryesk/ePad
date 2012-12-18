@@ -1,31 +1,17 @@
 package ca.uwaterloo.epad.ui;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import vialab.SMT.Zone;
-
-public class RotatingContainer extends Zone  {
+public class RotatingContainer extends Container  {
 	// Layout parameters
-	public static final int ITEM_WIDTH = 125;		//width of each item
-	public static final int ITEM_HEIGHT = 125;	//height of each item
 	public static final int OFFSET_ANGLE = 15;	//angular offset between items in degrees
 	public static final int OFFSET_DIST = 15;	//distance between rows of items
 	public static final int ITEM_COUNT_MAX = 2 * 360 / OFFSET_ANGLE;	//maximum number of items container may hold
 	
-	private int primaryColour = 255;
-	private int secondaryColour = 1;
-	private int backgroundColour = 0x33000000;
-	
 	private int diameter;
-	private Map<Integer, MoveableItem> items;
-	private int itemCount = 0;
 	
-	public RotatingContainer (RotatingDrawer parent) {
-		super(0, 0, parent.getDiameter(), parent.getDiameter());
-		diameter = parent.getDiameter() - 50;
-		
-		items = new HashMap<Integer, MoveableItem>(ITEM_COUNT_MAX/2);
+	public RotatingContainer (RotatingDrawer parent, int diameter) {
+		super(0, 0, diameter, diameter, parent);
+		this.diameter = diameter - 50;
 	}
 	
 	public boolean addItem(MoveableItem item) {
@@ -80,28 +66,5 @@ public class RotatingContainer extends Zone  {
 	
 	protected void touchImpl() {
 		rotateAboutCentre();
-	}
-	
-	public void setColourScheme(int primary, int secondary) {
-		primaryColour = primary;
-		secondaryColour = secondary;
-	}
-	
-	public void setColourScheme(int primary, int secondary, int background) {
-		primaryColour = primary;
-		secondaryColour = secondary;
-		backgroundColour = background;
-	}
-	
-	public int getPrimaryColour() {
-		return primaryColour;
-	}
-	
-	public int getSecondaryColour() {
-		return secondaryColour;
-	}
-	
-	public int getBackgroundColour() {
-		return backgroundColour;
 	}
 }

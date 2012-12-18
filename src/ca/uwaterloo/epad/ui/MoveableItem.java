@@ -1,12 +1,11 @@
 package ca.uwaterloo.epad.ui;
 
-import ca.uwaterloo.epad.Application;
 import processing.core.PImage;
 import processing.core.PShape;
-import processing.core.PVector;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
+import ca.uwaterloo.epad.Application;
 
 public class MoveableItem extends Zone {
 	// Position parameters
@@ -16,8 +15,8 @@ public class MoveableItem extends Zone {
 	protected int drawerId;
 	
 	// Parent containers
-	protected RotatingContainer container;
-	protected RotatingDrawer drawer;
+	protected Container container;
+	protected Drawer drawer;
 	
 	// Item's image
 	protected PImage itemImage;
@@ -130,10 +129,7 @@ public class MoveableItem extends Zone {
 			rst();
 			
 			//check if item is above a trash can
-			PVector drawerCetre = drawer.getCentre();
-			PVector centre = getCentre();
-			float d = drawerCetre.dist(centre) - drawer.getDiameter()/2;
-			isAboveTrash = d < 0;
+			isAboveTrash = Application.isItemAboveDrawer(this);
 		}
 	}
 	
@@ -190,6 +186,12 @@ public class MoveableItem extends Zone {
 	}
 	
 	protected void doTouchUp(Touch touch) {
+	}
+	
+	/**
+	 * Performs an initialisation step
+	 */
+	public void doInit() {
 	}
 	
 	public void setDrawer(int drawerId, boolean isInDrawer) {

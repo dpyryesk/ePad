@@ -14,14 +14,14 @@ import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
+import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.painting.Paint;
-import ca.uwaterloo.epad.ui.Canvas;
-import ca.uwaterloo.epad.ui.RotatingDrawer;
+import ca.uwaterloo.epad.ui.Drawer;
+import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.ui.SlidingDrawer;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
-import ca.uwaterloo.epad.xml.XmlElement;
 
-@XmlElement(name = "Application")
 public class Application extends PApplet {
 	private static final long serialVersionUID = -1354251777507926593L;
 
@@ -42,10 +42,10 @@ public class Application extends PApplet {
 	// GUI
 	public static Brush currentBrush;
 	public static Paint currentPaint;
-	public static RotatingDrawer leftDrawer;
-	public static RotatingDrawer rightDrawer;
-	public static RotatingDrawer topDrawer;
-	public static RotatingDrawer bottomDrawer;
+	public static Drawer leftDrawer;
+	public static Drawer rightDrawer;
+	public static Drawer topDrawer;
+	public static Drawer bottomDrawer;
 	public static Canvas canvas;
 
 	// XML file paths
@@ -58,15 +58,17 @@ public class Application extends PApplet {
 		frameRate(targetFPS);
 		smooth();
 
-		TouchClient client = new TouchClient(this, TouchSource.MOUSE);
+		TouchClient.init(this, TouchSource.MOUSE);
 		TouchClient.setWarnUnimplemented(false);
 		TouchClient.setDrawTouchPoints(true, 0);
 
-		canvas = new Canvas(100, 100, 800, 600);
+		canvas = new Canvas((width-800)/2, (height-600)/2, 800, 600);
 		TouchClient.add(canvas);
 
 		try {
+			SplashScreen.setMessage("Loading GUI...");
 			SimpleMarshaller.unmarshallGui(this, new File(guiFile));
+			SplashScreen.setMessage("Loading Layout...");
 			SimpleMarshaller.unmarshallLayout(this, new File(defaultLayoutFile));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
@@ -77,15 +79,22 @@ public class Application extends PApplet {
 			bg = this.loadImage(backgroundImage);
 		}
 		
-		TouchClient.putZoneOnTop(leftDrawer);
-		TouchClient.putZoneOnTop(rightDrawer);
-		//TouchClient.putZoneOnTop(topDrawer);
+		addDrawer(SlidingDrawer.makeTopDrawer(this), TOP_DRAWER);
+		
+		// Put drawers on top
+		if (leftDrawer != null)
+			TouchClient.putZoneOnTop(leftDrawer);
+		if (rightDrawer != null)
+			TouchClient.putZoneOnTop(rightDrawer);
+		if (topDrawer != null)
+			TouchClient.putZoneOnTop(topDrawer);
+		if (bottomDrawer != null)
+			TouchClient.putZoneOnTop(bottomDrawer);
+		
+		SplashScreen.remove();
 	}
 
 	public void draw() {
-		if (SplashScreen.isUp())
-			SplashScreen.remove();
-
 		background(backgroundColour);
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			imageMode(CORNER);
@@ -160,7 +169,7 @@ public class Application extends PApplet {
 		return TouchClient.getZones();
 	}
 
-	public void setDrawer(RotatingDrawer drawer, int drawerId) {
+	public static void addDrawer(Drawer drawer, int drawerId) {
 		switch (drawerId) {
 		case TOP_DRAWER:
 			topDrawer = drawer;
@@ -176,5 +185,18 @@ public class Application extends PApplet {
 			break;
 		}
 		TouchClient.add(drawer);
+	}
+	
+	public static boolean isItemAboveDrawer(MoveableItem item) {
+		if (leftDrawer != null && leftDrawer.isItemAbove(item))
+			return true;
+		else if (rightDrawer != null && rightDrawer.isItemAbove(item))
+			return true;
+		else if (topDrawer != null && topDrawer.isItemAbove(item))
+			return true;
+		else if (bottomDrawer != null && bottomDrawer.isItemAbove(item))
+			return true;
+		else
+			return false;
 	}
 }

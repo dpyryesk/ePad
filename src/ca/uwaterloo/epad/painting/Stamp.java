@@ -28,7 +28,7 @@ public class Stamp extends Brush {
 	}
 	
 	private void loadShape() {
-		if (stampShape == null) {
+		if (stampShape == null && stampFile != null) {
 			try {
 				stampShape = applet.loadShape(stampFile);
 				stampWidth = stampShape.getWidth();
@@ -50,6 +50,10 @@ public class Stamp extends Brush {
 				System.out.println("Unable to load stamp: " + stampFile + ". Error: " + e.getMessage());
 			}
 		}
+	}
+	
+	public void doInit() {
+		loadShape();
 	}
 	
 	public void renderStroke(Stroke s, int colour, PGraphics g) {

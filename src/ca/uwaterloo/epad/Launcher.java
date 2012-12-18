@@ -4,7 +4,7 @@ import processing.core.PApplet;
 
 public class Launcher {
 	public static void main(String args[]) {
-		//splash screen
+		// Create a splash screen
 		try {
 			SplashScreen.splash("data\\images\\epadLogo.png");
 			SplashScreen.setMessage("Loading settings...");

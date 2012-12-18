@@ -3,6 +3,7 @@
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
 	    <!-- Brushes -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="data\images\brushes\pencil1.png" size="3"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="data\images\brushes\marker1.png" size="15"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush1.png" diameter="60"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush2.png" diameter="15"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="data\images\brushes\brush3.png" diameter="30"/>

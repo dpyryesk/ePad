@@ -33,7 +33,7 @@ public class Eraser extends Brush {
 			
 			g.beginDraw();
 			g.noStroke();
-			g.fill(Application.canvas.backgroundColour);
+			g.fill(Application.getCanvas().backgroundColour);
 			g.ellipseMode(PConstants.CENTER);
 			g.ellipse(p.x, p.y, size, size);
 			g.endDraw();
@@ -44,7 +44,7 @@ public class Eraser extends Brush {
 			g.beginDraw();
 			g.strokeJoin(PConstants.ROUND);
 			g.strokeCap(PConstants.ROUND);
-			g.stroke(Application.canvas.backgroundColour);
+			g.stroke(Application.getCanvas().backgroundColour);
 			g.strokeWeight(size);
 			g.line(from.x, from.y, to.x, to.y);
 			g.endDraw();

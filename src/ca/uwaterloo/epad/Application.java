@@ -18,7 +18,6 @@ import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.MoveableItem;
-import ca.uwaterloo.epad.ui.SlidingDrawer;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
@@ -31,25 +30,24 @@ public class Application extends PApplet {
 	public static final int BOTTOM_DRAWER = 3;
 
 	// Fields
-	public int width = 1024;
-	public int height = 768;
-	public float targetFPS = 60;
-	@XmlAttribute public int backgroundColour = 0xFFFFFFFF;
-	@XmlAttribute public String backgroundImage = null;
+	public static int width = 1024;
+	public static int height = 768;
+	public static float targetFPS = 60;
+	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
+	@XmlAttribute public static String backgroundImage = null;
 
 	private static PImage bg;
 
-	// GUI
-	public static Brush currentBrush;
-	public static Paint currentPaint;
-	public static Drawer leftDrawer;
-	public static Drawer rightDrawer;
-	public static Drawer topDrawer;
-	public static Drawer bottomDrawer;
-	public static Canvas canvas;
+	// GUI components
+	private static Brush currentBrush;
+	private static Paint currentPaint;
+	private static Drawer leftDrawer;
+	private static Drawer rightDrawer;
+	private static Drawer topDrawer;
+	private static Drawer bottomDrawer;
+	private static Canvas canvas;
 
 	// XML file paths
-	private final static String settingsFile = "data\\settings.xml";
 	private final static String guiFile = "data\\gui.xml";
 	private final static String defaultLayoutFile = "data\\layout.xml";
 
@@ -61,15 +59,15 @@ public class Application extends PApplet {
 		TouchClient.init(this, TouchSource.MOUSE);
 		TouchClient.setWarnUnimplemented(false);
 		TouchClient.setDrawTouchPoints(true, 0);
-
-		canvas = new Canvas((width-800)/2, (height-600)/2, 800, 600);
-		TouchClient.add(canvas);
+		
+		// create default canvas
+		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
 
 		try {
 			SplashScreen.setMessage("Loading GUI...");
 			SimpleMarshaller.unmarshallGui(this, new File(guiFile));
 			SplashScreen.setMessage("Loading Layout...");
-			SimpleMarshaller.unmarshallLayout(this, new File(defaultLayoutFile));
+			SimpleMarshaller.unmarshallLayout(new File(defaultLayoutFile));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 			exit();
@@ -79,7 +77,9 @@ public class Application extends PApplet {
 			bg = this.loadImage(backgroundImage);
 		}
 		
-		addDrawer(SlidingDrawer.makeTopDrawer(this), TOP_DRAWER);
+		if (canvas == null) {
+			
+		}
 		
 		// Put drawers on top
 		if (leftDrawer != null)
@@ -134,7 +134,7 @@ public class Application extends PApplet {
 				System.err.println("Failed to save drawing");
 		} else if (key == 's') {
 			try {
-				SimpleMarshaller.marshallLayout(this, new File(defaultLayoutFile));
+				SimpleMarshaller.marshallLayout(new File(defaultLayoutFile));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -165,26 +165,51 @@ public class Application extends PApplet {
 		return currentBrush;
 	}
 
-	public Zone[] getChildren() {
+	public static Zone[] getChildren() {
 		return TouchClient.getZones();
 	}
 
-	public static void addDrawer(Drawer drawer, int drawerId) {
+	public static void setDrawer(Drawer newDrawer, int drawerId) {
 		switch (drawerId) {
 		case TOP_DRAWER:
-			topDrawer = drawer;
+			if (topDrawer != null) TouchClient.remove(topDrawer);
+			topDrawer = newDrawer;
 			break;
 		case BOTTOM_DRAWER:
-			bottomDrawer = drawer;
+			if (bottomDrawer != null) TouchClient.remove(bottomDrawer);
+			bottomDrawer = newDrawer;
 			break;
 		case LEFT_DRAWER:
-			leftDrawer = drawer;
+			if (leftDrawer != null) TouchClient.remove(leftDrawer);
+			leftDrawer = newDrawer;
 			break;
 		case RIGHT_DRAWER:
-			rightDrawer = drawer;
+			if (rightDrawer != null) TouchClient.remove(rightDrawer);
+			rightDrawer = newDrawer;
 			break;
+		default: return;
 		}
-		TouchClient.add(drawer);
+		TouchClient.add(newDrawer);
+	}
+	
+	public static Drawer getDrawer(int drawerId) {
+		switch(drawerId) {
+		case TOP_DRAWER: return topDrawer;
+		case BOTTOM_DRAWER: return bottomDrawer;
+		case LEFT_DRAWER: return leftDrawer;
+		case RIGHT_DRAWER: return rightDrawer;
+		default: return null;
+		}
+	}
+	
+	public static void setCanvas(Canvas newCanvas) {
+		if (canvas != null) TouchClient.remove(canvas);
+		canvas = newCanvas;
+		TouchClient.add(canvas);
+	}
+	
+	public static Canvas getCanvas() {
+		return canvas;
 	}
 	
 	public static boolean isItemAboveDrawer(MoveableItem item) {
@@ -195,6 +220,19 @@ public class Application extends PApplet {
 		else if (topDrawer != null && topDrawer.isItemAbove(item))
 			return true;
 		else if (bottomDrawer != null && bottomDrawer.isItemAbove(item))
+			return true;
+		else
+			return false;
+	}
+	
+	public static boolean isDrawerOpen() {
+		if (leftDrawer != null && leftDrawer.isOpen())
+			return true;
+		else if (rightDrawer != null && rightDrawer.isOpen())
+			return true;
+		else if (topDrawer != null && topDrawer.isOpen())
+			return true;
+		else if (bottomDrawer != null && bottomDrawer.isOpen())
 			return true;
 		else
 			return false;

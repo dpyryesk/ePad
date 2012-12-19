@@ -26,12 +26,14 @@ import org.w3c.dom.NodeList;
 import processing.core.PMatrix3D;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
 import ca.uwaterloo.epad.ui.SlidingDrawer;
 
 public class SimpleMarshaller {
 	private static final String NODE_ITEM = "MoveableItem";
+	private static final String NODE_CANVAS = "Canvas";
 	private static final String NODE_LAYOUT = "Layout";
 	private static final String NODE_MATRIX = "matrix";
 	private static final String NODE_ROTATING_DRAWER = "RotatingDrawer";
@@ -47,19 +49,21 @@ public class SimpleMarshaller {
 	private static final String ATTR_POSITION = "position";
 	private static final String ATTR_PRIMARY_COLOUR = "primaryColour";
 	private static final String ATTR_SECONDARY_COLOUR = "secondaryColour";
+	private static final String ATTR_BACKGROUND_COLOUR = "backgroundColour";
 	
 	private static final String LEFT = "left";
 	private static final String RIGHT = "right";
 	private static final String TOP = "top";
+	@SuppressWarnings("unused")
 	private static final String BOTTOM = "bottom";
 
-	public static void marshallLayout(Application app, File file) throws IllegalArgumentException, IllegalAccessException, ParserConfigurationException, TransformerException {
+	public static void marshallLayout(File file) throws IllegalArgumentException, IllegalAccessException, ParserConfigurationException, TransformerException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document document = documentBuilder.newDocument();
 
 		Element rootElement = document.createElement(NODE_LAYOUT);
-		for (Zone z : app.getChildren())
+		for (Zone z : Application.getChildren())
 			marshallItemLayout(z, rootElement);
 		document.appendChild(rootElement);
 		
@@ -74,38 +78,53 @@ public class SimpleMarshaller {
 		// ignore zones not on top level and drawers
 		if (z.getParent() != null)
 			return;
-		if (!(z instanceof MoveableItem))
-			return;
-
-		Class<? extends Object> c = z.getClass();
-
-		Element child = root.getOwnerDocument().createElement(NODE_ITEM);
-
-		// save default properties
-		child.setAttribute(ATTR_X, Integer.toString(z.x));
-		child.setAttribute(ATTR_Y, Integer.toString(z.y));
-		child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
-		child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
-		child.setAttribute(ATTR_DRAWER, Integer.toString(((MoveableItem) z).getDrawerId()));
-		child.setAttribute(ATTR_IMAGE, ((MoveableItem) z).getImage());
-		child.setAttribute(ATTR_CLASS, c.getName());
-
-		// save custom fields
-		for (Field f : c.getFields()) {
-			XmlAttribute attr = f.getAnnotation(XmlAttribute.class);
-			if (attr != null) {
-				String name = f.getName();
-				String value = f.get(z).toString();
-				child.setAttribute(name, value);
+		if (z instanceof MoveableItem) {
+			Class<? extends Object> c = z.getClass();
+	
+			Element child = root.getOwnerDocument().createElement(NODE_ITEM);
+	
+			// save default properties
+			child.setAttribute(ATTR_X, Integer.toString(z.x));
+			child.setAttribute(ATTR_Y, Integer.toString(z.y));
+			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
+			child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
+			child.setAttribute(ATTR_DRAWER, Integer.toString(((MoveableItem) z).getDrawerId()));
+			child.setAttribute(ATTR_IMAGE, ((MoveableItem) z).getImage());
+			child.setAttribute(ATTR_CLASS, c.getName());
+	
+			// save custom fields
+			for (Field f : c.getFields()) {
+				XmlAttribute attr = f.getAnnotation(XmlAttribute.class);
+				if (attr != null) {
+					String name = f.getName();
+					String value = f.get(z).toString();
+					child.setAttribute(name, value);
+				}
 			}
+	
+			// save transformation matrix
+			Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
+			saveMatrix(z.getGlobalMatrix(), matrix);
+			child.appendChild(matrix);
+	
+			root.appendChild(child);
+		} else if (z instanceof Canvas) {
+			Element child = root.getOwnerDocument().createElement(NODE_CANVAS);
+			
+			// save default properties
+			child.setAttribute(ATTR_X, Integer.toString(z.x));
+			child.setAttribute(ATTR_Y, Integer.toString(z.y));
+			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
+			child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
+			child.setAttribute(ATTR_BACKGROUND_COLOUR, Integer.toString(((Canvas) z).backgroundColour));
+			
+			// save transformation matrix
+			Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
+			saveMatrix(z.getGlobalMatrix(), matrix);
+			child.appendChild(matrix);
+			
+			root.appendChild(child);
 		}
-
-		// save transformation matrix
-		Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
-		saveMatrix(z.getGlobalMatrix(), matrix);
-		child.appendChild(matrix);
-
-		root.appendChild(child);
 	}
 
 	private static void saveMatrix(PMatrix3D matrix, Element xml) {
@@ -127,7 +146,7 @@ public class SimpleMarshaller {
 		xml.setAttribute("m33", Float.toString(matrix.m33));
 	}
 
-	public static void unmarshallLayout(Application app, File file) throws TransformerException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException,
+	public static void unmarshallLayout(File file) throws TransformerException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		StreamSource source = new StreamSource(file);
@@ -142,13 +161,34 @@ public class SimpleMarshaller {
 		
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
-			if (child.getNodeName().equals(NODE_ITEM))
-				unmarshallItemLayout(app, child);
+			Node childNode = children.item(i);
+			if (childNode.getNodeName().equals(NODE_ITEM))
+				unmarshallItemLayout(childNode);
+			else if (childNode.getNodeName().equals(NODE_CANVAS)) {
+				NamedNodeMap attributeMap = childNode.getAttributes();
+				int x = Integer.parseInt(attributeMap.getNamedItem(ATTR_X).getNodeValue());
+				int y = Integer.parseInt(attributeMap.getNamedItem(ATTR_Y).getNodeValue());
+				int width = Integer.parseInt(attributeMap.getNamedItem(ATTR_WIDTH).getNodeValue());
+				int height = Integer.parseInt(attributeMap.getNamedItem(ATTR_HEIGHT).getNodeValue());
+				int backgroundColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_BACKGROUND_COLOUR).getNodeValue());
+				Canvas canvas = new Canvas(x, y, width, height, backgroundColour);
+				
+				// load transformation matrix
+				PMatrix3D matrix = new PMatrix3D();
+				NodeList children1 = childNode.getChildNodes();
+				for (int j = 0; j < children1.getLength(); j++) {
+					childNode = children1.item(j);
+					if (childNode.getNodeName().equals(NODE_MATRIX))
+						matrix = loadMatrix(childNode);
+				}
+				
+				canvas.setMatrix(matrix);
+				Application.setCanvas(canvas);
+			}
 		}
 	}
 	
-	private static void unmarshallItemLayout(Application app, Node childNode) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+	private static void unmarshallItemLayout(Node childNode) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
 		NamedNodeMap attributeMap = childNode.getAttributes();
 		if (attributeMap == null || attributeMap.getLength() == 0) {
@@ -290,7 +330,7 @@ public class SimpleMarshaller {
 		
 		NamedNodeMap attributeMap = root.getAttributes();
 
-		Class<? extends Object> c = app.getClass();
+		Class<? extends Object> c = Application.class;
 
 		// load fields
 		for (Field f : c.getFields()) {
@@ -323,7 +363,7 @@ public class SimpleMarshaller {
 				throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
-				Application.addDrawer(drawer, drawerId);
+				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);
 			} else if (childNode.getNodeName().equals(NODE_SLIDING_DRAWER)) {
 				SlidingDrawer drawer = null;
@@ -334,11 +374,11 @@ public class SimpleMarshaller {
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
 				switch (pos) {
 				case TOP: drawer = SlidingDrawer.makeTopDrawer(app); drawerId = Application.TOP_DRAWER; break;
-				default: System.err.println("SimpleMarshaller: layout error, only left and right rotating drawers are supported");
+				default: System.err.println("SimpleMarshaller: layout error, only top sliding drawer is supported");
 				throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
-				Application.addDrawer(drawer, drawerId);
+				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);
 			}
 		}

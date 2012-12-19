@@ -3,6 +3,8 @@ package ca.uwaterloo.epad;
 import processing.core.PApplet;
 
 public class Launcher {
+	//private final static String settingsFile = "data\\settings.xml";
+	
 	public static void main(String args[]) {
 		// Create a splash screen
 		try {

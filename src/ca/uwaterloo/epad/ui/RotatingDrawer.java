@@ -10,7 +10,7 @@ public class RotatingDrawer extends Drawer {
 	public static RotatingDrawer makeLeftDrawer(PApplet parent) {
 		RotatingDrawer instance = new RotatingDrawer(-parent.height*2, -parent.height/2, parent.height*2, LEFT);
 		
-		instance.container = new RotatingContainer(instance, instance.diameter);
+		instance.container = new RotatingContainer(instance.diameter, instance);
 		instance.add(instance.container);
 		
 		return instance;
@@ -19,7 +19,7 @@ public class RotatingDrawer extends Drawer {
 	public static RotatingDrawer makeRightDrawer(PApplet parent) {
 		RotatingDrawer instance = new RotatingDrawer(parent.width, -parent.height/2, parent.height*2, RIGHT);
 		
-		instance.container = new RotatingContainer(instance, instance.diameter);
+		instance.container = new RotatingContainer(instance.diameter, instance);
 		instance.add(instance.container);
 		
 		return instance;

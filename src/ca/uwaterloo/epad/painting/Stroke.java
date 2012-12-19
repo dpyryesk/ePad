@@ -20,16 +20,16 @@ public class Stroke {
 		canvas = c;
 		path = new Vector<StrokePoint>();
 		
-		PVector v = canvas.toZoneVector(new PVector(0, 0));
-		getPath().add(new StrokePoint(t, v));
+		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));
+		getPath().add(new StrokePoint(v.x, v.y, 0, 0, t.xSpeed, t.ySpeed, t.motionSpeed, t.motionAcceleration));
 		
 		paint = Application.getPaint();
 		brush = Application.getBrush();
 	}
 	
 	public void update(Touch t) {
-		PVector v = canvas.toZoneVector(new PVector(0, 0));
-		getPath().add(new StrokePoint(t, v));
+		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));
+		getPath().add(new StrokePoint(v.x, v.y, 0, 0, t.xSpeed, t.ySpeed, t.motionSpeed, t.motionAcceleration));
 	}
 	
 	public StrokePoint getLastPoint() {

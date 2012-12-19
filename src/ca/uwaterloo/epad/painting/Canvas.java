@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import ca.uwaterloo.epad.Application;
+
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
@@ -13,7 +15,6 @@ public class Canvas extends Zone {
 	private static final int PAINTING = 0;
 	private static final int MOVING = 1;
 
-	public int state;
 	public int backgroundColour = 255;
 
 	private HashMap<Long, Stroke> strokes;
@@ -21,10 +22,13 @@ public class Canvas extends Zone {
 	private PImage textureImage, overlayImage;
 	private boolean useTexture = false;
 	private boolean useOverlay = true;
+	private int state;
 
-	public Canvas(int x, int y, int width, int height) {
-		super(x, y, width, height);
+	public Canvas(int x, int y, int width, int height, int backgroundColour) {
+		super(0, 0, width, height);
+		translate(x, y);
 		state = PAINTING;
+		this.backgroundColour = backgroundColour;
 		
 		textureImage = applet.loadImage("data\\textures\\eggshell.jpg");
 		overlayImage = applet.loadImage("data\\images\\house.png");
@@ -42,12 +46,15 @@ public class Canvas extends Zone {
 	}
 
 	protected void drawImpl() {
-		if (state == MOVING) {
+		if (Application.isDrawerOpen()) {
 			// Draw border to indicate the moving state
-			stroke(0);
+			stroke(0xFF0099CC);
 			strokeWeight(2);
-			fill(0x88333333);
+			fill(0x33000000);
 			rect(-30, -30, width + 60, height + 60, 30);
+			state = MOVING;
+		} else {
+			state = PAINTING;
 		}
 		
 		if (useTexture) {

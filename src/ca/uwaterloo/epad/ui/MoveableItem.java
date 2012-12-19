@@ -68,8 +68,10 @@ public class MoveableItem extends Zone {
 	protected void drawImpl() {
 		pushMatrix();
 		
+		boolean isDrawerOpen = Application.isDrawerOpen();
+		
 		// Set stroke colour
-		if (drawer.isOpen()) {
+		if (isDrawerOpen) {
 			if (isAboveTrash)
 				stroke(deleteColour);
 			else
@@ -95,7 +97,7 @@ public class MoveableItem extends Zone {
 		popStyle();
 		
 		// Draw the icon
-		if (!isInDrawer && drawer.isOpen()) {
+		if (!isInDrawer && isDrawerOpen) {
 			noStroke();
 			fill(primaryColour);
 			ellipse(0, 0, 30, 30);
@@ -119,13 +121,13 @@ public class MoveableItem extends Zone {
 	protected void pickDrawImpl() {
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
-		if (!isInDrawer && drawer.isOpen()) {
+		if (!isInDrawer && Application.isDrawerOpen()) {
 			ellipse(0, 0, 30, 30);
 		}
 	}
 	
 	protected void touchImpl() {
-		if (!isInDrawer && drawer.isOpen()) {
+		if (!isInDrawer && Application.isDrawerOpen()) {
 			rst();
 			
 			//check if item is above a trash can
@@ -134,7 +136,7 @@ public class MoveableItem extends Zone {
 	}
 	
 	protected void touchDownImpl(Touch touch) {
-		if (drawer.isOpen()) {
+		if (Application.isDrawerOpen()) {
 			if (isInDrawer) {
 				Zone copy = clone(this.getClass());
 				if (copy != null) {
@@ -151,7 +153,7 @@ public class MoveableItem extends Zone {
 	}
 	
 	protected void touchUpImpl(Touch touch) {
-		if (drawer.isOpen() && !isInDrawer && isAboveTrash) {
+		if (Application.isDrawerOpen() && !isInDrawer && isAboveTrash) {
 			TouchClient.remove(this);
 			doTouchUp(touch);
 		}
@@ -198,12 +200,7 @@ public class MoveableItem extends Zone {
 		this.isInDrawer = isInDrawer;
 		this.drawerId = drawerId;
 		
-		switch(drawerId) {
-			case Application.TOP_DRAWER: drawer = Application.topDrawer; break;
-			case Application.BOTTOM_DRAWER: drawer = Application.bottomDrawer; break;
-			case Application.LEFT_DRAWER: drawer = Application.leftDrawer; break;
-			case Application.RIGHT_DRAWER: drawer = Application.rightDrawer; break;
-		}
+		drawer = Application.getDrawer(drawerId);
 		
 		container = drawer.getContainer();
 		setColourScheme(container.getPrimaryColour(), container.getSecondaryColour());

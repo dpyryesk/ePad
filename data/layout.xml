@@ -1,60 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Layout>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="15" drawerId="1" height="125" image="..\data\images\brushes\brush2.png" width="125" x="0" y="0">
-<matrix m00="0.79179966" m01="-0.040805705" m02="0.0" m03="697.6404" m10="0.040805705" m11="0.79179966" m12="0.0" m13="654.8115" m20="0.0" m21="0.0" m22="0.7928502" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="30" drawerId="1" height="125" image="..\data\images\brushes\brush3.png" width="125" x="0" y="0">
-<matrix m00="0.8914456" m01="-0.01760718" m02="0.0" m03="591.19794" m10="0.01760718" m11="0.8914456" m12="0.0" m13="654.3439" m20="0.0" m21="0.0" m22="0.89161944" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="..\data\images\brushes\brush1.png" width="125" x="0" y="0">
-<matrix m00="0.8362929" m01="-0.09232146" m02="0.0" m03="495.56918" m10="0.09232146" m11="0.8362929" m12="0.0" m13="650.19836" m20="0.0" m21="0.0" m22="0.84137344" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.SpiderBrush" drawerId="1" height="125" image="..\data\images\brushes\spider1.png" width="125" x="0" y="0">
-<matrix m00="0.87835777" m01="0.16882971" m02="0.0" m03="841.1922" m10="-0.16882971" m11="0.87835777" m12="0.0" m13="98.94092" m20="0.0" m21="0.0" m22="0.89443576" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="..\data\images\brushes\eraser.png" size="30" width="125" x="0" y="0">
-<matrix m00="1.0373856" m01="0.2311229" m02="0.0" m03="825.448" m10="-0.2311229" m11="1.0373856" m12="0.0" m13="222.53699" m20="0.0" m21="0.0" m22="1.0628202" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-3538902" width="125" x="0" y="0">
-<matrix m00="0.9904959" m01="0.046580914" m02="0.0" m03="355.684" m10="-0.046580914" m11="0.9904959" m12="0.0" m13="647.9877" m20="0.0" m21="0.0" m22="0.99159" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-14068081" width="125" x="0" y="0">
-<matrix m00="0.9982705" m01="0.024943193" m02="0.0" m03="233.06618" m10="-0.024943193" m11="0.9982705" m12="0.0" m13="645.98785" m20="0.0" m21="0.0" m22="0.99858165" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-5722700" width="125" x="0" y="0">
-<matrix m00="1.0810884" m01="0.0552002" m02="0.0" m03="107.606155" m10="-0.0552002" m11="1.0810884" m12="0.0" m13="635.84595" m20="0.0" m21="0.0" m22="1.0824966" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15553238" width="125" x="0" y="0">
-<matrix m00="1.0318623" m01="0.02309064" m02="0.0" m03="0.79107666" m10="-0.02309064" m11="1.0318623" m12="0.0" m13="635.9256" m20="0.0" m21="0.0" m22="1.0321205" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1748224" width="125" x="0" y="0">
-<matrix m00="0.10659772" m01="-0.99430215" m02="0.0" m03="128.82898" m10="0.99430215" m11="0.10659772" m12="0.0" m13="491.63092" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-32506" width="125" x="0" y="0">
-<matrix m00="0.45607707" m01="-0.8899401" m02="0.0" m03="97.091675" m10="0.8899401" m11="0.45607707" m12="0.0" m13="377.84045" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-11495" width="125" x="0" y="0">
-<matrix m00="-0.30678758" m01="-0.9517779" m02="0.0" m03="149.1012" m10="0.9517779" m11="-0.30678758" m12="0.0" m13="335.99902" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-192" width="125" x="0" y="0">
-<matrix m00="0.024929792" m01="-0.9996892" m02="0.0" m03="135.64258" m10="0.9996892" m11="0.024929792" m12="0.0" m13="208.05292" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<Canvas backgroundColour="255" height="600" width="800" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="112.0" m10="0.0" m11="1.0" m12="0.0" m13="84.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</Canvas>
+<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="data\images\brushes\marker1.png" size="15" width="125" x="0" y="0">
+<matrix m00="1.1524824" m01="0.029799618" m02="0.0" m03="781.98975" m10="-0.029799618" m11="1.1524824" m12="0.0" m13="622.8419" m20="0.0" m21="0.0" m22="1.1528677" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="data\images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
-<matrix m00="-4.371139E-8" m01="1.0" m02="0.0" m03="797.0" m10="-1.0" m11="-4.371139E-8" m12="0.0" m13="768.99994" m20="0.0" m21="0.0" m22="0.99999994" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<matrix m00="1.0624847" m01="-0.076047525" m02="0.0" m03="664.66077" m10="0.076047525" m11="1.0624847" m12="0.0" m13="623.46356" m20="0.0" m21="0.0" m22="1.0652025" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\finch.png" stampFile="data\vector\finch.svg" width="125" x="0" y="0">
-<matrix m00="0.7610727" m01="0.052051716" m02="0.0" m03="737.3114" m10="-0.052051716" m11="0.7610727" m12="0.0" m13="13.66481" m20="0.0" m21="0.0" m22="0.76285154" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="data\images\brushes\brush1.png" width="125" x="0" y="0">
+<matrix m00="1.0896602" m01="-0.0102441665" m02="0.0" m03="531.6035" m10="0.0102441665" m11="1.0896602" m12="0.0" m13="621.7287" m20="0.0" m21="0.0" m22="1.0897084" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\snowflakes.png" stampFile="data\vector\snowflakes.svg" width="125" x="0" y="0">
-<matrix m00="0.8154289" m01="-0.037511613" m02="0.0" m03="634.62384" m10="0.037511613" m11="0.8154289" m12="0.0" m13="4.918766" m20="0.0" m21="0.0" m22="0.81629163" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="data\images\brushes\eraser.png" size="30" width="125" x="0" y="0">
+<matrix m00="1.0557358" m01="-0.068767086" m02="0.0" m03="879.5558" m10="0.068767086" m11="1.0557358" m12="0.0" m13="53.937397" m20="0.0" m21="0.0" m22="1.0579711" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\fish.png" stampFile="data\vector\fish.svg" width="125" x="0" y="0">
-<matrix m00="0.78119886" m01="0.061682895" m02="0.0" m03="524.9642" m10="-0.061682895" m11="0.78119886" m12="0.0" m13="12.021912" m20="0.0" m21="0.0" m22="0.7836303" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\cat.png" stampFile="data\vector\cat.svg" width="125" x="0" y="0">
+<matrix m00="0.71501315" m01="0.0053126663" m02="0.0" m03="756.98694" m10="-0.0053126663" m11="0.71501315" m12="0.0" m13="19.871994" m20="0.0" m21="0.0" m22="0.71503276" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\seahorse.png" stampFile="data\vector\seahorse.svg" width="125" x="0" y="0">
-<matrix m00="0.7446864" m01="0.034515493" m02="0.0" m03="428.99268" m10="-0.034515493" m11="0.7446864" m12="0.0" m13="16.744457" m20="0.0" m21="0.0" m22="0.7454851" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\crow.png" stampFile="data\vector\crow.svg" width="125" x="0" y="0">
+<matrix m00="0.7088503" m01="0.0084991995" m02="0.0" m03="658.97815" m10="-0.0084991995" m11="0.7088503" m12="0.0" m13="20.20691" m20="0.0" m21="0.0" m22="0.70890033" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="data\images\brushes\marker1.png" size="15" width="125" x="0" y="0">
-<matrix m00="0.98387873" m01="0.006687076" m02="0.0" m03="839.17224" m10="-0.006687076" m11="0.98387873" m12="0.0" m13="521.1789" m20="0.0" m21="0.0" m22="0.9839018" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-3538902" width="125" x="0" y="0">
+<matrix m00="0.6189804" m01="-0.0028328449" m02="0.0" m03="44.10907" m10="0.0028328449" m11="0.6189804" m12="0.0" m13="638.91943" m20="0.0" m21="0.0" m22="0.61898667" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1748224" width="125" x="0" y="0">
+<matrix m00="0.657693" m01="-0.02728635" m02="0.0" m03="88.65698" m10="0.02728635" m11="0.657693" m12="0.0" m13="674.9882" m20="0.0" m21="0.0" m22="0.6582589" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-11495" width="125" x="0" y="0">
+<matrix m00="0.61876565" m01="0.010021941" m02="0.0" m03="108.08249" m10="-0.010021941" m11="0.61876565" m12="0.0" m13="626.0002" m20="0.0" m21="0.0" m22="0.61884695" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15553238" width="125" x="0" y="0">
+<matrix m00="0.660524" m01="-0.03774449" m02="0.0" m03="157.62746" m10="0.03774449" m11="0.660524" m12="0.0" m13="673.2073" m20="0.0" m21="0.0" m22="0.6616015" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-14068081" width="125" x="0" y="0">
+<matrix m00="0.6224313" m01="-0.0081311995" m02="0.0" m03="180.86526" m10="0.0081311995" m11="0.6224313" m12="0.0" m13="627.2044" m20="0.0" m21="0.0" m22="0.62248415" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15918463" width="125" x="0" y="0">
+<matrix m00="0.5789407" m01="-0.043399397" m02="0.0" m03="229.43636" m10="0.043399397" m11="0.5789407" m12="0.0" m13="680.2008" m20="0.0" m21="0.0" m22="0.58056456" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-9427005" width="125" x="0" y="0">
+<matrix m00="0.5806441" m01="-0.0064562513" m02="0.0" m03="247.20273" m10="0.0064562513" m11="0.5806441" m12="0.0" m13="625.0117" m20="0.0" m21="0.0" m22="0.5806795" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-14603984" width="125" x="0" y="0">
+<matrix m00="0.62428886" m01="0.0354852" m02="0.0" m03="292.1888" m10="-0.0354852" m11="0.62428886" m12="0.0" m13="677.63556" m20="0.0" m21="0.0" m22="0.6252958" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1" width="125" x="0" y="0">
+<matrix m00="0.5606682" m01="0.013598258" m02="0.0" m03="312.17828" m10="-0.013598258" m11="0.5606682" m12="0.0" m13="624.27264" m20="0.0" m21="0.0" m22="0.5608325" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="15" drawerId="1" height="125" image="data\images\brushes\brush2.png" width="125" x="0" y="0">
+<matrix m00="1.0617342" m01="-0.06786683" m02="0.0" m03="405.44025" m10="0.06786683" m11="1.0617342" m12="0.0" m13="618.71344" m20="0.0" m21="0.0" m22="1.0639012" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 </Layout>

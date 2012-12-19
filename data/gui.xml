@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Application backgroundColour="#FFFFFF" backgroundImage="data\textures\background_1024x768.png" height="768" targetFPS="60.0" width="1024">
+    <SlidingDrawer position="top" primaryColour="#33B5E5" secondaryColour="#0099CC">
+    </SlidingDrawer>
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
 	    <!-- Brushes -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="data\images\brushes\pencil1.png" size="3"/>

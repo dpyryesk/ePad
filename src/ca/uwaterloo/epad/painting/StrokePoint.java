@@ -1,42 +1,18 @@
 package ca.uwaterloo.epad.painting;
 
-import processing.core.PVector;
-import vialab.SMT.Touch;
 
 public class StrokePoint {
 	public float x, y, width, height, xSpeed, ySpeed, motionSpeed, motionAcceleration;
 	
-	public StrokePoint(float x, float y, float width, float height) {
+	public StrokePoint(float x, float y, float width, float height, float xSpeed, float ySpeed, float motionSpeed, float motionAcceleration) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		xSpeed = 0;
-		ySpeed = 0;
-		motionSpeed = 0;
-		motionAcceleration = 0;
-	}
-	
-	public StrokePoint(StrokePoint p) {
-		x = p.x;
-		y = p.y;
-		width = p.width;
-		height = p.height;
-		xSpeed = p.xSpeed;
-		ySpeed = p.ySpeed;
-		motionSpeed = p.motionSpeed;
-		motionAcceleration = p.motionAcceleration;
-	}
-	
-	public StrokePoint(Touch t, PVector offseVector) {
-		x = t.x + offseVector.x;
-		y = t.y + offseVector.y;
-		width = 1;
-		height = 1;
-		xSpeed = t.xSpeed;
-		ySpeed = t.ySpeed;
-		motionSpeed = t.motionSpeed;
-		motionAcceleration = t.motionAcceleration;
+		this.xSpeed = xSpeed;
+		this.ySpeed = ySpeed;
+		this.motionSpeed = motionSpeed;
+		this.motionAcceleration = motionAcceleration;
 	}
 	
 	public float dist(StrokePoint p) {

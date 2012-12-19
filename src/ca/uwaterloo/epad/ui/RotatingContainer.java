@@ -9,7 +9,7 @@ public class RotatingContainer extends Container  {
 	
 	private int diameter;
 	
-	public RotatingContainer (RotatingDrawer parent, int diameter) {
+	public RotatingContainer (int diameter, Drawer parent) {
 		super(0, 0, diameter, diameter, parent);
 		this.diameter = diameter - 50;
 	}

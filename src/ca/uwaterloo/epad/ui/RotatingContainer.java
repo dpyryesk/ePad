@@ -1,5 +1,7 @@
 package ca.uwaterloo.epad.ui;
 
+import vialab.SMT.Zone;
+
 
 public class RotatingContainer extends Container  {
 	// Layout parameters
@@ -14,7 +16,7 @@ public class RotatingContainer extends Container  {
 		this.diameter = diameter - 50;
 	}
 	
-	public boolean addItem(MoveableItem item) {
+	public boolean addItem(Zone item) {
 		if (itemCount >= ITEM_COUNT_MAX)
 			return false;
 		

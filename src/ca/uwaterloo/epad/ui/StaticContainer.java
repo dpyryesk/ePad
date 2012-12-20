@@ -1,5 +1,7 @@
 package ca.uwaterloo.epad.ui;
 
+import vialab.SMT.Zone;
+
 public class StaticContainer extends Container {
 	
 	public StaticContainer (int width, int height, Drawer parent) {
@@ -7,7 +9,7 @@ public class StaticContainer extends Container {
 	}
 
 	@Override
-	public boolean addItem(MoveableItem item) {
+	public boolean addItem(Zone item) {
 		add(item);
 		
 		items.put(new Integer(itemCount), item);
@@ -25,7 +27,7 @@ public class StaticContainer extends Container {
 			fill(backgroundColour);
 			rect(0, 0, width, height - 30);
 			fill(primaryColour);
-			rect(0, 0, width, 30);
+			rect(0, 0, width, 10);
 		}
 	}
 

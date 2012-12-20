@@ -2,6 +2,7 @@ package ca.uwaterloo.epad.ui;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import vialab.SMT.Zone;
 
 public class RotatingDrawer extends Drawer {
 	private int diameter;
@@ -100,7 +101,7 @@ public class RotatingDrawer extends Drawer {
 		}
 	}
 	
-	public boolean isItemAbove(MoveableItem item) {
+	public boolean isItemAbove(Zone item) {
 		PVector drawerCetre = getCentre();
 		PVector itemCentre = item.getCentre();
 		float d = drawerCetre.dist(itemCentre) - diameter/2;

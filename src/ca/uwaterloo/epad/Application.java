@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.xml.transform.TransformerException;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.TouchClient;
@@ -16,6 +17,7 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
 import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.painting.Paint;
+import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
@@ -46,6 +48,7 @@ public class Application extends PApplet {
 	private static Drawer topDrawer;
 	private static Drawer bottomDrawer;
 	private static Canvas canvas;
+	private static PFont font;
 
 	// XML file paths
 	private final static String guiFile = "data\\gui.xml";
@@ -55,6 +58,8 @@ public class Application extends PApplet {
 		size(width, height, P3D);
 		frameRate(targetFPS);
 		smooth();
+		
+		font = createDefaultFont(20);
 
 		TouchClient.init(this, TouchSource.MOUSE);
 		TouchClient.setWarnUnimplemented(false);
@@ -77,17 +82,64 @@ public class Application extends PApplet {
 			bg = this.loadImage(backgroundImage);
 		}
 		
-		if (canvas == null) {
-			
-		}
-		
 		// Put drawers on top
 		if (leftDrawer != null)
 			TouchClient.putZoneOnTop(leftDrawer);
 		if (rightDrawer != null)
 			TouchClient.putZoneOnTop(rightDrawer);
-		if (topDrawer != null)
+		if (topDrawer != null) {
 			TouchClient.putZoneOnTop(topDrawer);
+			
+			// create control buttons
+			int w = 180;
+			int h = 70;
+			int x = 20;
+			int y = topDrawer.getContainer().height - h - 60;
+			
+			Button b = new Button(x, y, w, h, "Save Layout", 20, font);
+			b.setPressMethodByName("saveLayout", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x += w + 20;
+			
+			b = new Button(x, y, w, h, "Save Painting", 20, font);
+			b.setPressMethodByName("saveDrawing", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x += w + 20;
+			
+			b = new Button(x, y, w, h, "Clear Painting", 20, font);
+			b.setPressMethodByName("clearCanvas", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x += w + 20;
+			
+			b = new Button(x, y, w, h, "Load Painting", 20, font);
+			b.setPressMethodByName("loadDrawing", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x += w + 20;
+			
+			b = new Button(x, y, w, h, "Colouring", 20, font);
+			b.setPressMethodByName("toggleOverlay", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x = 20;
+			y -= h + 20;
+			
+			b = new Button(x, y, w, h, "Print", 20, font);
+			b.setPressMethodByName("print", this);
+			topDrawer.getContainer().addItem(b);
+			
+			x += w + 20;
+			x += w + 20;
+			x += w + 20;
+			x += w + 20;
+			
+			b = new Button(x, y, w, h, "Exit", 20, font);
+			b.setPressMethodByName("exit", this);
+			topDrawer.getContainer().addItem(b);
+		}
 		if (bottomDrawer != null)
 			TouchClient.putZoneOnTop(bottomDrawer);
 		
@@ -104,40 +156,9 @@ public class Application extends PApplet {
 		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
 	}
 
-	public final void keyPressed() {
-		if (key == '`') {
-			Date now = new Date();
-			SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
-
-			String filename = "data\\screenshot_" + sdt.format(now) + ".png";
-
-			PGraphics pg;
-			pg = createGraphics(width, height, P3D);
-			pg.beginDraw();
-			draw();
-			TouchClient.draw();
-			pg.endDraw();
-			
-			if (pg.save(filename))
-				System.out.println("Screenshot saved: " + filename);
-			else
-				System.err.println("Failed to save screenshot");
-		} else if (key == ' ') {
-			Date now = new Date();
-			SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
-
-			String filename = "data\\drawing_" + sdt.format(now) + ".png";
-
-			if (canvas.getDrawing().save(filename))
-				System.out.println("Drawing saved: " + filename);
-			else
-				System.err.println("Failed to save drawing");
-		} else if (key == 's') {
-			try {
-				SimpleMarshaller.marshallLayout(new File(defaultLayoutFile));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public void keyPressed() {
+		if (key == ' ') {
+			takeScreenshot();
 		}
 	}
 
@@ -236,5 +257,72 @@ public class Application extends PApplet {
 			return true;
 		else
 			return false;
+	}
+	
+	public void saveLayout() {
+		try {
+			SimpleMarshaller.marshallLayout(new File(defaultLayoutFile));
+			System.out.println("Layout saved: " + defaultLayoutFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void takeScreenshot() {
+		Date now = new Date();
+		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
+
+		String filename = "data\\screenshot_" + sdt.format(now) + ".png";
+
+		PGraphics pg;
+		pg = createGraphics(width, height, P3D);
+		pg.beginDraw();
+		draw();
+		TouchClient.draw();
+		pg.endDraw();
+		
+		if (pg.save(filename))
+			System.out.println("Screenshot saved: " + filename);
+		else
+			System.err.println("Failed to save screenshot");
+	}
+	
+	public void saveDrawing() {
+		Date now = new Date();
+		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
+
+		String filename = "data\\drawing_" + sdt.format(now) + ".png";
+
+		boolean toggleOverlay = canvas.useOverlay;
+		if (toggleOverlay)
+			canvas.toggleOverlay();
+		
+		if (canvas.getDrawing().save(filename))
+			System.out.println("Drawing saved: " + filename);
+		else
+			System.err.println("Failed to save drawing");
+		
+		if (toggleOverlay)
+			canvas.toggleOverlay();
+	}
+	
+	public void clearCanvas() {
+		canvas.clear();
+	}
+	
+	public void loadDrawing() {
+		canvas.clearAndLoad("data\\drawing_2012.12.19-22.23.48.466.png");
+	}
+	
+	public void toggleOverlay() {
+		canvas.toggleOverlay();
+	}
+	
+	public void print() {
+		DrawingPrinter.printDrawing(canvas.getDrawing());
+	}
+	
+	public void exit() {
+		super.exit();
 	}
 }

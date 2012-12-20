@@ -13,17 +13,17 @@ public abstract class Container extends Zone {
 	protected int secondaryColour = 1;
 	protected int backgroundColour = 0x33000000;
 	
-	protected Map<Integer, MoveableItem> items;
+	protected Map<Integer, Zone> items;
 	protected int itemCount = 0;
 	protected Drawer parent;
 	
 	public Container(int x, int y, int width, int height, Drawer parent) {
 		super(x, y, width, height);
 		this.parent = parent;
-		items = new HashMap<Integer, MoveableItem>();
+		items = new HashMap<Integer, Zone>();
 	}
 	
-	abstract public boolean addItem(MoveableItem item);
+	abstract public boolean addItem(Zone item);
 	
 	abstract protected void drawImpl();
 	

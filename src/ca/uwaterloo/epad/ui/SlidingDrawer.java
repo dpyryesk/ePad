@@ -2,6 +2,7 @@ package ca.uwaterloo.epad.ui;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import vialab.SMT.Zone;
 
 public class SlidingDrawer extends Drawer {
 	public static SlidingDrawer makeTopDrawer(PApplet parent) {
@@ -75,7 +76,7 @@ public class SlidingDrawer extends Drawer {
 		}
 	}
 	
-	public boolean isItemAbove(MoveableItem item) {
+	public boolean isItemAbove(Zone item) {
 		PVector drawerCentre = getCentre();
 		PVector itemCentre = item.getCentre();
 		float d = 0;

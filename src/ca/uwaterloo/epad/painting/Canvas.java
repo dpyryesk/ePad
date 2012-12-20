@@ -19,9 +19,8 @@ public class Canvas extends Zone {
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
-	private PImage textureImage, overlayImage;
-	private boolean useTexture = false;
-	private boolean useOverlay = true;
+	private PImage overlayImage;
+	public boolean useOverlay = true;
 	private int state;
 
 	public Canvas(int x, int y, int width, int height, int backgroundColour) {
@@ -29,20 +28,11 @@ public class Canvas extends Zone {
 		translate(x, y);
 		state = PAINTING;
 		this.backgroundColour = backgroundColour;
-		
-		textureImage = applet.loadImage("data\\textures\\eggshell.jpg");
+
 		overlayImage = applet.loadImage("data\\images\\house.png");
 
 		drawing = applet.createGraphics(width, height, P2D);
-
-		drawing.beginDraw();
-		drawing.background(0, 0);
-		drawing.noStroke();
-		drawing.fill(backgroundColour);
-		drawing.rect(0, 0, width, height);
-		drawing.endDraw();
-
-		strokes = new HashMap<Long, Stroke>();
+		clear();
 	}
 
 	protected void drawImpl() {
@@ -57,21 +47,9 @@ public class Canvas extends Zone {
 			state = PAINTING;
 		}
 		
-		if (useTexture) {
-			beginShape();
-			textureMode(IMAGE);
-			texture(textureImage);
-			noStroke();
-			vertex(0, 0, 0, 0);
-			vertex(0, height, 0, height);
-			vertex(width, height, width, height);
-			vertex(width, 0, width, 0);
-			endShape();
-		} else {
-			noStroke();
-			fill(backgroundColour);
-			rect(0, 0, width, height);
-		}
+		noStroke();
+		fill(backgroundColour);
+		rect(0, 0, width, height);
 
 		image(drawing, 0, 0, width, height);
 		
@@ -128,5 +106,38 @@ public class Canvas extends Zone {
 		result.endDraw();
 		
 		return result.get();
+	}
+	
+	public void clear() {
+		drawing.beginDraw();
+		drawing.noStroke();
+		drawing.fill(backgroundColour);
+		drawing.rect(0, 0, width, height);
+		drawing.endDraw();
+		
+		if (strokes == null)
+			strokes = new HashMap<Long, Stroke>();
+		else
+			strokes.clear();
+	}
+	
+	public void clearAndLoad(String filename) {
+		PImage underlayImage = applet.loadImage(filename);
+		
+		drawing.beginDraw();
+		drawing.noStroke();
+		drawing.fill(backgroundColour);
+		drawing.rect(0, 0, width, height);
+		drawing.image(underlayImage, 0, 0, width, height);
+		drawing.endDraw();
+		
+		if (strokes == null)
+			strokes = new HashMap<Long, Stroke>();
+		else
+			strokes.clear();
+	}
+	
+	public void toggleOverlay() {
+		useOverlay = !useOverlay;
 	}
 }

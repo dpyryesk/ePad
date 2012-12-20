@@ -36,7 +36,7 @@ public abstract class Drawer extends Zone {
 	
 	abstract public boolean isOpen();
 	
-	abstract public boolean isItemAbove(MoveableItem item);
+	abstract public boolean isItemAbove(Zone item);
 	
 	public int getPosition() {
 		return position;

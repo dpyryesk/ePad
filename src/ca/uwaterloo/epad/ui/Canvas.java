@@ -1,4 +1,4 @@
-package ca.uwaterloo.epad.painting;
+package ca.uwaterloo.epad.ui;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.Settings;
+import ca.uwaterloo.epad.painting.Stroke;
 
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -67,6 +68,8 @@ public class Canvas extends Zone {
 			rst();
 		else
 			addStroke();
+		
+		Application.setActionPerformed();
 	}
 
 	protected void addStroke() {

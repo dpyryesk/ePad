@@ -20,7 +20,7 @@ import ca.uwaterloo.epad.xml.XmlAttribute;
 public class Settings {
 	private final static String settingsFile = "data\\settings.xml";
 	
-	@XmlAttribute public static Locale locale = new Locale("fr");
+	@XmlAttribute public static Locale locale = new Locale("en");
 	
 	@XmlAttribute public static int width = 1024;
 	@XmlAttribute public static int height = 768;

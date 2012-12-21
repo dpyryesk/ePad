@@ -3,6 +3,8 @@ package ca.uwaterloo.epad.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import ca.uwaterloo.epad.Application;
+
 import processing.core.PFont;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
@@ -30,6 +32,7 @@ public class Button extends Zone {
 	}
 	
 	public void touchImpl() {
+		Application.setActionPerformed();
 	}
 	
 	public void touchUp(Touch touch) {

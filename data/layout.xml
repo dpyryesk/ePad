@@ -1,54 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Layout>
 <Canvas backgroundColour="255" height="600" width="800" x="0" y="0">
-<matrix m00="1.0" m01="0.0" m02="0.0" m03="112.0" m10="0.0" m11="1.0" m12="0.0" m13="84.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<matrix m00="1.0282347" m01="0.011278527" m02="0.0" m03="131.2956" m10="-0.011278527" m11="1.0282347" m12="0.0" m13="57.609756" m20="0.0" m21="0.0" m22="1.0282978" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </Canvas>
-<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\marker1.png" size="15" width="125" x="0" y="0">
-<matrix m00="1.1524824" m01="0.029799618" m02="0.0" m03="781.98975" m10="-0.029799618" m11="1.1524824" m12="0.0" m13="622.8419" m20="0.0" m21="0.0" m22="1.1528677" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
-<matrix m00="1.0624847" m01="-0.076047525" m02="0.0" m03="664.66077" m10="0.076047525" m11="1.0624847" m12="0.0" m13="623.46356" m20="0.0" m21="0.0" m22="1.0652025" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="images\brushes\brush1.png" width="125" x="0" y="0">
-<matrix m00="1.0896602" m01="-0.0102441665" m02="0.0" m03="531.6035" m10="0.0102441665" m11="1.0896602" m12="0.0" m13="621.7287" m20="0.0" m21="0.0" m22="1.0897084" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="images\brushes\eraser.png" size="30" width="125" x="0" y="0">
-<matrix m00="1.0557358" m01="-0.068767086" m02="0.0" m03="879.5558" m10="0.068767086" m11="1.0557358" m12="0.0" m13="53.937397" m20="0.0" m21="0.0" m22="1.0579711" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="images\stamps\cat.png" stampFile="vector\cat.svg" width="125" x="0" y="0">
-<matrix m00="0.71501315" m01="0.0053126663" m02="0.0" m03="756.98694" m10="-0.0053126663" m11="0.71501315" m12="0.0" m13="19.871994" m20="0.0" m21="0.0" m22="0.71503276" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="images\stamps\crow.png" stampFile="vector\crow.svg" width="125" x="0" y="0">
-<matrix m00="0.7088503" m01="0.0084991995" m02="0.0" m03="658.97815" m10="-0.0084991995" m11="0.7088503" m12="0.0" m13="20.20691" m20="0.0" m21="0.0" m22="0.70890033" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-3538902" width="125" x="0" y="0">
-<matrix m00="0.6189804" m01="-0.0028328449" m02="0.0" m03="44.10907" m10="0.0028328449" m11="0.6189804" m12="0.0" m13="638.91943" m20="0.0" m21="0.0" m22="0.61898667" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1748224" width="125" x="0" y="0">
-<matrix m00="0.657693" m01="-0.02728635" m02="0.0" m03="88.65698" m10="0.02728635" m11="0.657693" m12="0.0" m13="674.9882" m20="0.0" m21="0.0" m22="0.6582589" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-11495" width="125" x="0" y="0">
-<matrix m00="0.61876565" m01="0.010021941" m02="0.0" m03="108.08249" m10="-0.010021941" m11="0.61876565" m12="0.0" m13="626.0002" m20="0.0" m21="0.0" m22="0.61884695" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<matrix m00="1.094126" m01="0.013200073" m02="0.0" m03="75.37463" m10="-0.013200073" m11="1.094126" m12="0.0" m13="616.7067" m20="0.0" m21="0.0" m22="1.0942048" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15553238" width="125" x="0" y="0">
-<matrix m00="0.660524" m01="-0.03774449" m02="0.0" m03="157.62746" m10="0.03774449" m11="0.660524" m12="0.0" m13="673.2073" m20="0.0" m21="0.0" m22="0.6616015" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-14068081" width="125" x="0" y="0">
-<matrix m00="0.6224313" m01="-0.0081311995" m02="0.0" m03="180.86526" m10="0.0081311995" m11="0.6224313" m12="0.0" m13="627.2044" m20="0.0" m21="0.0" m22="0.62248415" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<matrix m00="1.1575555" m01="-0.0485636" m02="0.0" m03="216.14954" m10="0.0485636" m11="1.1575555" m12="0.0" m13="610.414" m20="0.0" m21="0.0" m22="1.1585737" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15918463" width="125" x="0" y="0">
-<matrix m00="0.5789407" m01="-0.043399397" m02="0.0" m03="229.43636" m10="0.043399397" m11="0.5789407" m12="0.0" m13="680.2008" m20="0.0" m21="0.0" m22="0.58056456" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<matrix m00="1.1587515" m01="0.027377874" m02="0.0" m03="355.3045" m10="-0.027377874" m11="1.1587515" m12="0.0" m13="613.15674" m20="0.0" m21="0.0" m22="1.1590736" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-9427005" width="125" x="0" y="0">
-<matrix m00="0.5806441" m01="-0.0064562513" m02="0.0" m03="247.20273" m10="0.0064562513" m11="0.5806441" m12="0.0" m13="625.0117" m20="0.0" m21="0.0" m22="0.5806795" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
+<matrix m00="1.092849" m01="-0.024824476" m02="0.0" m03="683.97546" m10="0.024824476" m11="1.092849" m12="0.0" m13="612.517" m20="0.0" m21="0.0" m22="1.0931307" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-14603984" width="125" x="0" y="0">
-<matrix m00="0.62428886" m01="0.0354852" m02="0.0" m03="292.1888" m10="-0.0354852" m11="0.62428886" m12="0.0" m13="677.63556" m20="0.0" m21="0.0" m22="0.6252958" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="images\brushes\eraser.png" size="30" width="125" x="0" y="0">
+<matrix m00="1.1593273" m01="-0.028309805" m02="0.0" m03="823.1298" m10="0.028309805" m11="1.1593273" m12="0.0" m13="607.12933" m20="0.0" m21="0.0" m22="1.159671" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1" width="125" x="0" y="0">
-<matrix m00="0.5606682" m01="0.013598258" m02="0.0" m03="312.17828" m10="-0.013598258" m11="0.5606682" m12="0.0" m13="624.27264" m20="0.0" m21="0.0" m22="0.5608325" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
-</MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="15" drawerId="1" height="125" image="images\brushes\brush2.png" width="125" x="0" y="0">
-<matrix m00="1.0617342" m01="-0.06786683" m02="0.0" m03="405.44025" m10="0.06786683" m11="1.0617342" m12="0.0" m13="618.71344" m20="0.0" m21="0.0" m22="1.0639012" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="images\brushes\brush1.png" width="125" x="0" y="0">
+<matrix m00="1.0701834" m01="2.8088689E-5" m02="0.0" m03="546.44244" m10="-2.8088689E-5" m11="1.0701834" m12="0.0" m13="609.03925" m20="0.0" m21="0.0" m22="1.0701834" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 </Layout>

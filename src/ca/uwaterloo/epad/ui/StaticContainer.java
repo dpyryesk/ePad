@@ -1,5 +1,6 @@
 package ca.uwaterloo.epad.ui;
 
+import ca.uwaterloo.epad.Application;
 import vialab.SMT.Zone;
 
 public class StaticContainer extends Container {
@@ -39,7 +40,8 @@ public class StaticContainer extends Container {
 
 	@Override
 	protected void touchImpl() {
-		
+		Application.setActionPerformed();
+		parent.setActionPerformed();
 	}
 
 }

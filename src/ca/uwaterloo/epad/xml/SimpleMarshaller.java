@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 import processing.core.PMatrix3D;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
-import ca.uwaterloo.epad.painting.Canvas;
+import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
 import ca.uwaterloo.epad.ui.SlidingDrawer;

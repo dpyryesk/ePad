@@ -16,9 +16,9 @@ import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
-import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.ui.Button;
+import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.MoveableItem;
@@ -37,8 +37,6 @@ public class Application extends PApplet {
 	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
 	@XmlAttribute public static String backgroundImage = null;
 
-	private static PImage bg;
-
 	// GUI components
 	private static Brush currentBrush;
 	private static Paint currentPaint;
@@ -48,10 +46,12 @@ public class Application extends PApplet {
 	private static Drawer bottomDrawer;
 	private static Canvas canvas;
 	
-	
+	// Misc variables
 	private static PFont font;
 	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
-
+	private static PImage bg;
+	private static long lastActionTime;
+	
 	// XML file paths
 	private final static String guiFile = "gui.xml";
 	private final static String defaultLayoutFile = "layout.xml";
@@ -97,6 +97,7 @@ public class Application extends PApplet {
 			TouchClient.putZoneOnTop(bottomDrawer);
 		
 		SplashScreen.remove();
+		setActionPerformed();
 	}
 
 	public void draw() {
@@ -106,7 +107,7 @@ public class Application extends PApplet {
 			image(bg, 0, 0, displayWidth, displayHeight);
 		}
 		
-		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
+		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 900, 10);
 	}
 	
 	private void makeControlPanel(Container c) {
@@ -263,6 +264,14 @@ public class Application extends PApplet {
 			return false;
 	}
 	
+	public static void setActionPerformed() {
+		lastActionTime = new Date().getTime();
+	}
+	
+	public static long getInactiveTime() {
+		return new Date().getTime() - lastActionTime;
+	}
+	
 	public void saveLayout() {
 		try {
 			String filename = Settings.dataFolder + defaultLayoutFile;
@@ -324,10 +333,7 @@ public class Application extends PApplet {
 	}
 	
 	public void print() {
-		if (Settings.showPrintDialog)
-			DrawingPrinter.printDrawing(canvas.getDrawing());
-		else
-			DrawingPrinter.printDrawingWithoutDialog(canvas.getDrawing());
+		new DrawingPrinter(canvas.getDrawing(), Settings.showPrintDialog).run();
 	}
 	
 	public void exit() {

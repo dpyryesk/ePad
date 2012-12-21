@@ -6,6 +6,7 @@ import processing.core.PGraphics;
 import processing.core.PVector;
 import vialab.SMT.Touch;
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.ui.Canvas;
 
 
 public class Stroke {

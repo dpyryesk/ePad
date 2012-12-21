@@ -1,5 +1,8 @@
 package ca.uwaterloo.epad.ui;
 
+import java.util.Date;
+
+import ca.uwaterloo.epad.Application;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
@@ -12,11 +15,16 @@ public abstract class Drawer extends Zone {
 	protected boolean dragX, dragY;
 	protected Container container;
 	
+	protected long lastActionTime;
+	protected boolean wasTouched = false;
+	
 	protected Drawer(int x, int y, int width, int height, int position) {
 		super(x, y, width, height);
 		
 		isOpen = false;
 		this.position = position;
+		
+		setActionPerformed();
 	}
 	
 	abstract protected void drawImpl();
@@ -32,6 +40,8 @@ public abstract class Drawer extends Zone {
 		
 		// figure out if the drawer is opened
 		isOpen = isOpen();
+		Application.setActionPerformed();
+		setActionPerformed();
 	}
 	
 	abstract public boolean isOpen();
@@ -64,5 +74,13 @@ public abstract class Drawer extends Zone {
 	
 	public int getBackgroundColour() {
 		return container.getBackgroundColour();
+	}
+	
+	public void setActionPerformed() {
+		lastActionTime = new Date().getTime();
+	}
+	
+	public long getInactiveTime() {
+		return new Date().getTime() - lastActionTime;
 	}
 }

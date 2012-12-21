@@ -1,5 +1,6 @@
 package ca.uwaterloo.epad.ui;
 
+import ca.uwaterloo.epad.Application;
 import vialab.SMT.Zone;
 
 
@@ -68,5 +69,7 @@ public class RotatingContainer extends Container  {
 	
 	protected void touchImpl() {
 		rotateAboutCentre();
+		Application.setActionPerformed();
+		parent.setActionPerformed();
 	}
 }

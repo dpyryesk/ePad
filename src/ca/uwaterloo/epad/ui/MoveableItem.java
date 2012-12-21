@@ -134,6 +134,9 @@ public class MoveableItem extends Zone {
 			//check if item is above a trash can
 			isAboveTrash = Application.isItemAboveDrawer(this);
 		}
+		
+		Application.setActionPerformed();
+		drawer.setActionPerformed();
 	}
 	
 	protected void touchDownImpl(Touch touch) {

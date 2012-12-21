@@ -31,7 +31,7 @@ public class SplashScreen extends Frame {
 			throw (new Exception("SplashScreen is a singleton"));
 
 		instance = this;
-		text = "Loading...";
+		text = "";
 
 		img = Toolkit.getDefaultToolkit().getImage(filename);
 		Image icon = Toolkit.getDefaultToolkit().getImage("data\\images\\e.png");

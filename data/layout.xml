@@ -3,22 +3,22 @@
 <Canvas backgroundColour="255" height="600" width="800" x="0" y="0">
 <matrix m00="1.0" m01="0.0" m02="0.0" m03="112.0" m10="0.0" m11="1.0" m12="0.0" m13="84.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </Canvas>
-<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="data\images\brushes\marker1.png" size="15" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\marker1.png" size="15" width="125" x="0" y="0">
 <matrix m00="1.1524824" m01="0.029799618" m02="0.0" m03="781.98975" m10="-0.029799618" m11="1.1524824" m12="0.0" m13="622.8419" m20="0.0" m21="0.0" m22="1.1528677" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="data\images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
 <matrix m00="1.0624847" m01="-0.076047525" m02="0.0" m03="664.66077" m10="0.076047525" m11="1.0624847" m12="0.0" m13="623.46356" m20="0.0" m21="0.0" m22="1.0652025" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="data\images\brushes\brush1.png" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="images\brushes\brush1.png" width="125" x="0" y="0">
 <matrix m00="1.0896602" m01="-0.0102441665" m02="0.0" m03="531.6035" m10="0.0102441665" m11="1.0896602" m12="0.0" m13="621.7287" m20="0.0" m21="0.0" m22="1.0897084" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="data\images\brushes\eraser.png" size="30" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="images\brushes\eraser.png" size="30" width="125" x="0" y="0">
 <matrix m00="1.0557358" m01="-0.068767086" m02="0.0" m03="879.5558" m10="0.068767086" m11="1.0557358" m12="0.0" m13="53.937397" m20="0.0" m21="0.0" m22="1.0579711" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\cat.png" stampFile="data\vector\cat.svg" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="images\stamps\cat.png" stampFile="vector\cat.svg" width="125" x="0" y="0">
 <matrix m00="0.71501315" m01="0.0053126663" m02="0.0" m03="756.98694" m10="-0.0053126663" m11="0.71501315" m12="0.0" m13="19.871994" m20="0.0" m21="0.0" m22="0.71503276" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="data\images\stamps\crow.png" stampFile="data\vector\crow.svg" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" drawerId="1" height="125" image="images\stamps\crow.png" stampFile="vector\crow.svg" width="125" x="0" y="0">
 <matrix m00="0.7088503" m01="0.0084991995" m02="0.0" m03="658.97815" m10="-0.0084991995" m11="0.7088503" m12="0.0" m13="20.20691" m20="0.0" m21="0.0" m22="0.70890033" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-3538902" width="125" x="0" y="0">
@@ -48,7 +48,7 @@
 <MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-1" width="125" x="0" y="0">
 <matrix m00="0.5606682" m01="0.013598258" m02="0.0" m03="312.17828" m10="-0.013598258" m11="0.5606682" m12="0.0" m13="624.27264" m20="0.0" m21="0.0" m22="0.5608325" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
-<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="15" drawerId="1" height="125" image="data\images\brushes\brush2.png" width="125" x="0" y="0">
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="15" drawerId="1" height="125" image="images\brushes\brush2.png" width="125" x="0" y="0">
 <matrix m00="1.0617342" m01="-0.06786683" m02="0.0" m03="405.44025" m10="0.06786683" m11="1.0617342" m12="0.0" m13="618.71344" m20="0.0" m21="0.0" m22="1.0639012" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
 </MoveableItem>
 </Layout>

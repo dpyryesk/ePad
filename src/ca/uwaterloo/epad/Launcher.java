@@ -1,20 +1,30 @@
 package ca.uwaterloo.epad;
 
+import java.util.ResourceBundle;
+
 import processing.core.PApplet;
 
 public class Launcher {
-	//private final static String settingsFile = "data\\settings.xml";
+	private static ResourceBundle uiStrings;
 	
 	public static void main(String args[]) {
-		// Create a splash screen
 		try {
-			SplashScreen.splash("data\\images\\epadLogo.png");
-			SplashScreen.setMessage("Loading settings...");
+			Settings.unmarshallSettings();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		SplashScreen.setMessage("Starting...");
+		uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
+		
+		// Create a splash screen
+		try {
+			SplashScreen.splash(Settings.dataFolder + "images\\epadLogo.png");
+			SplashScreen.setMessage(uiStrings.getString("LoadingMessage"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		SplashScreen.setMessage(uiStrings.getString("StartingMessage"));
 		
 		// Start the applet
 		PApplet.main(new String[] { "--present", "ca.uwaterloo.epad.Application" });

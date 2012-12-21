@@ -48,5 +48,21 @@ public class DrawingPrinter implements Printable {
 			}
 		}
 	}
-
+	
+	public static void printDrawingWithoutDialog(PImage drawing) {
+		img = drawing;
+		PrinterJob pjob = PrinterJob.getPrinterJob();
+		Book book = new Book();
+		
+		PageFormat landscape = pjob.defaultPage();
+		landscape.setOrientation(PageFormat.LANDSCAPE);
+		book.append(new DrawingPrinter(), landscape);
+		
+		pjob.setPageable(book);
+		try {
+			pjob.print();
+		} catch (PrinterException e) {
+			e.printStackTrace();
+		}
+	}
 }

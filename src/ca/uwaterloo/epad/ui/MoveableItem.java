@@ -6,6 +6,7 @@ import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.Settings;
 
 public class MoveableItem extends Zone {
 	// Position parameters
@@ -42,9 +43,9 @@ public class MoveableItem extends Zone {
 		
 		// Load shapes
 		if (moveIcon == null)
-			moveIcon = applet.loadShape("..\\data\\vector\\move.svg");
+			moveIcon = applet.loadShape(Settings.dataFolder + "vector\\move.svg");
 		if (deleteIcon == null) {
-			deleteIcon = applet.loadShape("..\\data\\vector\\x.svg");
+			deleteIcon = applet.loadShape(Settings.dataFolder + "vector\\x.svg");
 			deleteIcon.disableStyle();
 		}
 	}
@@ -267,7 +268,7 @@ public class MoveableItem extends Zone {
 	public void setImage(String filename) {
 		try {
 			itemImageFilename = filename;
-			itemImage = applet.loadImage(filename);
+			itemImage = applet.loadImage(Settings.dataFolder + filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 			itemImage = null;

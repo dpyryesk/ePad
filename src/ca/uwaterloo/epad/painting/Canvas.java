@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.Settings;
 
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -12,24 +13,21 @@ import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 
 public class Canvas extends Zone {
-	private static final int PAINTING = 0;
-	private static final int MOVING = 1;
-
 	public int backgroundColour = 255;
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
 	private PImage overlayImage;
 	public boolean useOverlay = true;
-	private int state;
+	private boolean isMoving;
 
 	public Canvas(int x, int y, int width, int height, int backgroundColour) {
 		super(0, 0, width, height);
 		translate(x, y);
-		state = PAINTING;
+		isMoving = false;
 		this.backgroundColour = backgroundColour;
 
-		overlayImage = applet.loadImage("data\\images\\house.png");
+		overlayImage = applet.loadImage(Settings.dataFolder + "images\\house.png");
 
 		drawing = applet.createGraphics(width, height, P2D);
 		clear();
@@ -42,9 +40,9 @@ public class Canvas extends Zone {
 			strokeWeight(2);
 			fill(0x33000000);
 			rect(-30, -30, width + 60, height + 60, 30);
-			state = MOVING;
+			isMoving = true;
 		} else {
-			state = PAINTING;
+			isMoving = false;
 		}
 		
 		noStroke();
@@ -58,19 +56,17 @@ public class Canvas extends Zone {
 	}
 
 	protected void pickDrawImpl() {
-		if (state == MOVING) {
+		if (isMoving)
 			rect(-30, -30, width + 60, height + 60, 30);
-		} else if (state == PAINTING) {
+		else
 			rect(0, 0, width, height);
-		}
 	}
 
 	protected void touchImpl() {
-		if (state == MOVING) {
+		if (isMoving)
 			rst();
-		} else if (state == PAINTING) {
+		else
 			addStroke();
-		}
 	}
 
 	protected void addStroke() {

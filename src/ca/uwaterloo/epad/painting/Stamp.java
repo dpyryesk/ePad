@@ -2,6 +2,7 @@ package ca.uwaterloo.epad.painting;
 
 import processing.core.PGraphics;
 import processing.core.PShape;
+import ca.uwaterloo.epad.Settings;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
@@ -30,7 +31,7 @@ public class Stamp extends Brush {
 	private void loadShape() {
 		if (stampShape == null && stampFile != null) {
 			try {
-				stampShape = applet.loadShape(stampFile);
+				stampShape = applet.loadShape(Settings.dataFolder + stampFile);
 				stampWidth = stampShape.getWidth();
 				stampHeight = stampShape.getHeight();
 				

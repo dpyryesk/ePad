@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import javax.xml.transform.TransformerException;
 
@@ -18,6 +19,7 @@ import ca.uwaterloo.epad.painting.Brush;
 import ca.uwaterloo.epad.painting.Canvas;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.ui.Button;
+import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
@@ -32,9 +34,6 @@ public class Application extends PApplet {
 	public static final int BOTTOM_DRAWER = 3;
 
 	// Fields
-	public static int width = 1024;
-	public static int height = 768;
-	public static float targetFPS = 60;
 	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
 	@XmlAttribute public static String backgroundImage = null;
 
@@ -48,15 +47,18 @@ public class Application extends PApplet {
 	private static Drawer topDrawer;
 	private static Drawer bottomDrawer;
 	private static Canvas canvas;
+	
+	
 	private static PFont font;
+	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
 
 	// XML file paths
-	private final static String guiFile = "data\\gui.xml";
-	private final static String defaultLayoutFile = "data\\layout.xml";
+	private final static String guiFile = "gui.xml";
+	private final static String defaultLayoutFile = "layout.xml";
 
 	public void setup() {
-		size(width, height, P3D);
-		frameRate(targetFPS);
+		size(Settings.width, Settings.height, P3D);
+		frameRate(Settings.targetFPS);
 		smooth();
 		
 		font = createDefaultFont(20);
@@ -67,19 +69,17 @@ public class Application extends PApplet {
 		
 		// create default canvas
 		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
-
+		
 		try {
-			SplashScreen.setMessage("Loading GUI...");
-			SimpleMarshaller.unmarshallGui(this, new File(guiFile));
-			SplashScreen.setMessage("Loading Layout...");
-			SimpleMarshaller.unmarshallLayout(new File(defaultLayoutFile));
+			SimpleMarshaller.unmarshallGui(this, new File(Settings.dataFolder + guiFile));
+			SimpleMarshaller.unmarshallLayout(new File(Settings.dataFolder + defaultLayoutFile));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 			exit();
 		}
 
 		if (backgroundImage != null && backgroundImage.length() > 0) {
-			bg = this.loadImage(backgroundImage);
+			bg = this.loadImage(Settings.dataFolder + backgroundImage);
 		}
 		
 		// Put drawers on top
@@ -91,54 +91,7 @@ public class Application extends PApplet {
 			TouchClient.putZoneOnTop(topDrawer);
 			
 			// create control buttons
-			int w = 180;
-			int h = 70;
-			int x = 20;
-			int y = topDrawer.getContainer().height - h - 60;
-			
-			Button b = new Button(x, y, w, h, "Save Layout", 20, font);
-			b.setPressMethodByName("saveLayout", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x += w + 20;
-			
-			b = new Button(x, y, w, h, "Save Painting", 20, font);
-			b.setPressMethodByName("saveDrawing", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x += w + 20;
-			
-			b = new Button(x, y, w, h, "Clear Painting", 20, font);
-			b.setPressMethodByName("clearCanvas", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x += w + 20;
-			
-			b = new Button(x, y, w, h, "Load Painting", 20, font);
-			b.setPressMethodByName("loadDrawing", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x += w + 20;
-			
-			b = new Button(x, y, w, h, "Colouring", 20, font);
-			b.setPressMethodByName("toggleOverlay", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x = 20;
-			y -= h + 20;
-			
-			b = new Button(x, y, w, h, "Print", 20, font);
-			b.setPressMethodByName("print", this);
-			topDrawer.getContainer().addItem(b);
-			
-			x += w + 20;
-			x += w + 20;
-			x += w + 20;
-			x += w + 20;
-			
-			b = new Button(x, y, w, h, "Exit", 20, font);
-			b.setPressMethodByName("exit", this);
-			topDrawer.getContainer().addItem(b);
+			makeControlPanel(topDrawer.getContainer());
 		}
 		if (bottomDrawer != null)
 			TouchClient.putZoneOnTop(bottomDrawer);
@@ -154,6 +107,57 @@ public class Application extends PApplet {
 		}
 		
 		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
+	}
+	
+	private void makeControlPanel(Container c) {
+		int w = 180;
+		int h = 70;
+		int x = 20;
+		int y = c.height - h - 60;
+		
+		Button b = new Button(x, y, w, h, uiStrings.getString("SaveLayoutButton"), 20, font);
+		b.setPressMethodByName("saveLayout", this);
+		c.addItem(b);
+		
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("SavePaintingButton"), 20, font);
+		b.setPressMethodByName("saveDrawing", this);
+		c.addItem(b);
+		
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("ClearPaintingtButton"), 20, font);
+		b.setPressMethodByName("clearCanvas", this);
+		c.addItem(b);
+		
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("LoadPaintingButton"), 20, font);
+		b.setPressMethodByName("loadDrawing", this);
+		c.addItem(b);
+		
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("ToggleOverlayButton"), 20, font);
+		b.setPressMethodByName("toggleOverlay", this);
+		c.addItem(b);
+		
+		x = 20;
+		y -= h + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("PrintButton"), 20, font);
+		b.setPressMethodByName("print", this);
+		c.addItem(b);
+		
+		x += w + 20;
+		x += w + 20;
+		x += w + 20;
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("ExitButton"), 20, font);
+		b.setPressMethodByName("exit", this);
+		c.addItem(b);
 	}
 
 	public void keyPressed() {
@@ -251,18 +255,19 @@ public class Application extends PApplet {
 			return true;
 		else if (rightDrawer != null && rightDrawer.isOpen())
 			return true;
-		else if (topDrawer != null && topDrawer.isOpen())
-			return true;
-		else if (bottomDrawer != null && bottomDrawer.isOpen())
-			return true;
+		//else if (topDrawer != null && topDrawer.isOpen())
+		//	return true;
+		//else if (bottomDrawer != null && bottomDrawer.isOpen())
+		//	return true;
 		else
 			return false;
 	}
 	
 	public void saveLayout() {
 		try {
-			SimpleMarshaller.marshallLayout(new File(defaultLayoutFile));
-			System.out.println("Layout saved: " + defaultLayoutFile);
+			String filename = Settings.dataFolder + defaultLayoutFile;
+			SimpleMarshaller.marshallLayout(new File(filename));
+			System.out.println("Layout saved: " + filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -319,7 +324,10 @@ public class Application extends PApplet {
 	}
 	
 	public void print() {
-		DrawingPrinter.printDrawing(canvas.getDrawing());
+		if (Settings.showPrintDialog)
+			DrawingPrinter.printDrawing(canvas.getDrawing());
+		else
+			DrawingPrinter.printDrawingWithoutDialog(canvas.getDrawing());
 	}
 	
 	public void exit() {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Application backgroundColour="#FFFFFF" backgroundImage="textures\background_1024x768.png" height="768" targetFPS="60.0" width="1024">
-    <SlidingDrawer position="top" primaryColour="#33B5E5" secondaryColour="#0099CC">
+    <SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900">
     </SlidingDrawer>
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
 	    <!-- Brushes -->
@@ -24,12 +24,9 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="vector\cup.svg" image="images\stamps\cup.png"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="vector\fish.svg" image="images\stamps\fish.png"/>
 	</RotatingDrawer>
-	<RotatingDrawer position="right" primaryColour="#FFBB33" secondaryColour="#FF8800">
+	<RotatingDrawer position="right" primaryColour="#99CC00" secondaryColour="#669900">
 	    <!-- Red -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#CA002A"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF1100"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF4200"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#A12830"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#F42941"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#F6465B"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#DB1F2A"/>
@@ -37,12 +34,9 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF584F"/>
 	    
 	    <!-- Orange -->
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B44010"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#E55300"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF6900"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF2B00"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF4023"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF5C00"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF8106"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FF9F00"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FEC34D"/>
@@ -50,7 +44,10 @@
 	    <!-- Yellow -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFD319"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FEE23E"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFFF40"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#F6EF77"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFFF00"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFFF49"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFFF92"/>
 	    
 	     <!-- Green -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#12AD2A"/>
@@ -59,7 +56,6 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#12F729"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#356244"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#4B8C61"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#AAD1B7"/>
 	    
 	     <!-- Blue -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#29568F"/>
@@ -77,31 +73,20 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#A442DC"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B564E3"/>
 	    
+	    <!-- Pastels -->
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#51C0BF"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#59ADD0"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#7095E1"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#9FA3E3"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#C993D4"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#D88DB2"/>
+	    
 	    <!-- Gray -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFFFFF"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#D2D6D9"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#A8ADB4"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#868F98"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#606A74"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#414B56"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#212930"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#000000"/>
-	    
-	    <!--
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#00909E"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#89DBEC"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#ED0026"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FA9D00"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FFD08D"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B00051"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#F68370"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#FEABB9"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#6E006C"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#91278F"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#CF97D7"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#000000"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#5B5B5B"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#D4D4D4"/>
-	    -->
 	</RotatingDrawer>
 </Application>

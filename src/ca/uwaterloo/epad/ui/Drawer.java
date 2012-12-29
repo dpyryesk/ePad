@@ -2,6 +2,8 @@ package ca.uwaterloo.epad.ui;
 
 import java.util.Date;
 
+import processing.core.PVector;
+
 import ca.uwaterloo.epad.Application;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
@@ -33,7 +35,7 @@ public abstract class Drawer extends Zone {
 	
 	protected void touchDownImpl(Touch touch) {
 		TouchClient.putZoneOnTop(this);
-	}
+	} 
 	
 	protected void touchImpl() {
 		drag(dragX, dragY, dragXMin, dragXMax, dragYMin, dragYMax);
@@ -47,6 +49,8 @@ public abstract class Drawer extends Zone {
 	abstract public boolean isOpen();
 	
 	abstract public boolean isItemAbove(Zone item);
+	
+	abstract public PVector getHandleLocation();
 	
 	public int getPosition() {
 		return position;

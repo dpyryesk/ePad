@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+
+<svg
+   xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="30.001px"
+   height="34px"
+   viewBox="0 0 30.001 34"
+   enable-background="new 0 0 30.001 34"
+   xml:space="preserve"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="double_tap.svg"><metadata
+   id="metadata21"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs19" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="822"
+   inkscape:window-height="536"
+   id="namedview17"
+   showgrid="false"
+   inkscape:zoom="6.9411765"
+   inkscape:cx="15.0005"
+   inkscape:cy="17"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Layer_1" />
+	<g
+   i:extraneous="self"
+   id="g7"
+   transform="translate(0,-3.9999998)">
+		<g
+   id="g9">
+			<path
+   d="M 1,20 C 0.448,20 0,19.552 0,19 0,10.729 6.729,4 15.001,4 23.271,4 30,10.729 30,18.999 c 0,0.552 -0.448,1 -1,1 -0.552,0 -1,-0.448 -1,-1 C 28,11.831 22.168,6 15.001,6 7.832,6 2,11.831 2,19 2,19.552 1.552,20 1,20"
+   id="path11"
+   inkscape:connector-curvature="0" />
+			<path
+   d="M 1,8.712 C 0.779,8.712 0.557,8.639 0.372,8.49 -0.058,8.143 -0.124,7.512 0.223,7.084 3.859,2.582 9.246,0 15.001,0 20.756,0 26.142,2.582 29.777,7.083 30.126,7.512 30.058,8.143 29.628,8.489 29.2,8.835 28.569,8.771 28.223,8.34 24.968,4.312 20.149,2 15.001,2 9.853,2 5.034,4.312 1.777,8.34 1.581,8.585 1.292,8.712 1,8.712"
+   id="path13"
+   inkscape:connector-curvature="0" />
+			<path
+   d="m 14.981,23.989 c -6.017,0 -5.127,-7.309 -5.127,-7.309 0,0 1.027,-2.316 5.127,-2.316 4.101,0 5.17,2.316 5.17,2.316 0,0 0.845,7.309 -5.17,7.309 M 15,12 C 8.716,12 6.886,17.68 6.886,31.004 v 0.6 C 9.227,33.114 12.007,34 15,34 c 2.993,0 5.772,-0.887 8.114,-2.396 v -0.6 C 23.114,17.68 21.284,12 15,12"
+   id="path15"
+   inkscape:connector-curvature="0" />
+		</g>
+	</g>
+</svg>

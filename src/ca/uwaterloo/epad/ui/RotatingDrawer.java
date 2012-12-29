@@ -107,4 +107,9 @@ public class RotatingDrawer extends Drawer {
 		float d = drawerCetre.dist(itemCentre) - diameter/2;
 		return d < 0;
 	}
+	
+	public PVector getHandleLocation() {
+		PVector handle = new PVector(width/2, height/2 + diameter/2 + 30);
+		return fromZoneVector(handle);
+	}
 }

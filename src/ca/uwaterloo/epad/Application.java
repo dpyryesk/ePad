@@ -12,11 +12,14 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
+import processing.core.PVector;
 import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
 import ca.uwaterloo.epad.painting.Paint;
+import ca.uwaterloo.epad.prompting.PromptManager;
+import ca.uwaterloo.epad.prompting.PromptPopup;
 import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
@@ -67,6 +70,8 @@ public class Application extends PApplet {
 		TouchClient.setWarnUnimplemented(false);
 		TouchClient.setDrawTouchPoints(true, 0);
 		
+		PromptManager.init(this);
+		
 		// create default canvas
 		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
 		
@@ -95,6 +100,15 @@ public class Application extends PApplet {
 		}
 		if (bottomDrawer != null)
 			TouchClient.putZoneOnTop(bottomDrawer);
+		
+		PVector hl = leftDrawer.getHandleLocation();
+		PromptManager.add(new PromptPopup((int) hl.x, (int) hl.y, "drag_right", "Would you like to add another brush to the screen? Pull on this handle."));
+		
+		hl = rightDrawer.getHandleLocation();
+		PromptManager.add(new PromptPopup((int) hl.x, (int) hl.y, "drag_left", "Would you like to use another colour for painting? Pull on this handle."));
+		
+		hl = topDrawer.getHandleLocation();
+		PromptManager.add(new PromptPopup((int) hl.x, (int) hl.y, "drag_down", "Would you like to print your painting? Pull on this handle."));
 		
 		SplashScreen.remove();
 		setActionPerformed();
@@ -293,6 +307,7 @@ public class Application extends PApplet {
 		pg.beginDraw();
 		draw();
 		TouchClient.draw();
+		PromptManager.draw();
 		pg.endDraw();
 		
 		if (pg.save(filename))

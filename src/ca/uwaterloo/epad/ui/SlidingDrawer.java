@@ -87,4 +87,11 @@ public class SlidingDrawer extends Drawer {
 		
 		return d < 0;
 	}
+	
+	public PVector getHandleLocation() {
+		if (position == TOP) {
+			PVector handle = new PVector(width/2, height + 30);
+			return fromZoneVector(handle);
+		} else return null;
+	}
 }

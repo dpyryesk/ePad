@@ -1,4 +1,4 @@
-package ca.uwaterloo.epad;
+package ca.uwaterloo.epad.util;
 
 import java.io.File;
 import java.lang.reflect.Field;

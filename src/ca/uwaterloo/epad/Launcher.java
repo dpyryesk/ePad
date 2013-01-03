@@ -2,6 +2,9 @@ package ca.uwaterloo.epad;
 
 import java.util.ResourceBundle;
 
+import ca.uwaterloo.epad.ui.SplashScreen;
+import ca.uwaterloo.epad.util.Settings;
+
 import processing.core.PApplet;
 
 public class Launcher {

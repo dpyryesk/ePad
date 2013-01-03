@@ -1,4 +1,4 @@
-package ca.uwaterloo.epad;
+package ca.uwaterloo.epad.util;
 
 import java.awt.Graphics;
 import java.awt.Image;

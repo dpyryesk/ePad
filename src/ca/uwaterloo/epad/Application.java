@@ -25,6 +25,9 @@ import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.ui.SplashScreen;
+import ca.uwaterloo.epad.util.DrawingPrinter;
+import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
@@ -34,7 +37,6 @@ public class Application extends PApplet {
 	public static final int TOP_DRAWER = 0;
 	public static final int LEFT_DRAWER = 1;
 	public static final int RIGHT_DRAWER = 2;
-	public static final int BOTTOM_DRAWER = 3;
 
 	// Fields
 	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
@@ -46,7 +48,6 @@ public class Application extends PApplet {
 	private static Drawer leftDrawer;
 	private static Drawer rightDrawer;
 	private static Drawer topDrawer;
-	private static Drawer bottomDrawer;
 	private static Canvas canvas;
 	
 	// Misc variables
@@ -72,12 +73,8 @@ public class Application extends PApplet {
 		
 		PromptManager.init(this);
 		
-		// create default canvas
-		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
-		
 		try {
 			SimpleMarshaller.unmarshallGui(this, new File(Settings.dataFolder + guiFile));
-			SimpleMarshaller.unmarshallLayout(new File(Settings.dataFolder + defaultLayoutFile));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 			exit();
@@ -86,6 +83,11 @@ public class Application extends PApplet {
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			bg = this.loadImage(Settings.dataFolder + backgroundImage);
 		}
+		
+		// create default canvas
+		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
+		
+		loadLayout(defaultLayoutFile);
 		
 		// Put drawers on top
 		if (leftDrawer != null)
@@ -98,8 +100,6 @@ public class Application extends PApplet {
 			// create control buttons
 			makeControlPanel(topDrawer.getContainer());
 		}
-		if (bottomDrawer != null)
-			TouchClient.putZoneOnTop(bottomDrawer);
 		
 		PVector hl = leftDrawer.getHandleLocation();
 		PromptManager.add(new PromptPopup((int) hl.x, (int) hl.y, "drag_right", "Would you like to add another brush to the screen? Pull on this handle."));
@@ -215,10 +215,6 @@ public class Application extends PApplet {
 			if (topDrawer != null) TouchClient.remove(topDrawer);
 			topDrawer = newDrawer;
 			break;
-		case BOTTOM_DRAWER:
-			if (bottomDrawer != null) TouchClient.remove(bottomDrawer);
-			bottomDrawer = newDrawer;
-			break;
 		case LEFT_DRAWER:
 			if (leftDrawer != null) TouchClient.remove(leftDrawer);
 			leftDrawer = newDrawer;
@@ -235,7 +231,6 @@ public class Application extends PApplet {
 	public static Drawer getDrawer(int drawerId) {
 		switch(drawerId) {
 		case TOP_DRAWER: return topDrawer;
-		case BOTTOM_DRAWER: return bottomDrawer;
 		case LEFT_DRAWER: return leftDrawer;
 		case RIGHT_DRAWER: return rightDrawer;
 		default: return null;
@@ -243,9 +238,21 @@ public class Application extends PApplet {
 	}
 	
 	public static void setCanvas(Canvas newCanvas) {
-		if (canvas != null) TouchClient.remove(canvas);
+		if (canvas != null) {
+			TouchClient.remove(canvas);
+			if (leftDrawer != null)
+				leftDrawer.removeListener(canvas);
+			if (rightDrawer != null)
+				rightDrawer.removeListener(canvas);
+		}
 		canvas = newCanvas;
+		
 		TouchClient.add(canvas);
+		
+		if (leftDrawer != null)
+			leftDrawer.addListener(canvas);
+		if (rightDrawer != null)
+			rightDrawer.addListener(canvas);
 	}
 	
 	public static Canvas getCanvas() {
@@ -259,21 +266,6 @@ public class Application extends PApplet {
 			return true;
 		else if (topDrawer != null && topDrawer.isItemAbove(item))
 			return true;
-		else if (bottomDrawer != null && bottomDrawer.isItemAbove(item))
-			return true;
-		else
-			return false;
-	}
-	
-	public static boolean isDrawerOpen() {
-		if (leftDrawer != null && leftDrawer.isOpen())
-			return true;
-		else if (rightDrawer != null && rightDrawer.isOpen())
-			return true;
-		//else if (topDrawer != null && topDrawer.isOpen())
-		//	return true;
-		//else if (bottomDrawer != null && bottomDrawer.isOpen())
-		//	return true;
 		else
 			return false;
 	}
@@ -292,6 +284,14 @@ public class Application extends PApplet {
 			SimpleMarshaller.marshallLayout(new File(filename));
 			System.out.println("Layout saved: " + filename);
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadLayout(String filename) {
+		try {
+			SimpleMarshaller.unmarshallLayout(new File(Settings.dataFolder + filename));
+		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
 	}

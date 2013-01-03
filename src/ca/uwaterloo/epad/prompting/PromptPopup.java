@@ -8,7 +8,7 @@ import processing.core.PImage;
 import processing.core.PShape;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
-import ca.uwaterloo.epad.Settings;
+import ca.uwaterloo.epad.util.Settings;
 
 public class PromptPopup {
 	public static final int LOCATION_AUTO = 0;

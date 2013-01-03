@@ -1,4 +1,4 @@
-package ca.uwaterloo.epad;
+package ca.uwaterloo.epad.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;

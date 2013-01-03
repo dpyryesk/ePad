@@ -243,7 +243,6 @@ public class SimpleMarshaller {
 		MoveableItem item = new MoveableItem(x, y, width, height);
 		if (image != null && image.length() > 0)
 			item.setImage(image);
-		item.setDrawer(drawerId, false);
 
 		MoveableItem childInstance = (MoveableItem) childClass.getConstructor(MoveableItem.class).newInstance(item);
 
@@ -261,6 +260,7 @@ public class SimpleMarshaller {
 		}
 
 		childInstance.setMatrix(matrix);
+		childInstance.setDrawer(drawerId, false);
 		childInstance.addToScreen();
 	}
 

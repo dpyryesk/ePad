@@ -1,31 +1,33 @@
 package ca.uwaterloo.epad.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 import ca.uwaterloo.epad.Application;
-import ca.uwaterloo.epad.Settings;
 import ca.uwaterloo.epad.painting.Stroke;
+import ca.uwaterloo.epad.util.Settings;
 
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 
-public class Canvas extends Zone {
+public class Canvas extends Zone implements ActionListener {
 	public int backgroundColour = 255;
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
 	private PImage overlayImage;
 	public boolean useOverlay = true;
-	private boolean isMoving;
+	private boolean isDrawerOpen;
 
 	public Canvas(int x, int y, int width, int height, int backgroundColour) {
 		super(0, 0, width, height);
 		translate(x, y);
-		isMoving = false;
+		isDrawerOpen = false;
 		this.backgroundColour = backgroundColour;
 
 		overlayImage = applet.loadImage(Settings.dataFolder + "images\\house.png");
@@ -35,15 +37,12 @@ public class Canvas extends Zone {
 	}
 
 	protected void drawImpl() {
-		if (Application.isDrawerOpen()) {
+		if (isDrawerOpen) {
 			// Draw border to indicate the moving state
 			stroke(0xFF0099CC);
 			strokeWeight(2);
 			fill(0x33000000);
 			rect(-30, -30, width + 60, height + 60, 30);
-			isMoving = true;
-		} else {
-			isMoving = false;
 		}
 		
 		noStroke();
@@ -57,14 +56,14 @@ public class Canvas extends Zone {
 	}
 
 	protected void pickDrawImpl() {
-		if (isMoving)
+		if (isDrawerOpen)
 			rect(-30, -30, width + 60, height + 60, 30);
 		else
 			rect(0, 0, width, height);
 	}
 
 	protected void touchImpl() {
-		if (isMoving)
+		if (isDrawerOpen)
 			rst();
 		else
 			addStroke();
@@ -138,5 +137,13 @@ public class Canvas extends Zone {
 	
 	public void toggleOverlay() {
 		useOverlay = !useOverlay;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand().equals(Drawer.OPEN))
+			isDrawerOpen = true;
+		else if (event.getActionCommand().equals(Drawer.CLOSED))
+			isDrawerOpen = false;
 	}
 }

@@ -87,14 +87,7 @@ public class RotatingDrawer extends Drawer {
 	}
 	
 	public boolean isOpen() {
-		PVector p = fromZoneVector(new PVector(x, y));
-		float d = 0;
-		if (position == LEFT) {
-			d = width/4 - (x - p.x);
-		} else if (position == RIGHT) {
-			d = (x - p.x) + width + width/4;
-		}
-		if (d > 30) {
+		if (getVisibleWidth() > 30) {
 			return true;
 		} else {
 			return false;
@@ -111,5 +104,17 @@ public class RotatingDrawer extends Drawer {
 	public PVector getHandleLocation() {
 		PVector handle = new PVector(width/2, height/2 + diameter/2 + 30);
 		return fromZoneVector(handle);
+	}
+	
+	public float getVisibleWidth() {
+		PVector p = fromZoneVector(new PVector(x, y));
+		float w = 0;
+		if (position == LEFT) {
+			w = width/4 - (x - p.x);
+		} else if (position == RIGHT) {
+			w = (x - p.x) + width + width/4;
+		}
+		
+		return w;
 	}
 }

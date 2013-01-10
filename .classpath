@@ -18,5 +18,11 @@
 	<classpathentry kind="lib" path="/SMT/lib/libTUIO.jar"/>
 	<classpathentry kind="lib" path="/SMT/lib/opengl.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SMT"/>
+	<classpathentry kind="lib" path="lib/freetts.jar"/>
+	<classpathentry kind="lib" path="lib/jsapi.jar"/>
+	<classpathentry kind="lib" path="lib/cmutimelex.jar"/>
+	<classpathentry kind="lib" path="lib/cmudict04.jar"/>
+	<classpathentry kind="lib" path="lib/cmu_us_kal.jar"/>
+	<classpathentry kind="lib" path="lib/cmulex.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

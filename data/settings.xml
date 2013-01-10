@@ -7,4 +7,13 @@
     <targetFPS>60</targetFPS>
     <dataFolder>data\</dataFolder>
     <showPrintDialog>true</showPrintDialog>
+    <guiFile>gui.xml</guiFile>
+    <defaultLayoutFile>layout.xml</defaultLayoutFile>
+    
+    <!-- Prompt delays in ms -->
+    <promptTTL>15000</promptTTL>
+    <brushPromptDelay>5000</brushPromptDelay>
+    <paintPromptDelay>12000</paintPromptDelay>
+    <randomPromptDelay>60000</randomPromptDelay>
+    <resetPromptDelay>300000</resetPromptDelay>
 </settings>

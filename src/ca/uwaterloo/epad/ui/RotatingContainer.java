@@ -71,5 +71,6 @@ public class RotatingContainer extends Container  {
 		rotateAboutCentre();
 		Application.setActionPerformed();
 		parent.setActionPerformed();
+		notifyListeners(MOVED);
 	}
 }

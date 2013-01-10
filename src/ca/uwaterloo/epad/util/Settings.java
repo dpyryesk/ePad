@@ -27,6 +27,15 @@ public class Settings {
 	@XmlAttribute public static float targetFPS = 60;
 	@XmlAttribute public static String dataFolder = "..\\data\\";
 	@XmlAttribute public static boolean showPrintDialog = true;
+	@XmlAttribute public static String guiFile = "gui.xml";
+	@XmlAttribute public static String defaultLayoutFile = "layout.xml";
+	
+	// Prompt delays in ms
+	@XmlAttribute public static int promptTTL = 15 * 1000;
+	@XmlAttribute public static int brushPromptDelay = 1 * 1000;
+	@XmlAttribute public static int paintPromptDelay = 5 * 1000;
+	@XmlAttribute public static int randomPromptDelay = 60 * 1000;
+	@XmlAttribute public static int resetPromptDelay = 5 * 60 * 1000;
 
 	public static void unmarshallSettings() throws TransformerFactoryConfigurationError, TransformerException, IllegalArgumentException, IllegalAccessException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();

@@ -6,18 +6,14 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PShape;
-import vialab.SMT.TouchClient;
-import vialab.SMT.Zone;
 import ca.uwaterloo.epad.util.Settings;
+import ca.uwaterloo.epad.util.Tween;
 
 public class PromptPopup {
-	public static final int LOCATION_AUTO = 0;
 	public static final int LOCATION_TOP_LEFT = 1;
 	public static final int LOCATION_TOP_RIGHT = 2;
 	public static final int LOCATION_BOTTOM_LEFT = 3;
 	public static final int LOCATION_BOTTOM_RIGHT = 4;
-
-	protected static PFont font;
 
 	protected int x, y;
 	protected String iconName = "tap";
@@ -31,19 +27,21 @@ public class PromptPopup {
 	protected float textPadding = 5;
 	protected float xOffset = 75;
 	protected float yOffset = 30;
-	protected int location = LOCATION_AUTO;
+	protected int location = LOCATION_BOTTOM_RIGHT;
 	protected String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras accumsan iaculis vehicula.";
 	protected boolean showIcon = true;
 	protected boolean showText = true;
 	protected boolean readText = true;
 
 	// Colours
-	protected int backgroundColour = 255;
-	protected int hightlightColour = 0xFFFFBB33;
-	protected int iconColour = 0xFFFF8800;
-	protected int textColour = 0;
+	public int backgroundColour = 255;
+	public int hightlightColour = 0xFFFFBB33;
+	public int iconColour = 0xFFFF8800;
+	public int textColour = 0;
 
 	protected PShape icon;
+	protected static PFont font;
+	protected Tween alphaTween;
 
 	private float lx = 0;
 	private float ly = 0;
@@ -75,17 +73,17 @@ public class PromptPopup {
 		applet.translate(x, y);
 
 		// draw connecting line
-		if (showText) {
-			applet.stroke(hightlightColour);
-			applet.strokeWeight(3);
-			applet.line(0, 0, lx, ly);
-		}
+		//if (showText) {
+			//applet.stroke(hightlightColour);
+			//applet.strokeWeight(3);
+			//applet.line(0, 0, lx, ly);
+		//}
 
 		// draw background for icon
 		if (showIcon) {
-			applet.fill(backgroundColour);
-			applet.ellipseMode(PConstants.CENTER);
-			applet.ellipse(0, 0, iconBackgroundRadius, iconBackgroundRadius);
+			//applet.fill(backgroundColour);
+			//applet.ellipseMode(PConstants.CENTER);
+			//applet.ellipse(0, 0, iconBackgroundRadius, iconBackgroundRadius);
 
 			// draw icon
 			if (icon != null) {
@@ -94,24 +92,18 @@ public class PromptPopup {
 			}
 		}
 
-		if (showText)
+		if (showText) {
+			applet.tint(255, alphaTween.getValue());
 			applet.image(cache, cx, cy);
+		}
 
 		applet.popStyle();
 		applet.popMatrix();
 	}
 
-	protected void pickDrawImpl() {
-		applet.rectMode(PConstants.CORNER);
-		applet.rect(cx, cy, messageWidth, messageHeight);
-	}
-
-	public void touch() {
-		// TouchClient.remove(this);
-	}
-
 	public void init() {
 		applet = PromptManager.parent;
+		alphaTween = new Tween(10, 255, 500);
 
 		if (applet == null) {
 			System.err.println("Error: Unable to instantiate PromptPopup before PromptManager.init().");
@@ -120,6 +112,21 @@ public class PromptPopup {
 
 		font = applet.createFont(fontName, fontSize);
 
+		loadIcon();
+		
+		calculateLocation();
+
+		if (showText) {
+			calculateTextLocation();
+			createCache();
+		}
+	}
+	
+	public void dispose() {
+		alphaTween = new Tween(255, 0, 700);
+	}
+	
+	private void loadIcon() {
 		try {
 			icon = applet.loadShape(Settings.dataFolder + "vector\\cue\\" + iconName + ".svg");
 			icon.disableStyle();
@@ -127,50 +134,42 @@ public class PromptPopup {
 		} catch (Exception e) {
 			icon = null;
 		}
+	}
 
-		if (location == LOCATION_AUTO)
-			calculateLocation();
+	private void createCache() {
+		// create cached image of the message
+		PGraphics tempG = applet.createGraphics(messageWidth, messageHeight, PConstants.JAVA2D);
 
-		if (showText) {
-			calculateTextLocation();
+		tempG.beginDraw();
+		tempG.smooth();
+		tempG.background(0);
 
-			// create cached image of the message
-			PGraphics tempG = applet.createGraphics(messageWidth, messageHeight, PConstants.JAVA2D);
+		// draw background for text
+		tempG.rectMode(PConstants.CORNER);
+		tempG.fill(backgroundColour);
+		tempG.stroke(hightlightColour);
+		tempG.strokeWeight(3);
+		tempG.rect(0, 0, messageWidth, messageHeight);
 
-			tempG.beginDraw();
-			tempG.smooth();
-			tempG.background(0);
+		// draw text highlight
+		tempG.fill(hightlightColour);
+		if (location == LOCATION_TOP_LEFT || location == LOCATION_BOTTOM_LEFT)
+			tempG.rect(messageWidth - hightlightWidth, 0, hightlightWidth, messageHeight);
+		else if (location == LOCATION_TOP_RIGHT || location == LOCATION_BOTTOM_RIGHT)
+			tempG.rect(0, 0, hightlightWidth, messageHeight);
 
-			// draw background for text
-			tempG.rectMode(PConstants.CORNER);
-			tempG.fill(backgroundColour);
-			tempG.stroke(hightlightColour);
-			tempG.strokeWeight(3);
-			tempG.rect(0, 0, messageWidth, messageHeight);
+		// draw text
+		tempG.fill(textColour);
+		tempG.textFont(font, fontSize);
+		tempG.textAlign(PConstants.CENTER, PConstants.CENTER);
+		if (location == LOCATION_TOP_LEFT || location == LOCATION_BOTTOM_LEFT)
+			tempG.text(text, textPadding, textPadding, messageWidth - hightlightWidth - textPadding * 2, messageHeight - textPadding * 2);
+		else if (location == LOCATION_TOP_RIGHT || location == LOCATION_BOTTOM_RIGHT)
+			tempG.text(text, hightlightWidth + textPadding, textPadding, messageWidth - hightlightWidth - textPadding * 2, messageHeight - textPadding * 2);
 
-			// draw text highlight
-			tempG.fill(hightlightColour);
-			if (location == LOCATION_TOP_LEFT || location == LOCATION_BOTTOM_LEFT)
-				tempG.rect(messageWidth - hightlightWidth, 0, hightlightWidth, messageHeight);
-			else if (location == LOCATION_TOP_RIGHT || location == LOCATION_BOTTOM_RIGHT)
-				tempG.rect(0, 0, hightlightWidth, messageHeight);
+		tempG.endDraw();
 
-			// draw text
-			tempG.fill(textColour);
-			tempG.textFont(font, fontSize);
-			tempG.textAlign(PConstants.CENTER, PConstants.CENTER);
-			if (location == LOCATION_TOP_LEFT || location == LOCATION_BOTTOM_LEFT)
-				tempG.text(text, textPadding, textPadding, messageWidth - hightlightWidth - textPadding * 2, messageHeight - textPadding * 2);
-			else if (location == LOCATION_TOP_RIGHT || location == LOCATION_BOTTOM_RIGHT)
-				tempG.text(text, hightlightWidth + textPadding, textPadding, messageWidth - hightlightWidth - textPadding * 2, messageHeight - textPadding * 2);
-
-			tempG.endDraw();
-
-			cache = tempG.get();
-
-			// create an action zone
-			TouchClient.add(new PromptZone(this));
-		}
+		cache = tempG.get();
 	}
 
 	private void calculateLocation() {
@@ -214,29 +213,50 @@ public class PromptPopup {
 		}
 	}
 
-	private class PromptZone extends Zone {
-		private PromptPopup pp;
+	public void setX(int x) {
+		this.x = x;
+		
+		calculateLocation();
 
-		public PromptZone(PromptPopup pp) {
-			super(pp.x, pp.y, messageWidth, messageHeight);
-			this.pp = pp;
-		}
+		if (showText)
+			calculateTextLocation();
+	}
 
-		protected void drawImpl() {
-			rectMode(PConstants.CORNER);
-			noStroke();
-			noFill();
-			rect(cx, cy, width, height);
-		}
+	public void setY(int y) {
+		this.y = y;
+		
+		calculateLocation();
 
-		protected void pickDrawImpl() {
-			rectMode(PConstants.CORNER);
-			rect(cx, cy, width, height);
-		}
+		if (showText)
+			calculateTextLocation();
+	}
+	
+	public void setX(float x) {
+		setX((int) x);
+	}
 
-		protected void touchImpl() {
-			PromptManager.remove(pp);
-			TouchClient.remove(this);
-		}
+	public void setY(float y) {
+		setY((int) y);
+	}
+	
+	public void setIcon(String icon) {
+		this.iconName = icon;
+		loadIcon();
+		alphaTween = new Tween(10, 255, 500);
+	}
+
+	public void setText(String text) {
+		this.text = text;
+		showText = true;
+		createCache();
+		alphaTween = new Tween(10, 255, 700);
+	}
+	
+	public void hideText() {
+		showText = false;
+	}
+	
+	public boolean isInvisible() {
+		return alphaTween.getValue() == 0;
 	}
 }

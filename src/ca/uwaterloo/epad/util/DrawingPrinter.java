@@ -10,7 +10,7 @@ import java.awt.print.PrinterJob;
 
 import processing.core.PImage;
 
-public class DrawingPrinter extends Thread {
+public class DrawingPrinter implements Runnable {
 	private PImage drawing;
 	private boolean showPrompt;
 

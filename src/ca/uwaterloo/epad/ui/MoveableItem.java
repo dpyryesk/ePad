@@ -17,6 +17,7 @@ public class MoveableItem extends Zone implements ActionListener {
 	protected boolean isAboveTrash = false;
 	protected boolean isSelected = false;
 	protected boolean isDrawerOpen = false;
+	protected boolean isDragged = false;
 	protected int drawerId;
 	
 	// Parent containers
@@ -68,8 +69,6 @@ public class MoveableItem extends Zone implements ActionListener {
 	
 	protected void drawImpl() {
 		pushMatrix();
-		
-		//boolean isDrawerOpen = Application.isDrawerOpen();
 		
 		// Set stroke colour
 		if (isDrawerOpen) {
@@ -130,7 +129,7 @@ public class MoveableItem extends Zone implements ActionListener {
 	protected void touchImpl() {
 		if (!isInDrawer && isDrawerOpen) {
 			rst();
-			
+			isDragged = true;
 			//check if item is above a trash can
 			isAboveTrash = Application.isItemAboveDrawer(this);
 		}
@@ -149,7 +148,7 @@ public class MoveableItem extends Zone implements ActionListener {
 					copy.assign(touch);
 					this.unassign(touch);
 					copy.setDrawer(drawerId, false);
-					TouchClient.add(copy);
+					Application.addItem(copy);
 				}
 			} else {
 				TouchClient.putZoneOnTop(this);
@@ -163,9 +162,10 @@ public class MoveableItem extends Zone implements ActionListener {
 		if (isDrawerOpen && !isInDrawer && isAboveTrash) {
 			Application.getDrawer(Application.LEFT_DRAWER).removeListener(this);
 			Application.getDrawer(Application.RIGHT_DRAWER).removeListener(this);
-			TouchClient.remove(this);
+			Application.removeItem(this);
 			doTouchUp(touch);
 		}
+		isDragged = false;
 	}
 	
 	private MoveableItem clone(Object enclosingClass) {
@@ -227,7 +227,7 @@ public class MoveableItem extends Zone implements ActionListener {
 	}
 	
 	public void addToScreen() {
-		TouchClient.add(this);
+		Application.addItem(this);
 	}
 	
 	public void select() {
@@ -291,6 +291,10 @@ public class MoveableItem extends Zone implements ActionListener {
 	
 	public int getDrawerId() {
 		return drawerId;
+	}
+	
+	public boolean getIsDragged() {
+		return isDragged;
 	}
 
 	@Override

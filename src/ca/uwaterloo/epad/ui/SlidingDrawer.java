@@ -64,12 +64,7 @@ public class SlidingDrawer extends Drawer {
 	}
 	
 	public boolean isOpen() {
-		PVector p = fromZoneVector(new PVector(x, y));
-		float d = 0;
-		if (position == TOP) {
-			d = height - y + p.y;
-		}
-		if (d > 30) {
+		if (getVisibleWidth() > 30) {
 			return true;
 		} else {
 			return false;
@@ -93,5 +88,15 @@ public class SlidingDrawer extends Drawer {
 			PVector handle = new PVector(width/2, height + 30);
 			return fromZoneVector(handle);
 		} else return null;
+	}
+	
+	public float getVisibleWidth() {
+		PVector p = fromZoneVector(new PVector(x, y));
+		float w = 0;
+		if (position == TOP) {
+			w = height - y + p.y;
+		}
+		
+		return w;
 	}
 }

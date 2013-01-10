@@ -3,18 +3,17 @@ package ca.uwaterloo.epad.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
 
 import processing.core.PVector;
-
-import ca.uwaterloo.epad.Application;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
+import ca.uwaterloo.epad.Application;
 
 public abstract class Drawer extends Zone {
 	public static final String OPEN = "open";
 	public static final String CLOSED = "closed";
+	public static final String MOVED = "moved";
 	
 	protected boolean isOpen;
 	protected int position;
@@ -52,7 +51,8 @@ public abstract class Drawer extends Zone {
 		boolean newState = isOpen();
 		if (newState != isOpen) {
 			isOpen = isOpen();
-			notifyListeners();
+			if (isOpen) notifyListeners(OPEN);
+			else notifyListeners(CLOSED);
 		}
 		Application.setActionPerformed();
 		setActionPerformed();
@@ -63,6 +63,8 @@ public abstract class Drawer extends Zone {
 	abstract public boolean isItemAbove(Zone item);
 
 	abstract public PVector getHandleLocation();
+	
+	abstract public float getVisibleWidth();
 
 	public int getPosition() {
 		return position;
@@ -93,20 +95,20 @@ public abstract class Drawer extends Zone {
 	}
 
 	public void setActionPerformed() {
-		lastActionTime = new Date().getTime();
+		lastActionTime = System.currentTimeMillis();
 	}
 
 	public long getInactiveTime() {
-		return new Date().getTime() - lastActionTime;
+		return System.currentTimeMillis() - lastActionTime;
 	}
 
-	protected void notifyListeners() {
-		String s;
-		if (isOpen) s = OPEN;
-		else s = CLOSED;
-		
-		for (ActionListener name : listeners) {
-			name.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_FIRST, s));
+	protected void notifyListeners(String message) {
+		for (int i = 0; i < listeners.size(); i++) {
+			ActionListener listener = listeners.get(i);
+			if (listener != null)
+				listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_FIRST, message));
+			else
+				System.err.println("Drawer.notifyListeners(): null list element " + i);
 		}
 	}
 

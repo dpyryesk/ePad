@@ -1,0 +1,2 @@
+Run file jsapi.exe
+Copy speech.properties to C:\Program Files\Java\jre7\lib

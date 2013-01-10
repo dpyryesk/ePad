@@ -422,7 +422,7 @@ public class SimpleMarshaller {
 				}
 				
 				// create new instance
-				MoveableItem item = new MoveableItem(0, 0, 1, 1);
+				MoveableItem item = new MoveableItem(0, 0, 125, 125);
 				
 				// read image path
 				temp = attributeMap.getNamedItem(ATTR_IMAGE);

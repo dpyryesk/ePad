@@ -1,0 +1,13 @@
+We would like to credit the following people for providing functionality and graphics that ePad 2.0 uses:
+
+1. Authors of Simple Multitouch Toolkit (SMT): Zach Cook, Erik Paluka, Dr. Christopher Collins, Dr. Mark Hancock
+   See the website for more details: https://github.com/vialab/SMT
+   
+2. P.J. Onori, the creator of Cue gestural icon system (http://somerandomdude.com/work/cue/) and Iconic icon set (http://somerandomdude.com/work/iconic/)
+
+3. Authors of several graphic files (listed below) purchased from depositphotos.com
+   a. dvargg (http://depositphotos.com/5667793/stock-illustration-Paint-Cans.html?id=5667793)
+   b. yaskii (http://depositphotos.com/4882066/stock-illustration-Paintbrush.html?id=4882066)
+   c. andreakaulitzki (http://depositphotos.com/11704071/stock-illustration-Spider.html?id=11704071)
+   d. scusi0-9 (http://depositphotos.com/8912400/stock-illustration-Eraser.html?id=8912400)
+   e. creatOR76 (http://depositphotos.com/12586204/stock-illustration-Pen-pencil-and-marker.html?id=12586204)

@@ -49,12 +49,18 @@ public class Settings {
 	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
 	@XmlAttribute public static String defaultLayoutFile = "layout.xml";
+	@XmlAttribute public static boolean TTSEnabled = true;
+	
+	// Common GUI settings
+	@XmlAttribute public static int rotatingContainerOffsetAngle = 12;
+	@XmlAttribute public static int rotatingContainerOffsetDistance = 60;
+	@XmlAttribute public static boolean showDebugInfo = false;
 	
 	// Prompt delays in ms
 	@XmlAttribute public static int promptTTL = 15 * 1000;
 	@XmlAttribute public static int brushPromptDelay = 1 * 1000;
 	@XmlAttribute public static int paintPromptDelay = 5 * 1000;
-	@XmlAttribute public static int randomPromptDelay = 60 * 1000;
+	@XmlAttribute public static int engagementPromptDelay = 60 * 1000;
 	@XmlAttribute public static int resetPromptDelay = 5 * 60 * 1000;
 
 	public static void unmarshallSettings() throws TransformerFactoryConfigurationError, TransformerException, IllegalArgumentException, IllegalAccessException {

@@ -20,23 +20,21 @@
 
 package ca.uwaterloo.epad.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
-import ca.uwaterloo.epad.Application;
-import ca.uwaterloo.epad.painting.Stroke;
-import ca.uwaterloo.epad.util.Settings;
 
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
+import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.painting.Stroke;
+import ca.uwaterloo.epad.util.Settings;
 
-public class Canvas extends Zone implements ActionListener {
+public class Canvas extends Zone {
 	public int backgroundColour = 255;
+	public int borderColour = 0;
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
@@ -54,12 +52,16 @@ public class Canvas extends Zone implements ActionListener {
 
 		drawing = applet.createGraphics(width, height, P2D);
 		clear();
+		
+		borderColour = Application.getDrawer(Application.TOP_DRAWER).getPrimaryColour();
 	}
 
 	protected void drawImpl() {
+		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
+		
 		if (isDrawerOpen) {
 			// Draw border to indicate the moving state
-			stroke(0xFF0099CC);
+			stroke(borderColour);
 			strokeWeight(2);
 			fill(0x33000000);
 			rect(-30, -30, width + 60, height + 60, 30);
@@ -157,13 +159,5 @@ public class Canvas extends Zone implements ActionListener {
 	
 	public void toggleOverlay() {
 		useOverlay = !useOverlay;
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(Drawer.OPEN))
-			isDrawerOpen = true;
-		else if (event.getActionCommand().equals(Drawer.CLOSED))
-			isDrawerOpen = false;
 	}
 }

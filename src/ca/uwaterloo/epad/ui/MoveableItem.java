@@ -20,9 +20,6 @@
 
 package ca.uwaterloo.epad.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import processing.core.PImage;
 import processing.core.PShape;
 import vialab.SMT.Touch;
@@ -31,7 +28,7 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
-public class MoveableItem extends Zone implements ActionListener {
+public class MoveableItem extends Zone {
 	// Position parameters
 	protected boolean isInDrawer = false;
 	protected boolean isAboveTrash = false;
@@ -88,6 +85,8 @@ public class MoveableItem extends Zone implements ActionListener {
 	}
 	
 	protected void drawImpl() {
+		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
+		
 		pushMatrix();
 		
 		// Set stroke colour
@@ -180,8 +179,6 @@ public class MoveableItem extends Zone implements ActionListener {
 	
 	protected void touchUpImpl(Touch touch) {
 		if (isDrawerOpen && !isInDrawer && isAboveTrash) {
-			Application.getDrawer(Application.LEFT_DRAWER).removeListener(this);
-			Application.getDrawer(Application.RIGHT_DRAWER).removeListener(this);
 			Application.removeItem(this);
 			doTouchUp(touch);
 		}
@@ -235,14 +232,10 @@ public class MoveableItem extends Zone implements ActionListener {
 		
 		if (isInDrawer) {
 			boolean success = container.addItem(this);
-			if (success)
-				drawer.addListener(this);
-			else
+			if (!success)
 				System.err.println("Failed to add an item to container");
 		} else {
 			isDrawerOpen = drawer.isOpen();
-			Application.getDrawer(Application.LEFT_DRAWER).addListener(this);
-			Application.getDrawer(Application.RIGHT_DRAWER).addListener(this);
 		}
 	}
 	
@@ -315,13 +308,5 @@ public class MoveableItem extends Zone implements ActionListener {
 	
 	public boolean getIsDragged() {
 		return isDragged;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(Drawer.OPEN))
-			isDrawerOpen = true;
-		else if (event.getActionCommand().equals(Drawer.CLOSED))
-			isDrawerOpen = false;
 	}
 }

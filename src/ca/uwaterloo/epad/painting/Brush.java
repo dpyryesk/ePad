@@ -43,11 +43,11 @@ public abstract class Brush extends MoveableItem {
 	}
 	
 	protected void doTouchDown(Touch touch) {
-		Application.setBrush(this);
+		Application.setSelectedBrush(this);
 	}
 	
 	protected void doTouchUp(Touch touch) {
-		Application.setBrush(null);
+		Application.setSelectedBrush(null);
 	}
 	
 	protected void drawItem() {

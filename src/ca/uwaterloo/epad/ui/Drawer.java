@@ -68,18 +68,22 @@ public abstract class Drawer extends Zone {
 		drag(dragX, dragY, dragXMin, dragXMax, dragYMin, dragYMax);
 
 		// figure out if the drawer is opened
-		boolean newState = isOpen();
-		if (newState != isOpen) {
-			isOpen = isOpen();
+		boolean newState = calculateState();
+		if (isOpen != newState) {
+			isOpen = newState;
 			if (isOpen) notifyListeners(OPEN);
 			else notifyListeners(CLOSED);
 		}
 		Application.setActionPerformed();
 		setActionPerformed();
 	}
+	
+	public boolean isOpen() {
+		return isOpen;
+	}
 
-	abstract public boolean isOpen();
-
+	abstract protected boolean calculateState();
+	
 	abstract public boolean isItemAbove(Zone item);
 
 	abstract public PVector getHandleLocation();

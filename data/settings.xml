@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <settings>
-    <locale>en</locale>
-    <width>1024</width>
-    <height>768</height>
-    <targetFPS>60</targetFPS>
-    <dataFolder>data\</dataFolder>
-    <showPrintDialog>true</showPrintDialog>
-    <guiFile>gui.xml</guiFile>
-    <defaultLayoutFile>layout.xml</defaultLayoutFile>
-    
-    <!-- Prompt delays in ms -->
-    <promptTTL>15000</promptTTL>
-    <brushPromptDelay>5000</brushPromptDelay>
-    <paintPromptDelay>12000</paintPromptDelay>
-    <randomPromptDelay>60000</randomPromptDelay>
-    <resetPromptDelay>300000</resetPromptDelay>
+	<width>1918</width>
+	<height>1078</height>
+	<targetFPS>60</targetFPS>
+	<locale>en</locale>
+	
+	<showPrintDialog>true</showPrintDialog>
+	<TTSEnabled>true</TTSEnabled>
+	
+	<dataFolder>data\</dataFolder>
+	<guiFile>gui.xml</guiFile>
+	<defaultLayoutFile>layout_1080.xml</defaultLayoutFile>
+	
+	<!-- Common GUI settings -->
+	<rotatingContainerOffsetAngle>12</rotatingContainerOffsetAngle>
+	<rotatingContainerOffsetDistance>60</rotatingContainerOffsetDistance>
+	<showDebugInfo>true</showDebugInfo>
+	
+	<!-- Prompt delays in ms -->
+	<promptTTL>15000</promptTTL>
+	<brushPromptDelay>60000</brushPromptDelay>
+	<paintPromptDelay>30000</paintPromptDelay>
+	<engagementPromptDelay>30000</engagementPromptDelay>
+	<resetPromptDelay>300000</resetPromptDelay>
 </settings>

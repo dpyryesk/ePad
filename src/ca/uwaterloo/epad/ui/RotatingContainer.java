@@ -21,13 +21,14 @@
 package ca.uwaterloo.epad.ui;
 
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.util.Settings;
 import vialab.SMT.Zone;
 
 
 public class RotatingContainer extends Container  {
 	// Layout parameters
-	public static final int OFFSET_ANGLE = 15;	//angular offset between items in degrees
-	public static final int OFFSET_DIST = 15;	//distance between rows of items
+	public static final int OFFSET_ANGLE = Settings.rotatingContainerOffsetAngle;	//angular offset between items in degrees
+	public static final int OFFSET_DIST = Settings.rotatingContainerOffsetDistance;	//distance between rows of items
 	public static final int ITEM_COUNT_MAX = 2 * 360 / OFFSET_ANGLE;	//maximum number of items container may hold
 	
 	private int diameter;
@@ -71,13 +72,6 @@ public class RotatingContainer extends Container  {
 		ellipse(0, 0, diameter, diameter);
 		fill(primaryColour);
 		ellipse(0, 0, diameter/2+100, diameter/2+100);
-		
-		/*
-		stroke(secondaryColour);
-		strokeWeight(3);
-		line (-diameter/2, 0, diameter/2, 0);
-		line (0, -diameter/2, 0, diameter/2);
-		*/
 		
 		popMatrix();
 	}

@@ -39,6 +39,7 @@ import vialab.SMT.TouchClient;
 import vialab.SMT.TouchSource;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
+import ca.uwaterloo.epad.painting.Eraser;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.prompting.PromptManager;
 import ca.uwaterloo.epad.ui.Button;
@@ -62,14 +63,16 @@ public class Application extends PApplet {
 	
 	public static final String ITEM_ADDED = "item added";
 	public static final String ITEM_REMOVED = "item removed";
+	public static final String BRUSH_SELECTED = "brush selected";
+	public static final String PAINT_SELECTED = "paint selected";
 
 	// Fields
 	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
 	@XmlAttribute public static String backgroundImage = null;
 
 	// GUI components
-	private static Brush currentBrush;
-	private static Paint currentPaint;
+	private static Brush selectedBrush;
+	private static Paint selectedPaint;
 	private static Drawer leftDrawer;
 	private static Drawer rightDrawer;
 	private static Drawer topDrawer;
@@ -83,6 +86,9 @@ public class Application extends PApplet {
 	
 	private static ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
 	private static Application instance;
+	
+	private static ArrayList<Brush> brushes = new ArrayList<Brush>();
+	private static ArrayList<Paint> paints = new ArrayList<Paint>();
 
 	public void setup() {
 		size(Settings.width, Settings.height, P3D);
@@ -108,7 +114,7 @@ public class Application extends PApplet {
 			bg = this.loadImage(Settings.dataFolder + backgroundImage);
 		}
 		
-		// create default canvas
+		// create default canvas (in case it is not specified in the layout file
 		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
 		
 		loadLayout(Settings.defaultLayoutFile);
@@ -125,11 +131,13 @@ public class Application extends PApplet {
 			makeControlPanel(topDrawer.getContainer());
 		}
 		
+		setSelectedBrush(getAllBrushes().get(0));
+		setSelectedPaint(getAllPaints().get(0));
+		
 		PromptManager.init(this);
 		TTSManager.init();
-		
-		SplashScreen.remove();
 		setActionPerformed();
+		SplashScreen.remove();
 	}
 
 	public void draw() {
@@ -139,7 +147,10 @@ public class Application extends PApplet {
 			image(bg, 0, 0, displayWidth, displayHeight);
 		}
 		
-		text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 900, 10);
+		if (Settings.showDebugInfo) {
+			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
+			text("brushes: " + brushes.size() + ", paints: " + paints.size(), 10, 20);
+		}
 	}
 	
 	private static void makeControlPanel(Container c) {
@@ -199,28 +210,44 @@ public class Application extends PApplet {
 		}
 	}
 
-	public static void setPaint(Paint p) {
-		if (currentPaint != null)
-			currentPaint.deselect();
-		currentPaint = p;
-		if (currentPaint != null)
-			currentPaint.select();
+	public static void setSelectedPaint(Paint p) {
+		if (p == selectedPaint) return;
+		
+		if (selectedPaint != null)
+			selectedPaint.deselect();
+		selectedPaint = p;
+		if (selectedPaint != null)
+			selectedPaint.select();
+		
+		notifyListeners(p, PAINT_SELECTED);
 	}
 
-	public static Paint getPaint() {
-		return currentPaint;
+	public static Paint getSelectedPaint() {
+		return selectedPaint;
+	}
+	
+	public static ArrayList<Paint> getAllPaints() {
+		return paints;
 	}
 
-	public static void setBrush(Brush b) {
-		if (currentBrush != null)
-			currentBrush.deselect();
-		currentBrush = b;
-		if (currentBrush != null)
-			currentBrush.select();
+	public static void setSelectedBrush(Brush b) {
+		if (b == selectedBrush) return;
+		
+		if (selectedBrush != null)
+			selectedBrush.deselect();
+		selectedBrush = b;
+		if (selectedBrush != null)
+			selectedBrush.select();
+		
+		notifyListeners(b, BRUSH_SELECTED);
 	}
 
-	public static Brush getBrush() {
-		return currentBrush;
+	public static Brush getSelectedBrush() {
+		return selectedBrush;
+	}
+	
+	public static ArrayList<Brush> getAllBrushes() {
+		return brushes;
 	}
 
 	public static Zone[] getChildren() {
@@ -258,19 +285,10 @@ public class Application extends PApplet {
 	public static void setCanvas(Canvas newCanvas) {
 		if (canvas != null) {
 			TouchClient.remove(canvas);
-			if (leftDrawer != null)
-				leftDrawer.removeListener(canvas);
-			if (rightDrawer != null)
-				rightDrawer.removeListener(canvas);
 		}
 		canvas = newCanvas;
 		
 		TouchClient.add(canvas);
-		
-		if (leftDrawer != null)
-			leftDrawer.addListener(canvas);
-		if (rightDrawer != null)
-			rightDrawer.addListener(canvas);
 	}
 	
 	public static Canvas getCanvas() {
@@ -297,11 +315,21 @@ public class Application extends PApplet {
 	}
 	
 	public static void addItem(MoveableItem item) {
+		if (item instanceof Paint)
+			paints.add((Paint)item);
+		else if (item instanceof Brush && !(item instanceof Eraser))
+			brushes.add((Brush)item);
+		
 		TouchClient.add(item);
 		notifyListeners(item, ITEM_ADDED);
 	}
 	
 	public static void removeItem(MoveableItem item) {
+		if (item instanceof Paint)
+			paints.remove(item);
+		else if (!(item instanceof Eraser))
+			brushes.remove(item);
+		
 		TouchClient.remove(item);
 		notifyListeners(item, ITEM_REMOVED);
 	}
@@ -406,6 +434,7 @@ public class Application extends PApplet {
 	}
 	
 	public void exit() {
+		TTSManager.dispose();
 		super.exit();
 	}
 }

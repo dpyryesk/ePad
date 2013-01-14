@@ -61,11 +61,11 @@ public class Paint extends MoveableItem {
 	}
 	
 	protected void doTouchDown(Touch touch) {
-		Application.setPaint(this);
+		Application.setSelectedPaint(this);
 	}
 	
 	protected void doTouchUp(Touch touch) {
-		Application.setPaint(null);
+		Application.setSelectedPaint(null);
 	}
 	
 	public int getColour() {

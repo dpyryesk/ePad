@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Layout>
+<Canvas backgroundColour="255" height="600" width="800" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="125" m10="0.0" m11="1.0" m12="0.0" m13="84" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</Canvas>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-3538902" width="125" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="125" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15553238" width="125" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="270" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Paint" drawerId="2" height="125" image="" paintColour="-15918463" width="125" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="415" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" diameter="60" drawerId="1" height="125" image="images\brushes\brush1.png" width="125" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="560" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" drawerId="1" height="125" image="images\brushes\pencil1.png" size="3" width="125" x="0" y="0">
+<matrix m00="1.00" m01="0.0" m02="0.0" m03="705" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" drawerId="1" height="125" image="images\brushes\eraser.png" size="30" width="125" x="0" y="0">
+<matrix m00="1.0" m01="0.0" m02="0.0" m03="850" m10="0.0" m11="1.0" m12="0.0" m13="610.0" m20="0.0" m21="0.0" m22="1.0" m23="0.0" m30="0.0" m31="0.0" m32="0.0" m33="1.0"/>
+</MoveableItem>
+</Layout>

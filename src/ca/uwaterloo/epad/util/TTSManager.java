@@ -29,6 +29,8 @@ public class TTSManager {
 	private TTSManager(){}
 	
 	public static void init() {
+		if (!Settings.TTSEnabled) return;
+		
 		VoiceManager voiceManager = VoiceManager.getInstance();
 		voice = voiceManager.getVoice("kevin16");
 
@@ -42,6 +44,8 @@ public class TTSManager {
 	}
 
 	public static void say(String text) {
+		if (!Settings.TTSEnabled) return;
+		
 		stop();
 		
 		if (voice == null) {
@@ -52,6 +56,15 @@ public class TTSManager {
 	}
 
 	public static void stop() {
+		if (!Settings.TTSEnabled) return;
+		
 		voice.getAudioPlayer().cancel();
+	}
+	
+	public static void dispose() {
+		if (!Settings.TTSEnabled) return;
+		
+		stop();
+		voice.deallocate();
 	}
 }

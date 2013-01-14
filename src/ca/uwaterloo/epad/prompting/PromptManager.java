@@ -23,6 +23,7 @@ package ca.uwaterloo.epad.prompting;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 import processing.core.PApplet;
@@ -40,23 +41,22 @@ public class PromptManager implements ActionListener {
 	protected static PApplet parent;
 	
 	private static long appInactiveTime;
-	private static boolean wasBrushPromptDisplayed = false;
+	private static boolean wasBrushPromptDisplayed = false, wasPaintPromptDisplayed = false;
 	
-	private static PromptPopup brushPrompt;
+	private static PromptPopup brushPrompt, paintPrompt, engagementPromp;
 	private static int promptStep = 1;
 	
 	private static PromptManager instance;
+	private static boolean isInitialized = false;
 	
 	private static ResourceBundle promptStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.Prompts", Settings.locale);
 	
 	private static Drawer leftDrawer, rightDrawer, topDrawer;
-	private static boolean wasLeftDrawerOpened = false, wasRightDrawerOpened = false, wasTopDrawerOpened = false;
+	private static boolean wasLeftDrawerOpened = false, wasRightDrawerOpened = false;
 	private static Zone focalItem;
 	private static Timer tempTimer, brushPromptTimer, paintPromptTimer;
 	
-	private PromptManager() {
-		
-	};
+	private PromptManager() {};
 	
 	public static void init(PApplet parent) {
 		PromptManager.parent = parent;
@@ -82,54 +82,94 @@ public class PromptManager implements ActionListener {
 		// set up timers
 		brushPromptTimer = new Timer(Settings.brushPromptDelay);
 		paintPromptTimer = new Timer(Settings.paintPromptDelay);
+		
+		isInitialized = true;
 	}
 	
 	public static void add(PromptPopup pp) {
 		activePrompts.add(pp);
 	}
 	
-	public static void remove(PromptPopup pp) {
-		pp.dispose();
-	}
-	
-	public static void clear() {
-		activePrompts.clear();
-	}
-	
 	public static void draw() {
+		if (!isInitialized) return;
+		
 		for (int i=0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);
-			if (pp.isInvisible()) activePrompts.remove(i);
+			if (pp.isInvisible()) {
+				activePrompts.remove(i);
+				if (pp == brushPrompt)
+					brushPrompt = null;
+				else if (pp == paintPrompt)
+					paintPrompt = null;
+			}
 			else pp.draw();
 		}
 	}
 	
 	public static void pre() {
+		if (!isInitialized) return;
+		
 		appInactiveTime = Application.getInactiveTime();
+		
+		//TODO: show entrance prompt asking user for a name to keep in the database
 		
 		if (appInactiveTime >= Settings.resetPromptDelay) {
 			//TODO: show reset prompt after the application has been inactive for some time
-		} else if (appInactiveTime >= Settings.randomPromptDelay) {
-			//TODO: show random prompt to recapture attention
-		} else if (!wasLeftDrawerOpened && !wasBrushPromptDisplayed && brushPromptTimer.isTimeOut()) {
+		} else if (appInactiveTime >= Settings.engagementPromptDelay && activePrompts.size() == 0 && !leftDrawer.isOpen() && !rightDrawer.isOpen()) {
+			if (tempTimer != null && !tempTimer.isTimeOut()) return;
+				
+			// show random engagement prompt to recapture attention
+			if (Math.random() > 0.5 && Application.getAllBrushes().size() > 1) {
+				// create a random brush engagement prompt
+				ArrayList<MoveableItem> list = new ArrayList<MoveableItem>(Application.getAllBrushes());
+				list.remove(Application.getSelectedBrush());
+				Collections.shuffle(list);
+				MoveableItem item = list.get(0);
+				
+				PVector v = item.getCentre();
+				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextBrush"));
+				PromptManager.add(engagementPromp);
+				TTSManager.say(promptStrings.getString("engagementPromptTextBrush"));
+			} else if (Application.getAllPaints().size() > 1) {
+				// create a random paint engagement prompt
+				ArrayList<MoveableItem> list = new ArrayList<MoveableItem>(Application.getAllPaints());
+				list.remove(Application.getSelectedPaint());
+				Collections.shuffle(list);
+				MoveableItem item = list.get(0);
+				
+				PVector v = item.getCentre();
+				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextPaint"));
+				PromptManager.add(engagementPromp);
+				TTSManager.say(promptStrings.getString("engagementPromptTextPaint"));
+			}
+			
+			tempTimer = new Timer(Settings.engagementPromptDelay);
+		} else if (!wasLeftDrawerOpened && !wasBrushPromptDisplayed && brushPromptTimer.isTimeOut() && activePrompts.size() == 0) {
 			// Show setup prompt: brush
 			PVector v = leftDrawer.getHandleLocation();
 			brushPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("brushPromptStep1Icon"), promptStrings.getString("brushPromptStep1Text"));
 			PromptManager.add(brushPrompt);
 			TTSManager.say(promptStrings.getString("brushPromptStep1Text"));
 			wasBrushPromptDisplayed = true;
+			promptStep = 1;
+		} else if (!wasRightDrawerOpened && !wasPaintPromptDisplayed && paintPromptTimer.isTimeOut() && activePrompts.size() == 0) {
+			// Show setup prompt: paint
+			PVector v = rightDrawer.getHandleLocation();
+			paintPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("paintPromptStep1Icon"), promptStrings.getString("paintPromptStep1Text"));
+			PromptManager.add(paintPrompt);
+			TTSManager.say(promptStrings.getString("paintPromptStep1Text"));
+			wasPaintPromptDisplayed = true;
+			promptStep = 1;
 		}
 		
 		// process prompt flow
 		if (brushPrompt != null) {
 			if (promptStep == 1) {
 				PVector v = leftDrawer.getHandleLocation();
-				brushPrompt.setX(v.x);
-				brushPrompt.setY(v.y);
+				brushPrompt.setCoordinates(v);
 				
 				if (leftDrawer.getVisibleWidth() > 200) {
-					brushPrompt.setX(v.x - 100);
-					brushPrompt.setY(v.y);
+					brushPrompt.setCoordinates(v.x - 270, v.y);
 					brushPrompt.setIcon(promptStrings.getString("brushPromptStep2Icon"));
 					brushPrompt.setText(promptStrings.getString("brushPromptStep2Text"));
 					TTSManager.say(promptStrings.getString("brushPromptStep2Text"));
@@ -139,8 +179,7 @@ public class PromptManager implements ActionListener {
 				}
 			} else if (promptStep == 2) {
 				PVector v = leftDrawer.getHandleLocation();
-				brushPrompt.setX(v.x - 200);
-				brushPrompt.setY(v.y);
+				brushPrompt.setCoordinates(v.x - 270, v.y);
 				if (tempTimer != null && tempTimer.isTimeOut()) {
 					brushPrompt.setIcon(promptStrings.getString("brushPromptStep3Icon"));
 					brushPrompt.setText(promptStrings.getString("brushPromptStep3Text"));
@@ -168,30 +207,103 @@ public class PromptManager implements ActionListener {
 					v = item.getCentre();
 				}
 				
-				brushPrompt.setX(v.x);
-				brushPrompt.setY(v.y);
+				brushPrompt.setCoordinates(v);
 			} else if (promptStep == 4) {
 				if (focalItem != null) {
 					PVector v = focalItem.getCentre();
-					brushPrompt.setX(v.x);
-					brushPrompt.setY(v.y);
+					brushPrompt.setCoordinates(v);
 				} else {
 					brushPrompt.dispose();
 				}
 				
-				if (tempTimer.isTimeOut() && leftDrawer.isOpen()) {
-					PVector v = leftDrawer.getHandleLocation();
-					brushPrompt.setX(v.x);
-					brushPrompt.setY(v.y);
-					brushPrompt.setIcon(promptStrings.getString("brushPromptStep5Icon"));
-					brushPrompt.setText(promptStrings.getString("brushPromptStep5Text"));
-					TTSManager.say(promptStrings.getString("brushPromptStep5Text"));
+				if (tempTimer.isTimeOut()) {
+					if (leftDrawer.isOpen()) {
+						PVector v = leftDrawer.getHandleLocation();
+						brushPrompt.setCoordinates(v);
+						brushPrompt.setIcon(promptStrings.getString("brushPromptStep5Icon"));
+						brushPrompt.setText(promptStrings.getString("brushPromptStep5Text"));
+						TTSManager.say(promptStrings.getString("brushPromptStep5Text"));
+					} else {
+						brushPrompt.dispose();
+					}
+					focalItem = null;
 					promptStep++;
 				}
 			} else if (promptStep == 5) {
 				PVector v = leftDrawer.getHandleLocation();
-				brushPrompt.setX(v.x);
-				brushPrompt.setY(v.y);
+				brushPrompt.setCoordinates(v);
+			}
+		}
+		
+		if (paintPrompt != null) {
+			if (promptStep == 1) {
+				PVector v = rightDrawer.getHandleLocation();
+				paintPrompt.setCoordinates(v);
+				
+				if (rightDrawer.getVisibleWidth() > 200) {
+					paintPrompt.setCoordinates(v.x + 270, v.y);
+					paintPrompt.setIcon(promptStrings.getString("paintPromptStep2Icon"));
+					paintPrompt.setText(promptStrings.getString("paintPromptStep2Text"));
+					TTSManager.say(promptStrings.getString("paintPromptStep2Text"));
+					rightDrawer.getContainer().addListener(instance);
+					tempTimer = new Timer(5000);
+					promptStep++;
+				}
+			} else if (promptStep == 2) {
+				PVector v = rightDrawer.getHandleLocation();
+				paintPrompt.setCoordinates(v.x + 270, v.y);
+				if (tempTimer != null && tempTimer.isTimeOut()) {
+					paintPrompt.setIcon(promptStrings.getString("paintPromptStep3Icon"));
+					paintPrompt.setText(promptStrings.getString("paintPromptStep3Text"));
+					TTSManager.say(promptStrings.getString("paintPromptStep3Text"));
+					tempTimer = null;
+					rightDrawer.getContainer().removeListener(instance);
+					promptStep++;
+				}
+			} else if (promptStep == 3) {
+				if (focalItem != null && focalItem instanceof MoveableItem) {
+					if (!((MoveableItem)focalItem).getIsDragged()) {
+						paintPrompt.setIcon(promptStrings.getString("paintPromptStep4Icon"));
+						paintPrompt.setText(promptStrings.getString("paintPromptStep4Text"));
+						TTSManager.say(promptStrings.getString("paintPromptStep4Text"));
+						tempTimer = new Timer(7000);
+						promptStep++;
+					}
+				}
+				
+				PVector v = new PVector();
+				if (focalItem != null) {
+					v = focalItem.getCentre();
+				} else {
+					Zone item = rightDrawer.getContainer().getItemByID(1);
+					v = item.getCentre();
+				}
+				
+				paintPrompt.setCoordinates(v);
+			} else if (promptStep == 4) {
+				if (focalItem != null) {
+					PVector v = focalItem.getCentre();
+					paintPrompt.setCoordinates(v);
+				} else {
+					paintPrompt.dispose();
+				}
+				
+				if (tempTimer.isTimeOut()) {
+					if (rightDrawer.isOpen()) {
+						PVector v = rightDrawer.getHandleLocation();
+						paintPrompt.setCoordinates(v);
+						paintPrompt.setIcon(promptStrings.getString("paintPromptStep5Icon"));
+						paintPrompt.setText(promptStrings.getString("paintPromptStep5Text"));
+						TTSManager.say(promptStrings.getString("paintPromptStep5Text"));
+					} else {
+						paintPrompt.dispose();
+					}
+					focalItem = null;
+					promptStep++;
+				}
+			} else if (promptStep == 5) {
+				PVector v = rightDrawer.getHandleLocation();
+				paintPrompt.setCoordinates(v);
 			}
 		}
 	}
@@ -205,32 +317,36 @@ public class PromptManager implements ActionListener {
 					brushPrompt.hideText();
 			} else if (event.getSource() == rightDrawer) {
 				wasRightDrawerOpened = true;
-			} else if (event.getSource() == topDrawer) {
-				wasTopDrawerOpened = true;
+				if (paintPrompt != null && promptStep == 1)
+					paintPrompt.hideText();
 			}
 		} else if (event.getActionCommand().equals(Drawer.CLOSED)) {
 			if (event.getSource() == leftDrawer && promptStep == 5) {
 				brushPrompt.dispose();
+			} else if (event.getSource() == rightDrawer && promptStep == 5) {
+				paintPrompt.dispose();
 			}
 		} else if (event.getActionCommand().equals(Application.ITEM_ADDED)) {
 			if (brushPrompt != null && promptStep == 3 && focalItem == null) {
 				focalItem = (Zone) event.getSource();
 				brushPrompt.hideText();
+			} else if (paintPrompt != null && promptStep == 3 && focalItem == null) {
+				focalItem = (Zone) event.getSource();
+				paintPrompt.hideText();
 			}
 		} else if (event.getActionCommand().equals(Application.ITEM_REMOVED)) {
 			if (brushPrompt != null && promptStep == 3 && event.getSource() == focalItem) {
 				focalItem = null;
-				remove(brushPrompt);
+				brushPrompt.dispose();
+			} else if (paintPrompt != null && promptStep == 3 && event.getSource() == focalItem) {
+				focalItem = null;
+				paintPrompt.dispose();
 			}
-		} /* else if (event.getActionCommand().equals(Container.MOVED)) {
-			if (brushPrompt != null && promptStep == 2 && event.getSource() == leftDrawer.getContainer()) {
-				brushPrompt.setIcon(promptStrings.getString("brushPromptStep3Icon"));
-				brushPrompt.setText(promptStrings.getString("brushPromptStep3Text"));
-				TTSManager.say(promptStrings.getString("brushPromptStep3Text"));
-				tempTimer = null;
-				leftDrawer.getContainer().removeListener(instance);
-				promptStep++;
+		}  else if (event.getActionCommand().equals(Application.PAINT_SELECTED) || event.getActionCommand().equals(Application.BRUSH_SELECTED)) {
+			if (engagementPromp != null) {
+				engagementPromp.dispose();
+				TTSManager.stop();
 			}
-		}*/
+		}
 	}
 }

@@ -44,8 +44,8 @@ public class Stroke {
 		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));
 		getPath().add(new StrokePoint(v.x, v.y, 0, 0, t.xSpeed, t.ySpeed, t.motionSpeed, t.motionAcceleration));
 		
-		paint = Application.getPaint();
-		brush = Application.getBrush();
+		paint = Application.getSelectedPaint();
+		brush = Application.getSelectedBrush();
 	}
 	
 	public void update(Touch t) {

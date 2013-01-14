@@ -26,7 +26,9 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PShape;
+import processing.core.PVector;
 import ca.uwaterloo.epad.util.Settings;
+import ca.uwaterloo.epad.util.Timer;
 import ca.uwaterloo.epad.util.Tween;
 
 public class PromptPopup {
@@ -62,13 +64,13 @@ public class PromptPopup {
 	protected PShape icon;
 	protected static PFont font;
 	protected Tween alphaTween;
-
-	private float lx = 0;
-	private float ly = 0;
+	
 	private float cx = 0;
 	private float cy = 0;
 	private PImage cache;
 	private PApplet applet;
+	private Timer ttlTimer;
+	private boolean isDisposing = false;
 
 	public PromptPopup(int x, int y) {
 		this.x = x;
@@ -88,22 +90,15 @@ public class PromptPopup {
 	}
 
 	public void draw() {
+		if (ttlTimer.isTimeOut())
+			dispose();
+		
 		applet.pushMatrix();
 		applet.pushStyle();
 		applet.translate(x, y);
 
-		// draw connecting line
-		//if (showText) {
-			//applet.stroke(hightlightColour);
-			//applet.strokeWeight(3);
-			//applet.line(0, 0, lx, ly);
-		//}
-
 		// draw background for icon
 		if (showIcon) {
-			//applet.fill(backgroundColour);
-			//applet.ellipseMode(PConstants.CENTER);
-			//applet.ellipse(0, 0, iconBackgroundRadius, iconBackgroundRadius);
 
 			// draw icon
 			if (icon != null) {
@@ -140,9 +135,14 @@ public class PromptPopup {
 			calculateTextLocation();
 			createCache();
 		}
+		
+		ttlTimer = new Timer(Settings.promptTTL);
 	}
 	
 	public void dispose() {
+		if (isDisposing) return;
+		
+		isDisposing = true;
 		alphaTween = new Tween(255, 0, 700);
 	}
 	
@@ -211,38 +211,22 @@ public class PromptPopup {
 
 	private void calculateTextLocation() {
 		if (location == LOCATION_TOP_RIGHT) {
-			lx = xOffset;
-			ly = -yOffset;
 			cx = xOffset;
 			cy = -yOffset - messageHeight / 2;
 		} else if (location == LOCATION_TOP_LEFT) {
-			lx = -xOffset;
-			ly = -yOffset;
 			cx = -xOffset - messageWidth;
 			cy = -yOffset - messageHeight / 2;
 		} else if (location == LOCATION_BOTTOM_RIGHT) {
-			lx = xOffset;
-			ly = yOffset + messageHeight / 2;
 			cx = xOffset;
 			cy = yOffset;
 		} else if (location == LOCATION_BOTTOM_LEFT) {
-			lx = -xOffset;
-			ly = yOffset + messageHeight / 2;
 			cx = -xOffset - messageWidth;
 			cy = yOffset;
 		}
 	}
 
-	public void setX(int x) {
+	public void setCoordinates(int x, int y) {
 		this.x = x;
-		
-		calculateLocation();
-
-		if (showText)
-			calculateTextLocation();
-	}
-
-	public void setY(int y) {
 		this.y = y;
 		
 		calculateLocation();
@@ -251,25 +235,31 @@ public class PromptPopup {
 			calculateTextLocation();
 	}
 	
-	public void setX(float x) {
-		setX((int) x);
+	public void setCoordinates(float x, float y) {
+		setCoordinates((int)x, (int)y);
 	}
-
-	public void setY(float y) {
-		setY((int) y);
+	
+	public void setCoordinates(PVector v) {
+		setCoordinates(v.x, v.y);
 	}
 	
 	public void setIcon(String icon) {
+		if (isDisposing) return;
+		
 		this.iconName = icon;
 		loadIcon();
 		alphaTween = new Tween(10, 255, 500);
+		ttlTimer = new Timer(Settings.promptTTL);
 	}
 
 	public void setText(String text) {
+		if (isDisposing) return;
+		
 		this.text = text;
 		showText = true;
 		createCache();
 		alphaTween = new Tween(10, 255, 700);
+		ttlTimer = new Timer(Settings.promptTTL);
 	}
 	
 	public void hideText() {

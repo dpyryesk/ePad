@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Application backgroundColour="#FFFFFF" backgroundImage="textures\background_1024x768.png" height="768" targetFPS="60.0" width="1024">
+<Application backgroundColour="#FFFFFF" backgroundImage="textures\background_1024x768.png">
     <SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900">
     </SlidingDrawer>
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">

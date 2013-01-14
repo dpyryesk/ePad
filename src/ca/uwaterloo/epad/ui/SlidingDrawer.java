@@ -83,7 +83,7 @@ public class SlidingDrawer extends Drawer {
 		popMatrix();
 	}
 	
-	public boolean isOpen() {
+	protected boolean calculateState() {
 		if (getVisibleWidth() > 30) {
 			return true;
 		} else {

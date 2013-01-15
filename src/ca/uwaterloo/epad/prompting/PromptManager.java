@@ -209,13 +209,6 @@ public class PromptManager implements ActionListener {
 				
 				brushPrompt.setCoordinates(v);
 			} else if (promptStep == 4) {
-				if (focalItem != null) {
-					PVector v = focalItem.getCentre();
-					brushPrompt.setCoordinates(v);
-				} else {
-					brushPrompt.dispose();
-				}
-				
 				if (tempTimer.isTimeOut()) {
 					if (leftDrawer.isOpen()) {
 						PVector v = leftDrawer.getHandleLocation();
@@ -223,11 +216,18 @@ public class PromptManager implements ActionListener {
 						brushPrompt.setIcon(promptStrings.getString("brushPromptStep5Icon"));
 						brushPrompt.setText(promptStrings.getString("brushPromptStep5Text"));
 						TTSManager.say(promptStrings.getString("brushPromptStep5Text"));
+						promptStep++;
 					} else {
 						brushPrompt.dispose();
 					}
 					focalItem = null;
-					promptStep++;
+				}
+				
+				if (focalItem != null) {
+					PVector v = focalItem.getCentre();
+					brushPrompt.setCoordinates(v);
+				} else {
+					brushPrompt.dispose();
 				}
 			} else if (promptStep == 5) {
 				PVector v = leftDrawer.getHandleLocation();
@@ -281,13 +281,6 @@ public class PromptManager implements ActionListener {
 				
 				paintPrompt.setCoordinates(v);
 			} else if (promptStep == 4) {
-				if (focalItem != null) {
-					PVector v = focalItem.getCentre();
-					paintPrompt.setCoordinates(v);
-				} else {
-					paintPrompt.dispose();
-				}
-				
 				if (tempTimer.isTimeOut()) {
 					if (rightDrawer.isOpen()) {
 						PVector v = rightDrawer.getHandleLocation();
@@ -295,11 +288,18 @@ public class PromptManager implements ActionListener {
 						paintPrompt.setIcon(promptStrings.getString("paintPromptStep5Icon"));
 						paintPrompt.setText(promptStrings.getString("paintPromptStep5Text"));
 						TTSManager.say(promptStrings.getString("paintPromptStep5Text"));
+						promptStep++;
 					} else {
 						paintPrompt.dispose();
 					}
 					focalItem = null;
-					promptStep++;
+				}
+				
+				if (focalItem != null) {
+					PVector v = focalItem.getCentre();
+					paintPrompt.setCoordinates(v);
+				} else {
+					paintPrompt.dispose();
 				}
 			} else if (promptStep == 5) {
 				PVector v = rightDrawer.getHandleLocation();

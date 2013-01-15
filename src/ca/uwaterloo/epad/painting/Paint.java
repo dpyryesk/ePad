@@ -65,7 +65,6 @@ public class Paint extends MoveableItem {
 	}
 	
 	protected void doTouchUp(Touch touch) {
-		Application.setSelectedPaint(null);
 	}
 	
 	public int getColour() {

@@ -36,6 +36,7 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.TouchClient;
+import vialab.SMT.TouchDraw;
 import vialab.SMT.TouchSource;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.painting.Brush;
@@ -101,7 +102,7 @@ public class Application extends PApplet {
 
 		TouchClient.init(this, TouchSource.MOUSE);
 		TouchClient.setWarnUnimplemented(false);
-		TouchClient.setDrawTouchPoints(true, 0);
+		TouchClient.setDrawTouchPoints(TouchDraw.SMOOTH, 0);
 		
 		try {
 			SimpleMarshaller.unmarshallGui(this, new File(Settings.dataFolder + Settings.guiFile));
@@ -403,18 +404,11 @@ public class Application extends PApplet {
 		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
 
 		String filename = "data\\drawing_" + sdt.format(now) + ".png";
-
-		boolean toggleOverlay = canvas.useOverlay;
-		if (toggleOverlay)
-			canvas.toggleOverlay();
 		
 		if (canvas.getDrawing().save(filename))
 			System.out.println("Drawing saved: " + filename);
 		else
 			System.err.println("Failed to save drawing");
-		
-		if (toggleOverlay)
-			canvas.toggleOverlay();
 	}
 	
 	public void clearCanvas() {

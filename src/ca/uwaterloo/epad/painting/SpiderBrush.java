@@ -104,4 +104,8 @@ public class SpiderBrush extends Brush {
 			}
 		}
 	}
+	
+	public static void clearStrokes() {
+		pointList.clear();
+	}
 }

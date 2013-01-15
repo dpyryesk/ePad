@@ -29,6 +29,7 @@ import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.painting.SpiderBrush;
 import ca.uwaterloo.epad.painting.Stroke;
 import ca.uwaterloo.epad.util.Settings;
 
@@ -118,12 +119,19 @@ public class Canvas extends Zone {
 	}
 	
 	public PImage getDrawing() {
+		boolean doToggleOverlay = useOverlay;
+		if (doToggleOverlay)
+			toggleOverlay();
+		
 		PGraphics result = applet.createGraphics(width, height, P2D);
 		result.beginDraw();
 		result.image(drawing, 0, 0, width, height);
 		if (useOverlay)
 			result.blend(overlayImage, 0, 0, width, height, 0, 0, width, height, DARKEST);
 		result.endDraw();
+		
+		if (doToggleOverlay)
+			toggleOverlay();
 		
 		return result.get();
 	}
@@ -139,6 +147,9 @@ public class Canvas extends Zone {
 			strokes = new HashMap<Long, Stroke>();
 		else
 			strokes.clear();
+		
+		// special clear for spider brush
+		SpiderBrush.clearStrokes();
 	}
 	
 	public void clearAndLoad(String filename) {

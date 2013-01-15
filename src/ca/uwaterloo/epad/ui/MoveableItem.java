@@ -178,11 +178,14 @@ public class MoveableItem extends Zone {
 	}
 	
 	protected void touchUpImpl(Touch touch) {
-		if (isDrawerOpen && !isInDrawer && isAboveTrash) {
-			Application.removeItem(this);
+		if (isDrawerOpen) {
+			isDragged = false;
+			if (!isInDrawer && isAboveTrash) {
+				Application.removeItem(this);
+			}
+		} else {
 			doTouchUp(touch);
 		}
-		isDragged = false;
 	}
 	
 	private MoveableItem clone(Object enclosingClass) {

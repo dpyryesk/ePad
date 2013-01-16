@@ -52,7 +52,7 @@ public class SlidingDrawer extends Drawer {
 		
 		if (position == TOP) {
 			noStroke();
-			fill(0xFF0099CC);
+			fill(secondaryColour);
 			
 			rectMode(CORNER);
 			rect(0, 0, width, height);
@@ -61,7 +61,7 @@ public class SlidingDrawer extends Drawer {
 			noStroke();
 			triangle(-100, 0, 0, 60, 100, 0);
 			
-			stroke(0xFF33B5E5);
+			stroke(primaryColour);
 			strokeWeight(3);
 			line(-100, 0, 0, 60);
 			line(0, 60, 100, 0);

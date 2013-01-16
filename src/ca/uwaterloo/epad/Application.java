@@ -47,6 +47,7 @@ import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
+import ca.uwaterloo.epad.ui.FileBrowser;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.SplashScreen;
 import ca.uwaterloo.epad.util.DrawingPrinter;
@@ -67,9 +68,15 @@ public class Application extends PApplet {
 	public static final String BRUSH_SELECTED = "brush selected";
 	public static final String PAINT_SELECTED = "paint selected";
 
-	// Fields
+	// Colour scheme
 	@XmlAttribute public static int backgroundColour = 0xFFFFFFFF;
 	@XmlAttribute public static String backgroundImage = null;
+	@XmlAttribute public static int primaryColour = 0;
+	@XmlAttribute public static int secondaryColour = 0;
+	@XmlAttribute public static int textColour = 0;
+	@XmlAttribute public static int transparentColour = 0;
+	@XmlAttribute public static int transparentAlpha = 0;
+	@XmlAttribute public static int deleteColour = 0;
 
 	// GUI components
 	private static Brush selectedBrush;
@@ -420,7 +427,8 @@ public class Application extends PApplet {
 	}
 	
 	public void toggleOverlay() {
-		canvas.toggleOverlay();
+		TouchClient.add(new FileBrowser("Select a picture to colour", Settings.dataFolder + "textures", null, 4, 3));
+		//canvas.toggleOverlay();
 	}
 	
 	public void print() {

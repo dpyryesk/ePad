@@ -35,7 +35,9 @@ import ca.uwaterloo.epad.util.Settings;
 
 public class Canvas extends Zone {
 	public int backgroundColour = 255;
-	public int borderColour = 0;
+	public int borderColour = Application.primaryColour;
+	public int transparentColour = Application.transparentColour;
+	public int transparentAlpha = Application.transparentAlpha;
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
@@ -53,8 +55,6 @@ public class Canvas extends Zone {
 
 		drawing = applet.createGraphics(width, height, P2D);
 		clear();
-		
-		borderColour = Application.getDrawer(Application.TOP_DRAWER).getPrimaryColour();
 	}
 
 	protected void drawImpl() {
@@ -64,7 +64,7 @@ public class Canvas extends Zone {
 			// Draw border to indicate the moving state
 			stroke(borderColour);
 			strokeWeight(2);
-			fill(0x33000000);
+			fill(transparentColour, transparentAlpha);
 			rect(-30, -30, width + 60, height + 60, 30);
 		}
 		

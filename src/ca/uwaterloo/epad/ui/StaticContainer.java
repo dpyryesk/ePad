@@ -43,9 +43,8 @@ public class StaticContainer extends Container {
 	protected void drawImpl() {
 		if (parent.getPosition() == TOP) {
 			noStroke();
-			
 			rectMode(CORNER);
-			fill(backgroundColour);
+			fill(transparentColour, transparentAlpha);
 			rect(0, 0, width, height - 30);
 			fill(primaryColour);
 			rect(0, 0, width, 10);

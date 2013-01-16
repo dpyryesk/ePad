@@ -79,7 +79,7 @@ public class RotatingDrawer extends Drawer {
 		translate(width/2, height/2);
 		
 		noStroke();
-		fill(0xFF0099CC);
+		fill(secondaryColour);
 		
 		ellipseMode(CENTER);
 		ellipse(0, 0, diameter, diameter);
@@ -88,7 +88,7 @@ public class RotatingDrawer extends Drawer {
 		noStroke();
 		triangle(-100, -7, 0, 60, 100, -7);
 		
-		stroke(0xFF33B5E5);
+		stroke(primaryColour);
 		strokeWeight(3);
 		line(-100, -7, 0, 60);
 		line(0, 60, 100, -7);

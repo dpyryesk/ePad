@@ -1,0 +1,289 @@
+package ca.uwaterloo.epad.ui;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import processing.core.PFont;
+import processing.core.PImage;
+import vialab.SMT.Touch;
+import vialab.SMT.TouchClient;
+import vialab.SMT.Zone;
+import ca.uwaterloo.epad.Application;
+
+public class FileBrowser extends Zone {
+	public int backgroundColour = Application.backgroundColour;
+	public int borderColour = Application.primaryColour;
+	public int transparentColour = Application.transparentColour;
+	public int transparentAlpha = Application.transparentAlpha;
+	public int textColour = Application.textColour;
+	public int headerColour = Application.secondaryColour;
+
+	private int outerPadding = 70;
+	private int innerPadding = 30;
+	private int headerSize = 50;
+	private int itemHeaderSize = 20;
+	private int browserWidth, browserHeight;
+	private int currentRow, currentColumn, currentPage;
+	private int maxColumns;
+	private int maxRows ;
+	private int maxPages;
+	private int itemsPerPage;
+	private float itemWidth;
+	private float itemHeight;
+
+	private String headerText;
+	private String folderPath;
+	private String extension;
+	private ArrayList<File> files;
+	private static PFont headerFont, itemFont;
+	private IconButton leftArrow, rightArrow;
+
+	public FileBrowser(String header, String folder, String extension, int columns, int rows) {
+		super(0, 0, applet.width, applet.height);
+
+		browserWidth = applet.width - outerPadding * 2;
+		browserHeight = applet.height - outerPadding * 2;
+
+		this.folderPath = folder;
+		this.extension = extension;
+		this.headerText = header;
+		this.maxColumns = columns;
+		this.maxRows = rows;
+		itemsPerPage = maxColumns * maxRows;
+		
+		headerFont = applet.createFont("Arial", headerSize);
+		itemFont = applet.createFont("Arial", itemHeaderSize);
+		leftArrow = new IconButton(outerPadding - 50, applet.height/2 - 75/2, 75, 75, "arrow_left", borderColour, backgroundColour);
+		leftArrow.setPressMethodByName("prevPage", this);
+		rightArrow = new IconButton(applet.width - outerPadding - 25, applet.height/2 - 75/2, 75, 75, "arrow_right", borderColour, backgroundColour);
+		rightArrow.setPressMethodByName("nextPage", this);
+		
+		getFiles();
+		showPage();
+		
+		add(new CloseButton(browserWidth + outerPadding - 50, outerPadding - 25, 75, 75));
+	}
+	
+	public FileBrowser(String header, String folder, String extension) {
+		this(header, folder, extension, 5, 3);
+	}
+
+	protected void drawImpl() {
+		noStroke();
+		fill(transparentColour, transparentAlpha);
+		rectMode(CORNER);
+		rect(0, 0, width, height);
+
+		stroke(borderColour);
+		strokeWeight(2);
+		fill(transparentColour, transparentAlpha);
+		rect(outerPadding, outerPadding, browserWidth, browserHeight, 30);
+
+		noStroke();
+		fill(backgroundColour);
+		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, browserHeight - innerPadding * 2);
+		
+		fill(headerColour);
+		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, headerSize);
+		
+		fill(textColour);
+		textFont(headerFont);
+		textAlign(CENTER, CENTER);
+		text(headerText, outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, headerSize);
+	}
+
+	protected void pickDrawImpl() {
+		rect(0, 0, width, height);
+	}
+	
+	protected void touchImpl() {
+		Application.setActionPerformed();
+	}
+	
+	public void close() {
+		TouchClient.remove(this);
+	}
+	
+	public void nextPage() {
+		currentPage++;
+		clearPage();
+		showPage();
+	}
+	
+	public void prevPage() {
+		currentPage--;
+		clearPage();
+		showPage();
+	}
+
+	protected void getFiles() {
+		currentRow = 0;
+		currentColumn = 0;
+		currentPage = 0;
+		itemWidth = ((float)browserWidth - innerPadding * 2) / maxColumns;
+		itemHeight = ((float)browserHeight - innerPadding * 2 - headerSize) / maxRows;
+		
+		File folder = new File(folderPath);
+		File[] listOfFiles = folder.listFiles();
+		files = new ArrayList<File>();
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				if (extension != null && extension.length() > 0) {
+					if (listOfFiles[i].getName().toLowerCase().endsWith(extension))
+						files.add(listOfFiles[i]);
+				} else {
+					files.add(listOfFiles[i]);
+				}
+			}
+		}
+		
+		maxPages = (int) Math.ceil((float) files.size() / itemsPerPage);
+	}
+	
+	private void clearPage() {
+		remove(leftArrow);
+		remove(rightArrow);
+		
+		Zone[] children = getChildren();
+		for (int i=0; i < children.length; i++) {
+			Zone child = children[i];
+			if (child instanceof FileButton)
+				remove(child);
+		}
+	}
+	
+	private void showPage() {
+		int i = currentPage * itemsPerPage;
+		currentColumn = 0;
+		currentRow = 0;
+		
+		while (i < files.size() && i < (currentPage + 1) * itemsPerPage)
+			showFile(files.get(i++));
+		
+		// show navigation arrows if needed
+		if (currentPage > 0)
+			add(leftArrow);
+		if (currentPage < maxPages-1)
+			add(rightArrow);
+	}
+	
+	private void showFile(File file) {
+		String fileName = file.getName();
+		String fileExt = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
+		
+		int fileX = (int) (innerPadding + outerPadding + currentColumn * itemWidth);
+		int fileY = (int) (innerPadding + outerPadding + headerSize + currentRow * itemHeight);
+		
+		FileButton fb = new FileButton(fileX, fileY);
+		fb.fileName = fileName.substring(0, fileName.lastIndexOf('.')).replaceAll("_", " ");
+		fb.filePath = file.getPath();
+		
+		switch (fileExt) {
+		case "sav": fb.fileType = FileButton.TYPE_SAVE; break;
+		case "png":
+		case "jpg":
+		case "jpeg": fb.fileType = FileButton.TYPE_IMAGE; break;
+		default: fb.fileType = FileButton.TYPE_OTHER;
+		}
+		
+		fb.initialize();
+		add(fb);
+		
+		currentColumn ++;
+		if (currentColumn >= maxColumns) {
+			currentColumn = 0;
+			currentRow ++;
+		}
+	}
+	
+	private class FileButton extends Zone {
+		public static final int TYPE_IMAGE = 0;
+		public static final int TYPE_SAVE = 1;
+		public static final int TYPE_OTHER = 2;
+		
+		public String fileName;
+		public String filePath;
+		public int fileType;
+		
+		protected boolean buttonDown = false;
+		protected PImage img;
+		
+		public FileButton(int x, int y) {
+			super(x, y, (int)itemWidth, (int)itemHeight);
+		}
+		
+		protected void initialize() {
+			if (fileType == TYPE_IMAGE) {
+				img = applet.loadImage(filePath);
+			}
+		}
+		
+		protected void drawImpl() {
+			stroke(Application.secondaryColour);
+			strokeWeight(1);
+			fill(Application.primaryColour);
+			rect(0, 0, itemWidth, itemHeight);
+			
+			if (img != null)
+				showImage();
+			
+			fill(textColour);
+			textFont(itemFont);
+			text(fileName, 10, itemHeaderSize);
+		}
+		
+		protected void pickDrawImpl() {
+			rect(0, 0, itemWidth, itemHeight);
+		}
+		
+		public void touchImpl() {
+			Application.setActionPerformed();
+		}
+		
+		public void touchUp(Touch touch) {
+			setButtonDown();
+			super.touchUp(touch);
+
+			if (buttonDown) {
+				// TODO: use proper action on button press
+				System.out.println(fileName);
+			}
+			buttonDown = false;
+		}
+		
+		public void touchDown(Touch touch) {
+			super.touchDown(touch);
+			buttonDown = true;
+		}
+		
+		protected boolean setButtonDown() {
+			buttonDown = getTouches().length > 0;
+			return buttonDown;
+		}
+		
+		private void showImage() {
+			float bgX = 10;
+			float bgY = itemHeaderSize + 10;
+			float bgWidth = width-20;
+			float bgHeight = height-itemHeaderSize-20;
+
+			if (height == 0 || img.height == 0) {
+				return;
+			}
+
+			float aspectBoard = (float) width / height;
+			float aspectImage = (float) img.width / img.height;
+			if (aspectBoard < aspectImage && aspectImage != 0) {
+				bgHeight = bgWidth / aspectImage;
+				bgY += (height - bgHeight) / 2;
+			}
+			else if (aspectBoard > aspectImage) {
+				bgWidth = bgHeight * aspectImage;
+				bgX += (width - bgWidth) / 2;
+			}
+
+			image(img, bgX, bgY, bgWidth, bgHeight);
+		}
+	}
+}

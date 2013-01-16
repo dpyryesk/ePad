@@ -49,11 +49,12 @@ public class MoveableItem extends Zone {
 	protected static PShape moveIcon, deleteIcon;
 	
 	// Colour scheme
-	protected int primaryColour = 255;
-	protected int secondaryColour = 0;
-	protected int highlightColour = 128;
-	protected int backgroundColour = 0x33000000;
-	protected int deleteColour = 0xFFCC0000;
+	protected int primaryColour = Application.primaryColour;
+	protected int secondaryColour = Application.secondaryColour;
+	protected int highlightColour = Application.primaryColour;
+	protected int transparentColour = Application.transparentColour;
+	protected int transparentAlpha = Application.transparentAlpha;
+	protected int deleteColour = Application.deleteColour;
 	
 	public MoveableItem (int x, int y, int width, int height) {
 		this("", x, y, width, height);
@@ -77,7 +78,8 @@ public class MoveableItem extends Zone {
 		matrix = original.getGlobalMatrix();
 		drawerId = original.drawerId;
 		highlightColour = original.highlightColour;
-		backgroundColour = original.backgroundColour;
+		transparentColour = original.transparentColour;
+		transparentAlpha = original.transparentAlpha;
 		deleteColour = original.deleteColour;
 		name = original.name;
 		itemImage = original.itemImage;
@@ -104,7 +106,7 @@ public class MoveableItem extends Zone {
 		if (isSelected)
 			fill(highlightColour);
 		else
-			fill(backgroundColour);
+			fill(transparentColour, transparentAlpha);
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
 		
@@ -264,31 +266,12 @@ public class MoveableItem extends Zone {
 		highlightColour = secondaryColour - 0x33000000;
 	}
 	
-	public void setColourScheme(int primary, int secondary, int background) {
-		primaryColour = primary;
-		secondaryColour = secondary;
-		highlightColour = secondaryColour - 0x33000000;
-		backgroundColour = background;
-	}
-	
-	public void setColourScheme(int primary, int secondary, int background, int delete) {
-		primaryColour = primary;
-		secondaryColour = secondary;
-		highlightColour = secondaryColour - 0x33000000;
-		backgroundColour = background;
-		deleteColour = delete;
-	}
-	
 	public int getPrimaryColour() {
 		return primaryColour;
 	}
 	
 	public int getSecondaryColour() {
 		return secondaryColour;
-	}
-	
-	public int getBackgroundColour() {
-		return backgroundColour;
 	}
 	
 	public String getImage() {

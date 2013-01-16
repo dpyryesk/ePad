@@ -226,8 +226,6 @@ public class PromptManager implements ActionListener {
 				if (focalItem != null) {
 					PVector v = focalItem.getCentre();
 					brushPrompt.setCoordinates(v);
-				} else {
-					brushPrompt.dispose();
 				}
 			} else if (promptStep == 5) {
 				PVector v = leftDrawer.getHandleLocation();
@@ -266,7 +264,7 @@ public class PromptManager implements ActionListener {
 						paintPrompt.setIcon(promptStrings.getString("paintPromptStep4Icon"));
 						paintPrompt.setText(promptStrings.getString("paintPromptStep4Text"));
 						TTSManager.say(promptStrings.getString("paintPromptStep4Text"));
-						tempTimer = new Timer(7000);
+						tempTimer = new Timer(6000);
 						promptStep++;
 					}
 				}
@@ -298,8 +296,6 @@ public class PromptManager implements ActionListener {
 				if (focalItem != null) {
 					PVector v = focalItem.getCentre();
 					paintPrompt.setCoordinates(v);
-				} else {
-					paintPrompt.dispose();
 				}
 			} else if (promptStep == 5) {
 				PVector v = rightDrawer.getHandleLocation();
@@ -321,9 +317,10 @@ public class PromptManager implements ActionListener {
 					paintPrompt.hideText();
 			}
 		} else if (event.getActionCommand().equals(Drawer.CLOSED)) {
-			if (event.getSource() == leftDrawer && promptStep == 5) {
+			if (brushPrompt != null && event.getSource() == leftDrawer && promptStep == 5) {
 				brushPrompt.dispose();
-			} else if (event.getSource() == rightDrawer && promptStep == 5) {
+			} else if (paintPrompt != null && event.getSource() == rightDrawer && promptStep == 5) {
+				System.out.println("exit1");
 				paintPrompt.dispose();
 			}
 		} else if (event.getActionCommand().equals(Application.ITEM_ADDED)) {

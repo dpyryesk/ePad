@@ -64,8 +64,7 @@ public class Button extends Zone {
 		}
 		buttonDown = false;
 	}
-
-	@Override
+	
 	public void touchDown(Touch touch) {
 		super.touchDown(touch);
 		buttonDown = true;

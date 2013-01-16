@@ -66,9 +66,8 @@ public class RotatingContainer extends Container  {
 		translate(width/2, height/2);
 		
 		noStroke();
-		
 		ellipseMode(CENTER);
-		fill(backgroundColour);
+		fill(transparentColour, transparentAlpha);
 		ellipse(0, 0, diameter, diameter);
 		fill(primaryColour);
 		ellipse(0, 0, diameter/2+100, diameter/2+100);

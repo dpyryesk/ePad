@@ -37,6 +37,9 @@ public abstract class Drawer extends Zone {
 	
 	protected boolean isOpen;
 	protected int position;
+	
+	protected int primaryColour = Application.primaryColour;
+	protected int secondaryColour = Application.secondaryColour;
 
 	protected int dragXMin, dragXMax, dragYMin, dragYMax;
 	protected boolean dragX, dragY;
@@ -102,20 +105,12 @@ public abstract class Drawer extends Zone {
 		container.setColourScheme(primary, secondary);
 	}
 
-	public void setColourScheme(int primary, int secondary, int background) {
-		container.setColourScheme(primary, secondary, background);
-	}
-
 	public int getPrimaryColour() {
 		return container.getPrimaryColour();
 	}
 
 	public int getSecondaryColour() {
 		return container.getSecondaryColour();
-	}
-
-	public int getBackgroundColour() {
-		return container.getBackgroundColour();
 	}
 
 	public void setActionPerformed() {

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ca.uwaterloo.epad.Application;
+
 import vialab.SMT.Zone;
 
 public abstract class Container extends Zone {
@@ -34,9 +36,10 @@ public abstract class Container extends Zone {
 	public static final int ITEM_WIDTH = 125;
 	public static final int ITEM_HEIGHT = 125;
 	
-	protected int primaryColour = 255;
-	protected int secondaryColour = 1;
-	protected int backgroundColour = 0x33000000;
+	protected int primaryColour = Application.primaryColour;
+	protected int secondaryColour = Application.secondaryColour;
+	protected int transparentColour = Application.transparentColour;
+	protected int transparentAlpha = Application.transparentAlpha;
 	
 	protected Map<Integer, Zone> items;
 	protected int itemCount = 0;
@@ -67,22 +70,12 @@ public abstract class Container extends Zone {
 		secondaryColour = secondary;
 	}
 	
-	public void setColourScheme(int primary, int secondary, int background) {
-		primaryColour = primary;
-		secondaryColour = secondary;
-		backgroundColour = background;
-	}
-	
 	public int getPrimaryColour() {
 		return primaryColour;
 	}
 	
 	public int getSecondaryColour() {
 		return secondaryColour;
-	}
-	
-	public int getBackgroundColour() {
-		return backgroundColour;
 	}
 	
 	protected void notifyListeners(String message) {

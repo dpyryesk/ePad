@@ -1,3 +1,23 @@
+/*
+ *	ePad 2.0 Multitouch Customizable Painting Platform
+ *  Copyright (C) 2012 Dmitry Pyryeskin and Jesse Hoey, University of Waterloo
+ *  
+ *  This file is part of ePad 2.0.
+ *
+ *  ePad 2.0 is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ePad 2.0 is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with ePad 2.0. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package ca.uwaterloo.epad.ui;
 
 import java.io.File;
@@ -23,6 +43,7 @@ public class FileBrowser extends Zone {
 	private int headerSize = 50;
 	private int itemHeaderSize = 20;
 	private int browserWidth, browserHeight;
+	
 	private int currentRow, currentColumn, currentPage;
 	private int maxColumns;
 	private int maxRows ;
@@ -84,7 +105,7 @@ public class FileBrowser extends Zone {
 		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, browserHeight - innerPadding * 2);
 		
 		fill(headerColour);
-		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, headerSize);
+		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, headerSize + 5);
 		
 		fill(textColour);
 		textFont(headerFont);
@@ -121,7 +142,7 @@ public class FileBrowser extends Zone {
 		currentColumn = 0;
 		currentPage = 0;
 		itemWidth = ((float)browserWidth - innerPadding * 2) / maxColumns;
-		itemHeight = ((float)browserHeight - innerPadding * 2 - headerSize) / maxRows;
+		itemHeight = ((float)browserHeight - innerPadding * 2 - (headerSize + 5)) / maxRows;
 		
 		File folder = new File(folderPath);
 		File[] listOfFiles = folder.listFiles();
@@ -173,7 +194,7 @@ public class FileBrowser extends Zone {
 		String fileExt = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
 		
 		int fileX = (int) (innerPadding + outerPadding + currentColumn * itemWidth);
-		int fileY = (int) (innerPadding + outerPadding + headerSize + currentRow * itemHeight);
+		int fileY = (int) (innerPadding + outerPadding + (headerSize + 5) + currentRow * itemHeight);
 		
 		FileButton fb = new FileButton(fileX, fileY);
 		fb.fileName = fileName.substring(0, fileName.lastIndexOf('.')).replaceAll("_", " ");

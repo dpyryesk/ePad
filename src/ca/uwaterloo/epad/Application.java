@@ -49,6 +49,7 @@ import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.FileBrowser;
 import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.ui.SaveDialog;
 import ca.uwaterloo.epad.ui.SplashScreen;
 import ca.uwaterloo.epad.util.DrawingPrinter;
 import ca.uwaterloo.epad.util.Settings;
@@ -364,6 +365,30 @@ public class Application extends PApplet {
 		return listeners.remove(listener);
 	}
 	
+	//TODO: fix or remove this
+	public static PImage getLayoutScreenshot() {
+		PGraphics pg;
+		pg = instance.createGraphics(instance.width, instance.height, P3D);
+		pg.beginDraw();
+		instance.draw();
+		Zone[] zones = TouchClient.getZones();
+		for (int i=0; i < zones.length; i++) {
+			Zone z = zones[i];
+			if (z.getParent() == null) {
+				if (z instanceof MoveableItem) {
+					((MoveableItem)z).drawImpl();
+					System.out.println("item");
+				} else if (z instanceof Canvas) {
+					((Canvas)z).drawImpl();
+					System.out.println("canvas");
+				}
+			}
+		}
+		pg.endDraw();
+		
+		return pg.get();
+	}
+	
 	public void saveLayout() {
 		saveLayout("temp.xml");
 	}
@@ -407,6 +432,9 @@ public class Application extends PApplet {
 	}
 	
 	public void saveDrawing() {
+		TouchClient.add(new SaveDialog());
+		
+		/*
 		Date now = new Date();
 		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
 
@@ -416,6 +444,7 @@ public class Application extends PApplet {
 			System.out.println("Drawing saved: " + filename);
 		else
 			System.err.println("Failed to save drawing");
+		*/
 	}
 	
 	public void clearCanvas() {
@@ -427,12 +456,12 @@ public class Application extends PApplet {
 	}
 	
 	public void toggleOverlay() {
-		TouchClient.add(new FileBrowser("Select a picture to colour", Settings.dataFolder + "textures", null, 4, 3));
-		//canvas.toggleOverlay();
+		//TouchClient.add(new FileBrowser("Select a picture to colour", Settings.dataFolder + "textures", null, 4, 3));
+		canvas.toggleOverlay();
 	}
 	
 	public void print() {
-		new Thread(new DrawingPrinter(canvas.getDrawing(), Settings.showPrintDialog)).start();
+		new Thread(new DrawingPrinter(canvas.getDrawing(true), Settings.showPrintDialog)).start();
 	}
 	
 	public void exit() {

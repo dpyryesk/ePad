@@ -41,8 +41,9 @@ public class Canvas extends Zone {
 
 	private HashMap<Long, Stroke> strokes;
 	private PGraphics drawing;
+	private String overlayImagePath;
 	private PImage overlayImage;
-	public boolean useOverlay = true;
+	public boolean useOverlay = false;
 	private boolean isDrawerOpen;
 
 	public Canvas(int x, int y, int width, int height, int backgroundColour) {
@@ -51,13 +52,14 @@ public class Canvas extends Zone {
 		isDrawerOpen = false;
 		this.backgroundColour = backgroundColour;
 
-		overlayImage = applet.loadImage(Settings.dataFolder + "images\\house.png");
-
+		//TODO: remove this line later
+		setOverlayImage(Settings.dataFolder + "images\\house.png");
+		
 		drawing = applet.createGraphics(width, height, P2D);
 		clear();
 	}
 
-	protected void drawImpl() {
+	public void drawImpl() {
 		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
 		
 		if (isDrawerOpen) {
@@ -118,8 +120,8 @@ public class Canvas extends Zone {
 		}
 	}
 	
-	public PImage getDrawing() {
-		boolean doToggleOverlay = useOverlay;
+	public PImage getDrawing(boolean hideOverlay) {
+		boolean doToggleOverlay = useOverlay && hideOverlay;
 		if (doToggleOverlay)
 			toggleOverlay();
 		
@@ -166,6 +168,19 @@ public class Canvas extends Zone {
 			strokes = new HashMap<Long, Stroke>();
 		else
 			strokes.clear();
+	}
+	
+	public String getOverlayImagePath() {
+		if (useOverlay)
+			return overlayImagePath;
+		else
+			return null;
+	}
+	
+	public void setOverlayImage(String path) {
+		overlayImagePath = path;
+		overlayImage = applet.loadImage(path);
+		useOverlay = true;
 	}
 	
 	public void toggleOverlay() {

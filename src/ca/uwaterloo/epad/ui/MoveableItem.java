@@ -86,7 +86,7 @@ public class MoveableItem extends Zone {
 		itemImageFilename = original.itemImageFilename;
 	}
 	
-	protected void drawImpl() {
+	public void drawImpl() {
 		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
 		
 		pushMatrix();

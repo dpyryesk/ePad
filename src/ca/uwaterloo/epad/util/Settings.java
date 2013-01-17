@@ -46,6 +46,7 @@ public class Settings {
 	@XmlAttribute public static int height = 768;
 	@XmlAttribute public static float targetFPS = 60;
 	@XmlAttribute public static String dataFolder = "..\\data\\";
+	@XmlAttribute public static String saveFolder = "..\\data\\save\\";
 	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
 	@XmlAttribute public static String defaultLayoutFile = "layout.xml";

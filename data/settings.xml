@@ -10,6 +10,7 @@
 	<TTSEnabled>true</TTSEnabled>
 	
 	<dataFolder>data\</dataFolder>
+	<saveFolder>data\save\</saveFolder>
 	<guiFile>gui.xml</guiFile>
 	<defaultLayoutFile>layout_1080.xml</defaultLayoutFile>
 	

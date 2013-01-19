@@ -49,6 +49,7 @@ public class SaveDialog extends Zone {
 	private String headerText, helpText, mainText = "";
 	private static PFont headerFont, smallFont;
 	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
+	private KeyboardZone keyboard;
 	
 	public SaveDialog() {
 		super(0, 0, applet.width, applet.height);
@@ -63,9 +64,9 @@ public class SaveDialog extends Zone {
 		
 		add(new CloseButton(dialogWidth + outerPadding - 50, outerPadding - 25, 75, 75));
 		
-		KeyboardZone kbd = new KeyboardZone(innerPadding + outerPadding, outerPadding - innerPadding + dialogHeight - keyboardHeight, dialogWidth - innerPadding*2, keyboardHeight, false);
-		add(kbd);
-		kbd.addKeyListener(this);
+		keyboard = new KeyboardZone(innerPadding + outerPadding, outerPadding - innerPadding + dialogHeight - keyboardHeight, dialogWidth - innerPadding*2, keyboardHeight, false);
+		add(keyboard);
+		keyboard.addKeyListener(this);
 	}
 	
 	protected void drawImpl() {
@@ -110,14 +111,23 @@ public class SaveDialog extends Zone {
 		TouchClient.remove(this);
 	}
 	
+	public void doSave() {
+		String name = mainText;
+		mainText = uiStrings.getString("SaveDialogSavingText");
+		
+		SaveFile sf = new SaveFile();
+		sf.save(name);
+		
+		mainText = uiStrings.getString("SaveDialogSucessText");
+		
+		remove(keyboard);
+	}
+	
 	protected void keyTypedImpl(KeyEvent e) {
-		//System.out.println(e.getKeyChar() + " > " + (e.getKeyChar() == '\b'));
 		if (e.getKeyChar() == '\b' && mainText.length() > 0) {
 			mainText = mainText.substring(0, mainText.length()-1);
 		} else if (e.getKeyChar() == '\n') {
-			SaveFile sf = new SaveFile();
-			sf.save(mainText);
-			mainText = "Saved: " + sf.filename; 
+			doSave();
 		} else {
 			mainText += e.getKeyChar();
 		}

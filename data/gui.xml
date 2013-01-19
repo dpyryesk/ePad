@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Application backgroundColour="#FFFFFF" backgroundImage="textures\background_1024x768.png" primaryColour="#33B5E5" secondaryColour="#0099CC" textColour="0" transparentColour="0" transparentAlpha="50" deleteColour="#CC0000">
-    <SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900">
+    <SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900" width="160">
     </SlidingDrawer>
 	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
 	    <!-- Brushes -->

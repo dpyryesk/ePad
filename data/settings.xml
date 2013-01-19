@@ -11,12 +11,15 @@
 	
 	<dataFolder>data\</dataFolder>
 	<saveFolder>data\save\</saveFolder>
+	<colouringFolder>data\colouring\</colouringFolder>
 	<guiFile>gui.xml</guiFile>
 	<defaultLayoutFile>layout_1080.xml</defaultLayoutFile>
 	
 	<!-- Common GUI settings -->
 	<rotatingContainerOffsetAngle>12</rotatingContainerOffsetAngle>
 	<rotatingContainerOffsetDistance>60</rotatingContainerOffsetDistance>
+	<fileBrowserColumns>5</fileBrowserColumns>
+	<fileBrowserRows>3</fileBrowserRows>
 	<showDebugInfo>true</showDebugInfo>
 	
 	<!-- Prompt delays in ms -->

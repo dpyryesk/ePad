@@ -21,7 +21,9 @@
 package ca.uwaterloo.epad.ui;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import processing.core.PFont;
 import processing.core.PImage;
@@ -29,8 +31,11 @@ import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
+import ca.uwaterloo.epad.xml.SaveFile;
 
 public class FileBrowser extends Zone {
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd yyyy, hh:mm aaa");
+	
 	public int backgroundColour = Application.backgroundColour;
 	public int borderColour = Application.primaryColour;
 	public int transparentColour = Application.transparentColour;
@@ -101,7 +106,7 @@ public class FileBrowser extends Zone {
 		rect(outerPadding, outerPadding, browserWidth, browserHeight, 30);
 
 		noStroke();
-		fill(backgroundColour);
+		fill(transparentColour, transparentAlpha);
 		rect(outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, browserHeight - innerPadding * 2);
 		
 		fill(headerColour);
@@ -160,6 +165,11 @@ public class FileBrowser extends Zone {
 		}
 		
 		maxPages = (int) Math.ceil((float) files.size() / itemsPerPage);
+		
+		// sort files from newest to oldest if dealing with saves
+		if (SaveFile.SAVE_FILE_EXT.equals(extension)) {
+			Collections.reverse(files);
+		}
 	}
 	
 	private void clearPage() {
@@ -191,7 +201,7 @@ public class FileBrowser extends Zone {
 	
 	private void showFile(File file) {
 		String fileName = file.getName();
-		String fileExt = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
+		String fileExt = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 		
 		int fileX = (int) (innerPadding + outerPadding + currentColumn * itemWidth);
 		int fileY = (int) (innerPadding + outerPadding + (headerSize + 5) + currentRow * itemHeight);
@@ -201,10 +211,10 @@ public class FileBrowser extends Zone {
 		fb.filePath = file.getPath();
 		
 		switch (fileExt) {
-		case "sav": fb.fileType = FileButton.TYPE_SAVE; break;
-		case "png":
-		case "jpg":
-		case "jpeg": fb.fileType = FileButton.TYPE_IMAGE; break;
+		case SaveFile.SAVE_FILE_EXT: fb.fileType = FileButton.TYPE_SAVE; break;
+		case ".png":
+		case ".jpg":
+		case ".jpeg": fb.fileType = FileButton.TYPE_IMAGE; break;
 		default: fb.fileType = FileButton.TYPE_OTHER;
 		}
 		
@@ -226,6 +236,7 @@ public class FileBrowser extends Zone {
 		public String fileName;
 		public String filePath;
 		public int fileType;
+		public SaveFile save;
 		
 		protected boolean buttonDown = false;
 		protected PImage img;
@@ -237,6 +248,10 @@ public class FileBrowser extends Zone {
 		protected void initialize() {
 			if (fileType == TYPE_IMAGE) {
 				img = applet.loadImage(filePath);
+			} else if (fileType == TYPE_SAVE) {
+				save = new SaveFile();
+				save.load(filePath);
+				img = applet.loadImage(save.thumbnailPath);
 			}
 		}
 		
@@ -246,12 +261,21 @@ public class FileBrowser extends Zone {
 			fill(Application.primaryColour);
 			rect(0, 0, itemWidth, itemHeight);
 			
-			if (img != null)
-				showImage();
+			if (img != null) {
+				if (fileType == TYPE_IMAGE)
+					showImage(10, itemHeaderSize + 10, width-20, height-itemHeaderSize-40);
+				else if (fileType == TYPE_SAVE)
+					showImage(10, itemHeaderSize + 40, width-20, height-itemHeaderSize-60);
+			}
 			
 			fill(textColour);
 			textFont(itemFont);
-			text(fileName, 10, itemHeaderSize);
+			if (fileType == TYPE_IMAGE) {
+				text(fileName, 10, itemHeaderSize);
+			} else if (fileType == TYPE_SAVE) {
+				text("Name: " + save.userName, 10, itemHeaderSize);
+				text("Date : " + DATE_FORMAT.format(save.saveTime), 10, itemHeaderSize*2);
+			}
 		}
 		
 		protected void pickDrawImpl() {
@@ -268,7 +292,12 @@ public class FileBrowser extends Zone {
 
 			if (buttonDown) {
 				// TODO: use proper action on button press
-				System.out.println(fileName);
+				if (fileType == TYPE_IMAGE) {
+					Application.getCanvas().setOverlayImage(filePath);
+					close();
+				} else if (fileType == TYPE_SAVE) {
+					Application.loadSave(save);
+				}
 			}
 			buttonDown = false;
 		}
@@ -283,23 +312,22 @@ public class FileBrowser extends Zone {
 			return buttonDown;
 		}
 		
-		private void showImage() {
-			float bgX = 10;
-			float bgY = itemHeaderSize + 10;
-			float bgWidth = width-20;
-			float bgHeight = height-itemHeaderSize-20;
+		private void showImage(int x, int y, int maxWidth, int maxHeight) {
+			float bgX = x;
+			float bgY = y;
+			float bgWidth = maxWidth;
+			float bgHeight = maxHeight;
 
-			if (height == 0 || img.height == 0) {
+			if (bgHeight == 0 || img.height == 0 || img.width == 0) {
 				return;
 			}
 
-			float aspectBoard = (float) width / height;
+			float aspectBoard = (float) bgWidth / bgHeight;
 			float aspectImage = (float) img.width / img.height;
-			if (aspectBoard < aspectImage && aspectImage != 0) {
+			if (aspectBoard < aspectImage) {
 				bgHeight = bgWidth / aspectImage;
 				bgY += (height - bgHeight) / 2;
-			}
-			else if (aspectBoard > aspectImage) {
+			} else if (aspectBoard > aspectImage) {
 				bgWidth = bgHeight * aspectImage;
 				bgX += (width - bgWidth) / 2;
 			}

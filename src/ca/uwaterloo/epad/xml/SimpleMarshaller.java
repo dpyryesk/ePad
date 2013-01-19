@@ -70,6 +70,7 @@ public class SimpleMarshaller {
 	private static final String ATTR_PRIMARY_COLOUR = "primaryColour";
 	private static final String ATTR_SECONDARY_COLOUR = "secondaryColour";
 	private static final String ATTR_BACKGROUND_COLOUR = "backgroundColour";
+	private static final String ATTR_OVERLAY = "overlay";
 	
 	private static final String LEFT = "left";
 	private static final String RIGHT = "right";
@@ -137,6 +138,7 @@ public class SimpleMarshaller {
 			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
 			child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
 			child.setAttribute(ATTR_BACKGROUND_COLOUR, Integer.toString(((Canvas) z).backgroundColour));
+			child.setAttribute(ATTR_OVERLAY, ((Canvas)z).getOverlayImagePath());
 			
 			// save transformation matrix
 			Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
@@ -191,7 +193,17 @@ public class SimpleMarshaller {
 				int width = Integer.parseInt(attributeMap.getNamedItem(ATTR_WIDTH).getNodeValue());
 				int height = Integer.parseInt(attributeMap.getNamedItem(ATTR_HEIGHT).getNodeValue());
 				int backgroundColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_BACKGROUND_COLOUR).getNodeValue());
+				
 				Canvas canvas = new Canvas(x, y, width, height, backgroundColour);
+				
+				// load overlay image path
+				String overlayPath;
+				Node overlayNode = attributeMap.getNamedItem(ATTR_OVERLAY);
+				if (overlayNode != null) {
+					overlayPath = overlayNode.getNodeValue();
+					if (overlayPath != null && overlayPath.length() > 0 && !overlayPath.equals("null"))
+						canvas.setOverlayImage(overlayPath);
+				}
 				
 				// load transformation matrix
 				PMatrix3D matrix = new PMatrix3D();
@@ -392,8 +404,21 @@ public class SimpleMarshaller {
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
+				
+				// determine drawer width
+				int drawerWidth = app.height / 3;
+				Node temp = attributeMap.getNamedItem(ATTR_WIDTH);
+				if (temp !=null ) {
+					String value = temp.getNodeValue();
+					if (value.endsWith("%")) {
+						drawerWidth = (int) ((float)app.height * Float.parseFloat(value.substring(0, value.length()-1)) / 100);
+					} else {
+						drawerWidth = Integer.parseInt(value);
+					}
+				}
+				
 				switch (pos) {
-				case TOP: drawer = SlidingDrawer.makeTopDrawer(app); drawerId = Application.TOP_DRAWER; break;
+				case TOP: drawer = SlidingDrawer.makeTopDrawer(app, drawerWidth); drawerId = Application.TOP_DRAWER; break;
 				default: System.err.println("SimpleMarshaller: layout error, only top sliding drawer is supported");
 				throw (new DOMException((short)0, "Layout error"));
 				}

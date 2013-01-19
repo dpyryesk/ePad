@@ -34,10 +34,10 @@ public class Button extends Zone {
 	protected String text;
 	protected PFont font;
 	protected float cornerRadius = 12;
-	protected int colour = 0xFF99CC00;
-	protected int pressedColour = 0xFF669900;
+	protected int colour = Application.primaryColour;
+	protected int pressedColour = Application.secondaryColour;
 	protected int borderWeight = 2;
-	protected int borderColour = 0xFF669900;
+	protected int borderColour = Application.secondaryColour;
 	protected int textColour = 0;
 	protected int pressedTextColour = 0;
 	protected boolean buttonDown = false;
@@ -122,7 +122,16 @@ public class Button extends Zone {
 		}
 	}
 	
-	public void setPressMethodByName(String methodName, Object obj) {
+	public void setStaticPressMethod(String methodName, Class<?> c) {
+		pressMethodObject = null;
+		try {
+			pressMethod = c.getDeclaredMethod(methodName);
+		} catch (NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setPressMethod(String methodName, Object obj) {
 		Class<?> c = obj.getClass();
 		pressMethodObject = obj;
 		try {

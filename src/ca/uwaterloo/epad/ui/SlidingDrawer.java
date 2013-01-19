@@ -25,8 +25,8 @@ import processing.core.PVector;
 import vialab.SMT.Zone;
 
 public class SlidingDrawer extends Drawer {
-	public static SlidingDrawer makeTopDrawer(PApplet parent) {
-		SlidingDrawer instance = new SlidingDrawer(0, -parent.height/3, parent.width, parent.height/3, TOP);
+	public static SlidingDrawer makeTopDrawer(PApplet parent, int drawerWidth) {
+		SlidingDrawer instance = new SlidingDrawer(0, -drawerWidth, parent.width, drawerWidth, TOP);
 		
 		instance.container = new StaticContainer(instance.width, instance.height, instance);
 		instance.add(instance.container);

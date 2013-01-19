@@ -20,9 +20,13 @@
 
 package ca.uwaterloo.epad.xml;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,14 +41,14 @@ public class SaveFile {
 	public static final String THUMBNAIL = "thumbnailPath";
 	public static final String DRAWING = "drawingPath";
 	public static final String LAYOUT= "layoutPath";
-	public static final String OVERLAY= "overlay";
 	
 	public static final String SAVE_FILE_EXT = ".sav";
 	public static final String DIRECTORY_SUFFIX = "_data";
 	
 	private static final String SAVE_FOLDER = Settings.saveFolder;
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
-	private static final int THUMBNAIL_MAX_SIZE = 150;
+	private static final int THUMBNAIL_MAX_SIZE = 300;
+	private static final int PARAMETER_COUNT = 6; // number of parameters that have to be loaded from the save file (name, date, directory, thumbnail, drawing and layout)
 
 	public String filename;
 	public String dirname;
@@ -80,7 +84,6 @@ public class SaveFile {
 			out.write(THUMBNAIL + "=" + thumbnailPath + "\n");
 			out.write(DRAWING + "=" + drawingPath + "\n");
 			out.write(LAYOUT + "=" + layoutPath + "\n");
-			out.write(OVERLAY + "=" + Application.getCanvas().getOverlayImagePath() + "\n");
 			out.close();
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
@@ -88,9 +91,15 @@ public class SaveFile {
 		}
 		
 		drawing = Application.getCanvas().getDrawing(true);
-		thumbnail = Application.getCanvas().getDrawing(false); // Application.getLayoutScreenshot();
-		int w = THUMBNAIL_MAX_SIZE;
-		int h = Math.round((float)thumbnail.height * (float)THUMBNAIL_MAX_SIZE / (float)thumbnail.width);
+		thumbnail = Application.getCanvas().getDrawing(false);
+		int w, h;
+		if (thumbnail.width >= thumbnail.height) {
+			w = THUMBNAIL_MAX_SIZE;
+			h = Math.round((float)thumbnail.height * (float)THUMBNAIL_MAX_SIZE / (float)thumbnail.width);
+		} else {
+			h = THUMBNAIL_MAX_SIZE;
+			w = Math.round((float)thumbnail.width * (float)THUMBNAIL_MAX_SIZE / (float)thumbnail.height);
+		}
 		thumbnail.resize(w, h);
 		
 		if (thumbnail.save(thumbnailPath))
@@ -114,6 +123,51 @@ public class SaveFile {
 	}
 
 	public boolean load(String filename) {
-		return false;
+		this.filename = filename;
+		File file = new File(filename);
+		if (!file.exists())
+			return false;
+		
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader in = new BufferedReader(fr);
+			
+			String line = in.readLine();
+			int lineCount = 0;
+			while (line != null) {
+				if (line.startsWith(USER_NAME)) {
+					userName = line.substring(USER_NAME.length()+1);
+					lineCount++;
+				} else if (line.startsWith(SAVE_TIME)) {
+					saveTime = DATE_FORMAT.parse(line.substring(SAVE_TIME.length()+1));
+					lineCount++;
+				} else if (line.startsWith(DIRECTORY)) {
+					dirname = line.substring(DIRECTORY.length()+1);
+					lineCount++;
+				} else if (line.startsWith(THUMBNAIL)) {
+					thumbnailPath = line.substring(THUMBNAIL.length()+1);
+					lineCount++;
+				} else if (line.startsWith(DRAWING)) {
+					drawingPath = line.substring(DRAWING.length()+1);
+					lineCount++;
+				} else if (line.startsWith(LAYOUT)) {
+					layoutPath = line.substring(LAYOUT.length()+1);
+					lineCount++;
+				}
+				
+				line = in.readLine();
+			}
+			
+			in.close();
+			
+			// check if all parameters were loaded
+			if (lineCount != PARAMETER_COUNT)
+				return false;
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 }

@@ -31,7 +31,6 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.painting.SpiderBrush;
 import ca.uwaterloo.epad.painting.Stroke;
-import ca.uwaterloo.epad.util.Settings;
 
 public class Canvas extends Zone {
 	public int backgroundColour = 255;
@@ -51,15 +50,11 @@ public class Canvas extends Zone {
 		translate(x, y);
 		isDrawerOpen = false;
 		this.backgroundColour = backgroundColour;
-
-		//TODO: remove this line later
-		setOverlayImage(Settings.dataFolder + "images\\house.png");
-		
 		drawing = applet.createGraphics(width, height, P2D);
 		clear();
 	}
 
-	public void drawImpl() {
+	protected void drawImpl() {
 		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
 		
 		if (isDrawerOpen) {
@@ -76,7 +71,7 @@ public class Canvas extends Zone {
 
 		image(drawing, 0, 0, width, height);
 		
-		if (useOverlay)
+		if (useOverlay && overlayImage != null)
 			image(overlayImage, 0, 0, width, height);
 	}
 

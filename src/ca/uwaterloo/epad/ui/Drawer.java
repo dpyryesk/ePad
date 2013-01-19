@@ -132,7 +132,8 @@ public abstract class Drawer extends Zone {
 	}
 
 	public void addListener(ActionListener listener) {
-		listeners.add(listener);
+		if (!listeners.contains(listener))
+			listeners.add(listener);
 	}
 	
 	public boolean removeListener(ActionListener listener) {

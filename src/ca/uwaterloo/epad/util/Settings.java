@@ -47,6 +47,7 @@ public class Settings {
 	@XmlAttribute public static float targetFPS = 60;
 	@XmlAttribute public static String dataFolder = "..\\data\\";
 	@XmlAttribute public static String saveFolder = "..\\data\\save\\";
+	@XmlAttribute public static String colouringFolder = "..\\data\\colouring\\";
 	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
 	@XmlAttribute public static String defaultLayoutFile = "layout.xml";
@@ -55,6 +56,8 @@ public class Settings {
 	// Common GUI settings
 	@XmlAttribute public static int rotatingContainerOffsetAngle = 12;
 	@XmlAttribute public static int rotatingContainerOffsetDistance = 60;
+	@XmlAttribute public static int fileBrowserColumns = 4;
+	@XmlAttribute public static int fileBrowserRows = 2;
 	@XmlAttribute public static boolean showDebugInfo = false;
 	
 	// Prompt delays in ms

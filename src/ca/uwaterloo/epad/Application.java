@@ -54,6 +54,7 @@ import ca.uwaterloo.epad.ui.SplashScreen;
 import ca.uwaterloo.epad.util.DrawingPrinter;
 import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.util.TTSManager;
+import ca.uwaterloo.epad.xml.SaveFile;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
@@ -112,36 +113,8 @@ public class Application extends PApplet {
 		TouchClient.setWarnUnimplemented(false);
 		TouchClient.setDrawTouchPoints(TouchDraw.SMOOTH, 0);
 		
-		try {
-			SimpleMarshaller.unmarshallGui(this, new File(Settings.dataFolder + Settings.guiFile));
-		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-			exit();
-		}
-
-		if (backgroundImage != null && backgroundImage.length() > 0) {
-			bg = this.loadImage(Settings.dataFolder + backgroundImage);
-		}
-		
-		// create default canvas (in case it is not specified in the layout file
-		setCanvas(new Canvas((width-800)/2, (height-600)/2, 800, 600, 255));
-		
-		loadLayout(Settings.defaultLayoutFile);
-		
-		// Put drawers on top
-		if (leftDrawer != null)
-			TouchClient.putZoneOnTop(leftDrawer);
-		if (rightDrawer != null)
-			TouchClient.putZoneOnTop(rightDrawer);
-		if (topDrawer != null) {
-			TouchClient.putZoneOnTop(topDrawer);
-			
-			// create control buttons
-			makeControlPanel(topDrawer.getContainer());
-		}
-		
-		setSelectedBrush(getAllBrushes().get(0));
-		setSelectedPaint(getAllPaints().get(0));
+		loadGUI();
+		loadLayout(Settings.dataFolder + Settings.defaultLayoutFile);
 		
 		PromptManager.init(this);
 		TTSManager.init();
@@ -168,48 +141,51 @@ public class Application extends PApplet {
 		int x = 20;
 		int y = c.height - h - 60;
 		
-		Button b = new Button(x, y, w, h, uiStrings.getString("SaveLayoutButton"), 20, font);
-		b.setPressMethodByName("saveLayout", instance);
-		c.addItem(b);
-		
-		x += w + 20;
-		
-		b = new Button(x, y, w, h, uiStrings.getString("SavePaintingButton"), 20, font);
-		b.setPressMethodByName("saveDrawing", instance);
-		c.addItem(b);
-		
-		x += w + 20;
-		
-		b = new Button(x, y, w, h, uiStrings.getString("ClearPaintingtButton"), 20, font);
-		b.setPressMethodByName("clearCanvas", instance);
+		Button b = new Button(x, y, w, h, uiStrings.getString("SavePaintingButton"), 20, font);
+		b.setStaticPressMethod("save", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
 		c.addItem(b);
 		
 		x += w + 20;
 		
 		b = new Button(x, y, w, h, uiStrings.getString("LoadPaintingButton"), 20, font);
-		b.setPressMethodByName("loadDrawing", instance);
+		b.setStaticPressMethod("load", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
 		c.addItem(b);
 		
 		x += w + 20;
 		
-		b = new Button(x, y, w, h, uiStrings.getString("ToggleOverlayButton"), 20, font);
-		b.setPressMethodByName("toggleOverlay", instance);
+		b = new Button(x, y, w, h, uiStrings.getString("ClearPaintingButton"), 20, font);
+		b.setStaticPressMethod("clearCanvas", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
 		c.addItem(b);
 		
-		x = 20;
-		y -= h + 20;
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("ResetButton"), 20, font);
+		b.setStaticPressMethod("resetToDefaults", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
+		c.addItem(b);
+		
+		x += w + 20;
+		
+		b = new Button(x, y, w, h, uiStrings.getString("ColouringPagesButton"), 20, font);
+		b.setStaticPressMethod("colouringMode", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
+		c.addItem(b);
+		
+		x += w + 20;
 		
 		b = new Button(x, y, w, h, uiStrings.getString("PrintButton"), 20, font);
-		b.setPressMethodByName("print", instance);
+		b.setStaticPressMethod("print", Application.class);
+		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
 		c.addItem(b);
 		
-		x += w + 20;
-		x += w + 20;
-		x += w + 20;
-		x += w + 20;
+		x = instance.width - w - 20;
 		
-		b = new Button(x, y, w, h, uiStrings.getString("ExitButton"), 20, font);
-		b.setPressMethodByName("exit", instance);
+		b = new Button(x, y, w, h, uiStrings.getString("ExitButton"), 30, instance.createFont("Arial", 30));
+		b.setStaticPressMethod("closeApplication", Application.class);
+		b.setColourScheme(0xFFCC0000, 0xFFFF4444, 0xFFFF4444);
 		c.addItem(b);
 	}
 
@@ -343,10 +319,6 @@ public class Application extends PApplet {
 		notifyListeners(item, ITEM_REMOVED);
 	}
 	
-	private static void notifyListeners(String message) {
-		notifyListeners(instance, message);
-	}
-	
 	private static void notifyListeners(Object source, String message) {
 		for (int i = 0; i < listeners.size(); i++) {
 			ActionListener listener = listeners.get(i);
@@ -358,44 +330,69 @@ public class Application extends PApplet {
 	}
 
 	public static void addListener(ActionListener listener) {
-		listeners.add(listener);
+		if (!listeners.contains(listener))
+			listeners.add(listener);
 	}
 	
 	public static boolean removeListener(ActionListener listener) {
 		return listeners.remove(listener);
 	}
 	
-	//TODO: fix or remove this
-	public static PImage getLayoutScreenshot() {
-		PGraphics pg;
-		pg = instance.createGraphics(instance.width, instance.height, P3D);
-		pg.beginDraw();
-		instance.draw();
+	public static void loadGUI() {
+		try {
+			SimpleMarshaller.unmarshallGui(instance, new File(Settings.dataFolder + Settings.guiFile));
+		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			instance.exit();
+		}
+
+		if (backgroundImage != null && backgroundImage.length() > 0) {
+			bg = instance.loadImage(Settings.dataFolder + backgroundImage);
+		}
+		
+		// create default canvas (in case it is not specified in the layout file
+		setCanvas(new Canvas((instance.width-800)/2, (instance.height-600)/2, 800, 600, 255));
+		
+		// create control buttons
+		makeControlPanel(topDrawer.getContainer());
+	}
+	
+	public static void clearWorkspace() {
+		brushes.clear();
+		paints.clear();
+		
+		// remove all zones
 		Zone[] zones = TouchClient.getZones();
 		for (int i=0; i < zones.length; i++) {
 			Zone z = zones[i];
-			if (z.getParent() == null) {
-				if (z instanceof MoveableItem) {
-					((MoveableItem)z).drawImpl();
-					System.out.println("item");
-				} else if (z instanceof Canvas) {
-					((Canvas)z).drawImpl();
-					System.out.println("canvas");
-				}
-			}
+			TouchClient.remove(z);
 		}
-		pg.endDraw();
 		
-		return pg.get();
+		loadGUI();
 	}
 	
-	public void saveLayout() {
-		saveLayout("temp.xml");
+	public static void loadSave(SaveFile save) {
+		clearWorkspace();
+		loadLayout(save.layoutPath);
+		canvas.clearAndLoad(save.drawingPath);
+		
+		// Put drawers on top
+		if (leftDrawer != null)
+			TouchClient.putZoneOnTop(leftDrawer);
+		if (rightDrawer != null)
+			TouchClient.putZoneOnTop(rightDrawer);
+		if (topDrawer != null) {
+			TouchClient.putZoneOnTop(topDrawer);
+		}
+		
+		setSelectedBrush(getAllBrushes().get(0));
+		setSelectedPaint(getAllPaints().get(0));
+		
+		PromptManager.init(instance);
 	}
 	
-	public void saveLayout(String filename) {
+	public static void saveLayout(String filename) {
 		try {
-			filename = Settings.dataFolder + filename;
 			SimpleMarshaller.marshallLayout(new File(filename));
 			System.out.println("Layout saved: " + filename);
 		} catch (Exception e) {
@@ -403,24 +400,36 @@ public class Application extends PApplet {
 		}
 	}
 	
-	public void loadLayout(String filename) {
+	public static void loadLayout(String filename) {
 		try {
-			SimpleMarshaller.unmarshallLayout(new File(Settings.dataFolder + filename));
+			SimpleMarshaller.unmarshallLayout(new File(filename));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
+		
+		// Put drawers on top
+		if (leftDrawer != null)
+			TouchClient.putZoneOnTop(leftDrawer);
+		if (rightDrawer != null)
+			TouchClient.putZoneOnTop(rightDrawer);
+		if (topDrawer != null) {
+			TouchClient.putZoneOnTop(topDrawer);
+		}
+		
+		setSelectedBrush(getAllBrushes().get(0));
+		setSelectedPaint(getAllPaints().get(0));
 	}
 	
-	public void takeScreenshot() {
+	public static void takeScreenshot() {
 		Date now = new Date();
 		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
 
 		String filename = "data\\screenshot_" + sdt.format(now) + ".png";
 
 		PGraphics pg;
-		pg = createGraphics(width, height, P3D);
+		pg = instance.createGraphics(instance.width, instance.height, P3D);
 		pg.beginDraw();
-		draw();
+		instance.draw();
 		TouchClient.draw();
 		PromptManager.draw();
 		pg.endDraw();
@@ -431,41 +440,47 @@ public class Application extends PApplet {
 			System.err.println("Failed to save screenshot");
 	}
 	
-	public void saveDrawing() {
+	public static void save() {
 		TouchClient.add(new SaveDialog());
-		
-		/*
-		Date now = new Date();
-		SimpleDateFormat sdt = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
-
-		String filename = "data\\drawing_" + sdt.format(now) + ".png";
-		
-		if (canvas.getDrawing().save(filename))
-			System.out.println("Drawing saved: " + filename);
-		else
-			System.err.println("Failed to save drawing");
-		*/
 	}
 	
-	public void clearCanvas() {
+	public static void load() {
+		TouchClient.add(new FileBrowser("Select a painting to load", Settings.saveFolder, SaveFile.SAVE_FILE_EXT, Settings.fileBrowserColumns, Settings.fileBrowserRows));
+	}
+	
+	public static void clearCanvas() {
 		canvas.clear();
 	}
 	
-	public void loadDrawing() {
-		canvas.clearAndLoad("data\\drawing_2012.12.19-22.23.48.466.png");
+	public static void resetToDefaults() {
+		clearWorkspace();
+		loadLayout(Settings.dataFolder + Settings.defaultLayoutFile);
+		// Put drawers on top
+		if (leftDrawer != null)
+			TouchClient.putZoneOnTop(leftDrawer);
+		if (rightDrawer != null)
+			TouchClient.putZoneOnTop(rightDrawer);
+		if (topDrawer != null) {
+			TouchClient.putZoneOnTop(topDrawer);
+		}
+		
+		setSelectedBrush(getAllBrushes().get(0));
+		setSelectedPaint(getAllPaints().get(0));
+		
+		PromptManager.init(instance);
 	}
 	
-	public void toggleOverlay() {
-		//TouchClient.add(new FileBrowser("Select a picture to colour", Settings.dataFolder + "textures", null, 4, 3));
-		canvas.toggleOverlay();
+	public static void colouringMode() {
+		TouchClient.add(new FileBrowser("Select a picture to colour", Settings.colouringFolder, null, Settings.fileBrowserColumns, Settings.fileBrowserRows));
+		//canvas.toggleOverlay();
 	}
 	
-	public void print() {
+	public static void print() {
 		new Thread(new DrawingPrinter(canvas.getDrawing(true), Settings.showPrintDialog)).start();
 	}
 	
-	public void exit() {
+	public static void closeApplication() {
 		TTSManager.dispose();
-		super.exit();
+		instance.exit();
 	}
 }

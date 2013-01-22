@@ -20,6 +20,8 @@
 
 package ca.uwaterloo.epad.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +36,11 @@ import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.xml.SaveFile;
 
 public class FileBrowser extends Zone {
+	public static final String FILE_SELECTED = "file selected";
+	public static final int FILE_TYPE_IMAGE = 0;
+	public static final int FILE_TYPE_SAVE = 1;
+	public static final int FILE_TYPE_OTHER = 2;
+	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd yyyy, hh:mm aaa");
 	
 	public int backgroundColour = Application.backgroundColour;
@@ -63,6 +70,8 @@ public class FileBrowser extends Zone {
 	private ArrayList<File> files;
 	private static PFont headerFont, itemFont;
 	private IconButton leftArrow, rightArrow;
+	
+	private ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
 
 	public FileBrowser(String header, String folder, String extension, int columns, int rows) {
 		super(0, 0, applet.width, applet.height);
@@ -211,11 +220,11 @@ public class FileBrowser extends Zone {
 		fb.filePath = file.getPath();
 		
 		switch (fileExt) {
-		case SaveFile.SAVE_FILE_EXT: fb.fileType = FileButton.TYPE_SAVE; break;
+		case SaveFile.SAVE_FILE_EXT: fb.fileType = FILE_TYPE_SAVE; break;
 		case ".png":
 		case ".jpg":
-		case ".jpeg": fb.fileType = FileButton.TYPE_IMAGE; break;
-		default: fb.fileType = FileButton.TYPE_OTHER;
+		case ".jpeg": fb.fileType = FILE_TYPE_IMAGE; break;
+		default: fb.fileType = FILE_TYPE_OTHER;
 		}
 		
 		fb.initialize();
@@ -228,11 +237,7 @@ public class FileBrowser extends Zone {
 		}
 	}
 	
-	private class FileButton extends Zone {
-		public static final int TYPE_IMAGE = 0;
-		public static final int TYPE_SAVE = 1;
-		public static final int TYPE_OTHER = 2;
-		
+	public class FileButton extends Zone {
 		public String fileName;
 		public String filePath;
 		public int fileType;
@@ -246,9 +251,9 @@ public class FileBrowser extends Zone {
 		}
 		
 		protected void initialize() {
-			if (fileType == TYPE_IMAGE) {
+			if (fileType == FILE_TYPE_IMAGE) {
 				img = applet.loadImage(filePath);
-			} else if (fileType == TYPE_SAVE) {
+			} else if (fileType == FILE_TYPE_SAVE) {
 				save = new SaveFile();
 				save.load(filePath);
 				img = applet.loadImage(save.thumbnailPath);
@@ -262,19 +267,22 @@ public class FileBrowser extends Zone {
 			rect(0, 0, itemWidth, itemHeight);
 			
 			if (img != null) {
-				if (fileType == TYPE_IMAGE)
-					showImage(10, itemHeaderSize + 10, width-20, height-itemHeaderSize-40);
-				else if (fileType == TYPE_SAVE)
-					showImage(10, itemHeaderSize + 40, width-20, height-itemHeaderSize-60);
+				if (fileType == FILE_TYPE_IMAGE) {
+					showImage(0, itemHeaderSize + 10, width-20, height-itemHeaderSize-40, true);
+				} else if (fileType == FILE_TYPE_SAVE) {
+					showImage(0, itemHeaderSize + 40, width-20, height-itemHeaderSize-60, true);
+				}
 			}
 			
 			fill(textColour);
 			textFont(itemFont);
-			if (fileType == TYPE_IMAGE) {
+			if (fileType == FILE_TYPE_IMAGE) {
 				text(fileName, 10, itemHeaderSize);
-			} else if (fileType == TYPE_SAVE) {
+			} else if (fileType == FILE_TYPE_SAVE) {
 				text("Name: " + save.userName, 10, itemHeaderSize);
 				text("Date : " + DATE_FORMAT.format(save.saveTime), 10, itemHeaderSize*2);
+			} else {
+				text(filePath, 10, itemHeaderSize);
 			}
 		}
 		
@@ -291,13 +299,8 @@ public class FileBrowser extends Zone {
 			super.touchUp(touch);
 
 			if (buttonDown) {
-				// TODO: use proper action on button press
-				if (fileType == TYPE_IMAGE) {
-					Application.getCanvas().setOverlayImage(filePath);
-					close();
-				} else if (fileType == TYPE_SAVE) {
-					Application.loadSave(save);
-				}
+				close();
+				notifyListeners(this, FILE_SELECTED);
 			}
 			buttonDown = false;
 		}
@@ -312,7 +315,7 @@ public class FileBrowser extends Zone {
 			return buttonDown;
 		}
 		
-		private void showImage(int x, int y, int maxWidth, int maxHeight) {
+		private void showImage(int x, int y, int maxWidth, int maxHeight, boolean showBorder) {
 			float bgX = x;
 			float bgY = y;
 			float bgWidth = maxWidth;
@@ -331,8 +334,32 @@ public class FileBrowser extends Zone {
 				bgWidth = bgHeight * aspectImage;
 				bgX += (width - bgWidth) / 2;
 			}
-
+			
+			if (showBorder)
+				stroke(Application.secondaryColour);
+			else
+				noStroke();
+			fill(Application.backgroundColour);
+			rect(bgX, bgY, bgWidth, bgHeight);
+			
 			image(img, bgX, bgY, bgWidth, bgHeight);
 		}
+	}
+	
+	private void notifyListeners(Object source, String message) {
+		for (int i = 0; i < listeners.size(); i++) {
+			ActionListener listener = listeners.get(i);
+			if (listener != null)
+				listener.actionPerformed(new ActionEvent(source, ActionEvent.ACTION_FIRST, message));
+		}
+	}
+
+	public void addListener(ActionListener listener) {
+		if (!listeners.contains(listener))
+			listeners.add(listener);
+	}
+	
+	public boolean removeListener(ActionListener listener) {
+		return listeners.remove(listener);
 	}
 }

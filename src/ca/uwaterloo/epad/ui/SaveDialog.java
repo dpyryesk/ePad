@@ -45,11 +45,15 @@ public class SaveDialog extends Zone {
 	private int helpTextSize = 20;
 	private int keyboardHeight = 250;
 	private int dialogWidth, dialogHeight;
+	private int buttonWidth = headerSize * 8;
+	private int buttonHeight = headerSize + 20;
+	private int bGap = 40;
 	
 	private String headerText, helpText, mainText = "";
 	private static PFont headerFont, smallFont;
 	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
 	private KeyboardZone keyboard;
+	private Button saveButton, cancelButton;
 	
 	public SaveDialog() {
 		super(0, 0, applet.width, applet.height);
@@ -67,6 +71,21 @@ public class SaveDialog extends Zone {
 		keyboard = new KeyboardZone(innerPadding + outerPadding, outerPadding - innerPadding + dialogHeight - keyboardHeight, dialogWidth - innerPadding*2, keyboardHeight, false);
 		add(keyboard);
 		keyboard.addKeyListener(this);
+		
+		int bX = outerPadding + (dialogWidth - innerPadding * 2 - buttonWidth - bGap) / 2;
+		int bY = outerPadding - innerPadding + dialogHeight - keyboardHeight - buttonHeight;
+		
+		saveButton = new Button(bX, bY, buttonWidth/2, buttonHeight, uiStrings.getString("SaveButton"), headerSize, headerFont);
+		saveButton.setPressMethod("doSave", this);
+		saveButton.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
+		add(saveButton);
+		
+		bX += buttonWidth/2 + bGap;
+		
+		cancelButton = new Button(bX, bY, buttonWidth/2, buttonHeight, uiStrings.getString("CancelButton"), headerSize, headerFont);
+		cancelButton.setPressMethod("close", this);
+		cancelButton.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
+		add(cancelButton);
 	}
 	
 	protected void drawImpl() {
@@ -96,7 +115,7 @@ public class SaveDialog extends Zone {
 		text(helpText, outerPadding + innerPadding, outerPadding + innerPadding + headerSize + 5, dialogWidth - innerPadding * 2, headerSize);
 		
 		textFont(headerFont);
-		text(mainText, outerPadding + innerPadding, outerPadding + innerPadding + headerSize * 2 + 5, dialogWidth - innerPadding * 2, dialogHeight - innerPadding * 2 - (headerSize + 5) - keyboardHeight);
+		text(mainText, outerPadding + innerPadding * 2, outerPadding + innerPadding + headerSize * 2 + 5, dialogWidth - innerPadding * 4, dialogHeight - innerPadding * 2 - headerSize - 5 - keyboardHeight - buttonHeight);
 	}
 	
 	protected void pickDrawImpl() {
@@ -121,6 +140,24 @@ public class SaveDialog extends Zone {
 		mainText = uiStrings.getString("SaveDialogSucessText");
 		
 		remove(keyboard);
+		remove(saveButton);
+		remove(cancelButton);
+		
+		// show buttons
+		int bX = outerPadding + (dialogWidth - innerPadding * 2 - buttonWidth * 2 - bGap) / 2;
+		int bY = outerPadding - innerPadding * 2 + dialogHeight - keyboardHeight;
+		
+		Button b = new Button(bX, bY, buttonWidth, buttonHeight, uiStrings.getString("ContinueButton"), headerSize, headerFont);
+		b.setPressMethod("close", this);
+		b.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
+		add(b);
+		
+		bX += buttonWidth + bGap;
+		
+		b = new Button(bX, bY, buttonWidth, buttonHeight, uiStrings.getString("ResetButton"), headerSize, headerFont);
+		b.setStaticPressMethod("resetToDefaults", Application.class);
+		b.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
+		add(b);
 	}
 	
 	protected void keyTypedImpl(KeyEvent e) {

@@ -43,6 +43,7 @@ import ca.uwaterloo.epad.painting.Brush;
 import ca.uwaterloo.epad.painting.Eraser;
 import ca.uwaterloo.epad.painting.Paint;
 import ca.uwaterloo.epad.prompting.PromptManager;
+import ca.uwaterloo.epad.ui.ApplicationState;
 import ca.uwaterloo.epad.ui.Button;
 import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
@@ -51,6 +52,7 @@ import ca.uwaterloo.epad.ui.FileBrowser;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.SaveDialog;
 import ca.uwaterloo.epad.ui.SplashScreen;
+import ca.uwaterloo.epad.ui.FileBrowser.FileButton;
 import ca.uwaterloo.epad.util.DrawingPrinter;
 import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.util.TTSManager;
@@ -58,7 +60,7 @@ import ca.uwaterloo.epad.xml.SaveFile;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
-public class Application extends PApplet {
+public class Application extends PApplet implements ActionListener {
 	private static final long serialVersionUID = -1354251777507926593L;
 
 	public static final int TOP_DRAWER = 0;
@@ -93,6 +95,7 @@ public class Application extends PApplet {
 	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
 	private static PImage bg;
 	private static long lastActionTime;
+	private static ApplicationState state;
 	
 	private static ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
 	private static Application instance;
@@ -129,6 +132,7 @@ public class Application extends PApplet {
 		PromptManager.init(this);
 		TTSManager.init();
 		setActionPerformed();
+		state = ApplicationState.RUNNING;
 		SplashScreen.remove();
 	}
 
@@ -142,6 +146,15 @@ public class Application extends PApplet {
 		if (Settings.showDebugInfo) {
 			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
 			text("brushes: " + brushes.size() + ", paints: " + paints.size(), 10, 20);
+			
+			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, height - 20);
+			text("brushes: " + brushes.size() + ", paints: " + paints.size(), 10, height - 10);
+			
+			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, width - 150, 10);
+			text("brushes: " + brushes.size() + ", paints: " + paints.size(), width - 150, 20);
+			
+			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, width - 150, height - 20);
+			text("brushes: " + brushes.size() + ", paints: " + paints.size(), width - 150, height - 10);
 		}
 	}
 	
@@ -205,6 +218,10 @@ public class Application extends PApplet {
 		if (key == ' ') {
 			takeScreenshot();
 		}
+	}
+	
+	public static ApplicationState getState() {
+		return state;
 	}
 
 	public static void setSelectedPaint(Paint p) {
@@ -457,7 +474,10 @@ public class Application extends PApplet {
 	}
 	
 	public static void load() {
-		TouchClient.add(new FileBrowser("Select a painting to load", Settings.saveFolder, SaveFile.SAVE_FILE_EXT, Settings.fileBrowserColumns, Settings.fileBrowserRows));
+		FileBrowser saveFileBrowser = new FileBrowser(uiStrings.getString("SaveFileBrowserHeaderText"), Settings.saveFolder,
+				SaveFile.SAVE_FILE_EXT, Settings.fileBrowserColumns, Settings.fileBrowserRows);
+		saveFileBrowser.addListener(instance);
+		TouchClient.add(saveFileBrowser);
 	}
 	
 	public static void clearCanvas() {
@@ -483,7 +503,10 @@ public class Application extends PApplet {
 	}
 	
 	public static void colouringMode() {
-		TouchClient.add(new FileBrowser("Select a picture to colour", Settings.colouringFolder, null, Settings.fileBrowserColumns, Settings.fileBrowserRows));
+		FileBrowser imageFileBrowser = new FileBrowser(uiStrings.getString("ImageFileBrowserHeaderText"), Settings.colouringFolder,
+				null, Settings.fileBrowserColumns, Settings.fileBrowserRows);
+		imageFileBrowser.addListener(instance);
+		TouchClient.add(imageFileBrowser);
 		//canvas.toggleOverlay();
 	}
 	
@@ -494,5 +517,17 @@ public class Application extends PApplet {
 	public static void closeApplication() {
 		TTSManager.dispose();
 		instance.exit();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(FileBrowser.FILE_SELECTED)) {
+			FileButton fb = (FileButton) e.getSource();
+			if (fb.fileType == FileBrowser.FILE_TYPE_IMAGE) {
+				getCanvas().setOverlayImage(fb.filePath);
+			} else if (fb.fileType == FileBrowser.FILE_TYPE_SAVE) {
+				loadSave(fb.save);
+			}
+		}
 	}
 }

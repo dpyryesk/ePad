@@ -6,13 +6,13 @@
 	    <!-- Brushes -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="images\brushes\pencil1.png" size="3"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="images\brushes\marker1.png" size="15"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush1.png" diameter="60"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush2.png" diameter="15"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush3.png" diameter="30"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush1.png" diameter="90"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush2.png" diameter="30"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.RoundBristleBrush" image="images\brushes\brush3.png" diameter="60"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="images\brushes\brush4.png" brushWidth="20" brushHeight="50"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.RectangularBristleBrush" image="images\brushes\brush5.png" brushWidth="30" brushHeight="90"/>
 		<MoveableItem class="ca.uwaterloo.epad.painting.SpiderBrush" image="images\brushes\spider1.png"/>
-		<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" image="images\brushes\eraser.png" size="30"/>
+		<MoveableItem class="ca.uwaterloo.epad.painting.Eraser" image="images\brushes\eraser.png" size="60"/>
 		
 		<!-- Stamps -->
 		<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="vector\cat.svg" image="images\stamps\cat.png"/>

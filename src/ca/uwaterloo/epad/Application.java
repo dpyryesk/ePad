@@ -103,13 +103,23 @@ public class Application extends PApplet {
 	public void setup() {
 		size(Settings.width, Settings.height, P3D);
 		frameRate(Settings.targetFPS);
-		smooth();
 		
 		instance = this;
 		
 		font = createDefaultFont(20);
+		
+		// figure out the touch source
+		TouchSource source;
+		switch (Settings.touchSourse.toUpperCase()) {
+		case "TUIO_DEVICE": source = TouchSource.TUIO_DEVICE; break;
+		case "MOUSE": source = TouchSource.MOUSE; break;
+		case "WM_TOUCH": source = TouchSource.WM_TOUCH; break;
+		case "ANDROID": source = TouchSource.ANDROID; break;
+		case "SMART": source = TouchSource.SMART; break;
+		default: source = TouchSource.MOUSE;
+		}
 
-		TouchClient.init(this, TouchSource.MOUSE);
+		TouchClient.init(this, source);
 		TouchClient.setWarnUnimplemented(false);
 		TouchClient.setDrawTouchPoints(TouchDraw.SMOOTH, 0);
 		
@@ -181,12 +191,14 @@ public class Application extends PApplet {
 		b.setColourScheme(c.getPrimaryColour(), c.getSecondaryColour(), c.getSecondaryColour());
 		c.addItem(b);
 		
+		/*
 		x = instance.width - w - 20;
 		
 		b = new Button(x, y, w, h, uiStrings.getString("ExitButton"), 30, instance.createFont("Arial", 30));
 		b.setStaticPressMethod("closeApplication", Application.class);
 		b.setColourScheme(0xFFCC0000, 0xFFFF4444, 0xFFFF4444);
 		c.addItem(b);
+		*/
 	}
 
 	public void keyPressed() {

@@ -6,6 +6,15 @@
 	<targetFPS>60</targetFPS>
 	<locale>en</locale>
 	
+	<!-- Source of the touch events. Options are:
+	TUIO_DEVICE		-	pure TUIO event from port 3333)
+	MOUSE			-	mouse emulation
+	WM_TOUCH		-	Windows Touch back end
+	ANDROID			-	Android back end
+	SMART			-	Smart SDK back end
+	-->
+	<touchSourse>MOUSE</touchSourse>
+	
 	<showPrintDialog>true</showPrintDialog>
 	<TTSEnabled>true</TTSEnabled>
 	

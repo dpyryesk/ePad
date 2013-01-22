@@ -45,6 +45,8 @@ public class Settings {
 	@XmlAttribute public static int width = 1024;
 	@XmlAttribute public static int height = 768;
 	@XmlAttribute public static float targetFPS = 60;
+	@XmlAttribute public static String touchSourse = "MOUSE";
+	
 	@XmlAttribute public static String dataFolder = "..\\data\\";
 	@XmlAttribute public static String saveFolder = "..\\data\\save\\";
 	@XmlAttribute public static String colouringFolder = "..\\data\\colouring\\";

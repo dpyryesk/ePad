@@ -33,7 +33,7 @@ public class RoundBristleBrush extends Brush {
 	private ArrayList<Bristle> bristleList;
 	private int numBristles = 100;
 	private float bristleSizeMin = 2;
-	private float bristleSizeMax = 5;
+	private float bristleSizeMax = 3;
 	
 	public RoundBristleBrush(int diameter) {
 		super();
@@ -80,7 +80,8 @@ public class RoundBristleBrush extends Brush {
 	}
 	
 	private void makeBristles() {
-		numBristles = diameter * 2;
+		final float r = (float) diameter / 2;
+		numBristles = (int) Math.round(Math.PI * r * r / 10);
 		
 		if (bristleList == null) {
 			bristleList = new ArrayList<Bristle>();
@@ -100,19 +101,4 @@ public class RoundBristleBrush extends Brush {
 			}
 		}
 	}
-	
-	private class Bristle {
-		private float x, y, width;
-		
-		public Bristle(float x, float y, float width) {
-			this.x = x;
-			this.y = y;
-			this.width = width;
-		}
-		
-		public void draw(PGraphics g) {
-			g.ellipse(x, y, width, width);
-		}
-	}
-
 }

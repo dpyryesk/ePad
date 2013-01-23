@@ -49,10 +49,11 @@ import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.FileBrowser;
+import ca.uwaterloo.epad.ui.ResetDialog;
+import ca.uwaterloo.epad.ui.FileBrowser.FileButton;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.SaveDialog;
 import ca.uwaterloo.epad.ui.SplashScreen;
-import ca.uwaterloo.epad.ui.FileBrowser.FileButton;
 import ca.uwaterloo.epad.util.DrawingPrinter;
 import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.util.TTSManager;
@@ -172,6 +173,9 @@ public class Application extends PApplet implements ActionListener {
 			text(s3, width - 150, height - 10);
 			*/
 		}
+		
+		if (getInactiveTime() >= Settings.resetPromptDelay && !ResetDialog.IsOnScreen())
+			TouchClient.add(new ResetDialog());
 	}
 	
 	public boolean sketchFullScreen() {

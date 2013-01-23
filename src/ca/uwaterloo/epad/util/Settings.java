@@ -52,7 +52,7 @@ public class Settings {
 	@XmlAttribute public static String colouringFolder = "..\\data\\colouring\\";
 	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
-	@XmlAttribute public static String defaultLayoutFile = "layout.xml";
+	@XmlAttribute public static String defaultLayoutFile = "layout_768.xml";
 	@XmlAttribute public static boolean TTSEnabled = true;
 	
 	// Common GUI settings
@@ -64,10 +64,12 @@ public class Settings {
 	
 	// Prompt delays in ms
 	@XmlAttribute public static int promptTTL = 15 * 1000;
-	@XmlAttribute public static int brushPromptDelay = 1 * 1000;
-	@XmlAttribute public static int paintPromptDelay = 5 * 1000;
+	@XmlAttribute public static int brushPromptDelay = 60 * 1000;
+	@XmlAttribute public static int paintPromptDelay = 30 * 1000;
 	@XmlAttribute public static int engagementPromptDelay = 60 * 1000;
+	@XmlAttribute public static int engagementPromptRepeatDelay = 60 * 1000;
 	@XmlAttribute public static int resetPromptDelay = 5 * 60 * 1000;
+	@XmlAttribute public static int resetDelay = 5 * 60 * 1000;
 
 	public static void unmarshallSettings() throws TransformerFactoryConfigurationError, TransformerException, IllegalArgumentException, IllegalAccessException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();

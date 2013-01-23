@@ -90,7 +90,7 @@ public class PromptManager implements ActionListener {
 		// set up timers
 		brushPromptTimer = new Timer(Settings.brushPromptDelay);
 		paintPromptTimer = new Timer(Settings.paintPromptDelay);
-		engagementTimer = new Timer(Settings.engagementPromptDelay);
+		engagementTimer = new Timer(Settings.engagementPromptRepeatDelay);
 		
 		wasBrushPromptDisplayed = false;
 		wasPaintPromptDisplayed = false;
@@ -155,11 +155,7 @@ public class PromptManager implements ActionListener {
 		
 		appInactiveTime = Application.getInactiveTime();
 		
-		//TODO: show entrance prompt asking user for a name to keep in the database
-		
-		if (appInactiveTime >= Settings.resetPromptDelay) {
-			//TODO: show reset prompt after the application has been inactive for some time
-		} else if (appInactiveTime >= Settings.engagementPromptDelay && activePrompts.size() == 0 && !leftDrawer.isOpen() && !rightDrawer.isOpen()) {
+		if (appInactiveTime >= Settings.engagementPromptDelay && activePrompts.size() == 0 && !leftDrawer.isOpen() && !rightDrawer.isOpen()) {
 			if (!engagementTimer.isTimeOut()) return;
 				
 			// show random engagement prompt to recapture attention

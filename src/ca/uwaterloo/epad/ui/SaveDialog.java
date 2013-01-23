@@ -55,10 +55,13 @@ public class SaveDialog extends Zone {
 	private KeyboardZone keyboard;
 	private Button saveButton, cancelButton;
 	
+	private static boolean isOnScreen;
+	
 	public SaveDialog() {
 		super(0, 0, applet.width, applet.height);
 		
 		Application.pauseApplication();
+		isOnScreen = true;
 
 		dialogWidth = applet.width - outerPadding * 2;
 		dialogHeight = applet.height - outerPadding * 2;
@@ -73,20 +76,21 @@ public class SaveDialog extends Zone {
 		keyboard = new KeyboardZone(innerPadding + outerPadding, outerPadding - innerPadding + dialogHeight - keyboardHeight, dialogWidth - innerPadding*2, keyboardHeight, false);
 		add(keyboard);
 		keyboard.addKeyListener(this);
+		keyboard.backgroundColor = Application.backgroundColour;
+		keyboard.keyColor = Application.primaryColour;
+		keyboard.keyPressedColor = Application.secondaryColour;
 		
 		int bX = outerPadding + (dialogWidth - innerPadding * 2 - buttonWidth - bGap) / 2;
 		int bY = outerPadding - innerPadding + dialogHeight - keyboardHeight - buttonHeight;
 		
 		saveButton = new Button(bX, bY, buttonWidth/2, buttonHeight, uiStrings.getString("SaveButton"), headerSize, headerFont);
 		saveButton.setPressMethod("doSave", this);
-		saveButton.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
 		add(saveButton);
 		
 		bX += buttonWidth/2 + bGap;
 		
 		cancelButton = new Button(bX, bY, buttonWidth/2, buttonHeight, uiStrings.getString("CancelButton"), headerSize, headerFont);
 		cancelButton.setPressMethod("close", this);
-		cancelButton.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
 		add(cancelButton);
 	}
 	
@@ -131,6 +135,7 @@ public class SaveDialog extends Zone {
 	public void close() {
 		TouchClient.remove(this);
 		Application.resumeApplication();
+		isOnScreen = false;
 	}
 	
 	public void doSave() {
@@ -152,14 +157,12 @@ public class SaveDialog extends Zone {
 		
 		Button b = new Button(bX, bY, buttonWidth, buttonHeight, uiStrings.getString("ContinueButton"), headerSize, headerFont);
 		b.setPressMethod("close", this);
-		b.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
 		add(b);
 		
 		bX += buttonWidth + bGap;
 		
 		b = new Button(bX, bY, buttonWidth, buttonHeight, uiStrings.getString("ResetButton"), headerSize, headerFont);
 		b.setStaticPressMethod("resetToDefaults", Application.class);
-		b.setColourScheme(Application.primaryColour, Application.secondaryColour, Application.secondaryColour);
 		add(b);
 	}
 	
@@ -171,5 +174,9 @@ public class SaveDialog extends Zone {
 		} else {
 			mainText += e.getKeyChar();
 		}
+	}
+	
+	public static boolean IsOnScreen() {
+		return isOnScreen;
 	}
 }

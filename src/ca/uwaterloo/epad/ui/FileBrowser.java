@@ -74,11 +74,14 @@ public class FileBrowser extends Zone {
 	private IconButton leftArrow, rightArrow;
 	
 	private ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
+	
+	private static boolean isOnScreen;
 
 	public FileBrowser(String header, String folder, String extension, int columns, int rows) {
 		super(0, 0, applet.width, applet.height);
 		
 		Application.pauseApplication();
+		isOnScreen = true;
 
 		browserWidth = applet.width - outerPadding * 2;
 		browserHeight = applet.height - outerPadding * 2;
@@ -142,6 +145,7 @@ public class FileBrowser extends Zone {
 	public void close() {
 		TouchClient.remove(this);
 		Application.resumeApplication();
+		isOnScreen = false;
 	}
 	
 	public void nextPage() {
@@ -379,5 +383,9 @@ public class FileBrowser extends Zone {
 	
 	public boolean removeListener(ActionListener listener) {
 		return listeners.remove(listener);
+	}
+	
+	public static boolean IsOnScreen() {
+		return isOnScreen;
 	}
 }

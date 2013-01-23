@@ -36,5 +36,7 @@
 	<brushPromptDelay>60000</brushPromptDelay>
 	<paintPromptDelay>30000</paintPromptDelay>
 	<engagementPromptDelay>30000</engagementPromptDelay>
+	<engagementPromptRepeatDelay>30000</engagementPromptRepeatDelay>
 	<resetPromptDelay>300000</resetPromptDelay>
+	<resetDelay>300000</resetDelay>
 </settings>

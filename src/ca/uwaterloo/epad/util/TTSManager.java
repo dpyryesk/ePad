@@ -57,14 +57,16 @@ public class TTSManager {
 
 	public static void stop() {
 		if (!Settings.TTSEnabled) return;
-		
-		voice.getAudioPlayer().cancel();
+		if (voice != null)
+			voice.getAudioPlayer().cancel();
 	}
 	
 	public static void dispose() {
 		if (!Settings.TTSEnabled) return;
 		
-		stop();
-		voice.deallocate();
+		if (voice != null) {
+			stop();
+			voice.deallocate();
+		}
 	}
 }

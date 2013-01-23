@@ -132,7 +132,7 @@ public class Application extends PApplet implements ActionListener {
 		PromptManager.init(this);
 		TTSManager.init();
 		setActionPerformed();
-		state = ApplicationState.RUNNING;
+		state = ApplicationState.IDLE;
 		SplashScreen.remove();
 	}
 
@@ -144,17 +144,33 @@ public class Application extends PApplet implements ActionListener {
 		}
 		
 		if (Settings.showDebugInfo) {
-			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, 10);
-			text("brushes: " + brushes.size() + ", paints: " + paints.size(), 10, 20);
+			String s1 = Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length;
+			String s2 = "brushes: " + brushes.size() + ", paints: " + paints.size();
 			
-			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, 10, height - 20);
-			text("brushes: " + brushes.size() + ", paints: " + paints.size(), 10, height - 10);
+			String s3 = "state: ";
+			switch(state) {
+			case RUNNING: s3 += "Running"; break;
+			case IDLE: s3 += "idle"; break;
+			case PAUSED: s3 += "paused"; break;
+			}
 			
-			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, width - 150, 10);
-			text("brushes: " + brushes.size() + ", paints: " + paints.size(), width - 150, 20);
+			text(s1, 10, 10);
+			text(s2, 10, 20);
+			text(s3, 10, 30);
 			
-			text(Math.round(frameRate) + "fps, # of zones: " + TouchClient.getZones().length, width - 150, height - 20);
-			text("brushes: " + brushes.size() + ", paints: " + paints.size(), width - 150, height - 10);
+			/*
+			text(s1, 10, height - 30);
+			text(s2, 10, height - 20);
+			text(s3, 10, height - 10);
+			
+			text(s1, width - 150, 10);
+			text(s2, width - 150, 20);
+			text(s3, width - 150, 30);
+			
+			text(s1, width - 150, height - 30);
+			text(s2, width - 150, height - 20);
+			text(s3, width - 150, height - 10);
+			*/
 		}
 	}
 	
@@ -222,6 +238,25 @@ public class Application extends PApplet implements ActionListener {
 	
 	public static ApplicationState getState() {
 		return state;
+	}
+	
+	public static void pauseApplication() {
+		state = ApplicationState.PAUSED;
+		PromptManager.pause();
+	}
+	
+	public static void resumeApplication() {
+		if (state == ApplicationState.PAUSED)
+			PromptManager.resume();
+		else if (state == ApplicationState.IDLE)
+			PromptManager.reset();
+			
+		state = ApplicationState.RUNNING;
+	}
+	
+	public static void idleApplication() {
+		state = ApplicationState.IDLE;
+		PromptManager.pause();
 	}
 
 	public static void setSelectedPaint(Paint p) {
@@ -321,6 +356,10 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void setActionPerformed() {
+		if (state == ApplicationState.IDLE) {
+			state = ApplicationState.RUNNING;
+			PromptManager.reset();
+		}
 		lastActionTime = System.currentTimeMillis();
 	}
 	
@@ -417,7 +456,7 @@ public class Application extends PApplet implements ActionListener {
 		setSelectedBrush(getAllBrushes().get(0));
 		setSelectedPaint(getAllPaints().get(0));
 		
-		PromptManager.init(instance);
+		PromptManager.reset();
 	}
 	
 	public static void saveLayout(String filename) {
@@ -498,8 +537,10 @@ public class Application extends PApplet implements ActionListener {
 		
 		setSelectedBrush(getAllBrushes().get(0));
 		setSelectedPaint(getAllPaints().get(0));
+		setActionPerformed();
 		
-		PromptManager.init(instance);
+		PromptManager.reset();
+		state = ApplicationState.IDLE;
 	}
 	
 	public static void colouringMode() {

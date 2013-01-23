@@ -18,45 +18,10 @@
  *  along with ePad 2.0. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.uwaterloo.epad.util;
+package ca.uwaterloo.epad.ui;
 
-public class Timer {
-	private long startTime;
-	private long timerLength;
-	private long timePassed;
-	private boolean isPaused;
-
-	public Timer(long length) {
-		setTo(length);
-	}
-	
-	public long getTimePassed() {
-		if (!isPaused)
-			timePassed = System.currentTimeMillis() - startTime;
-		return timePassed;
-	}
-	
-	public boolean isTimeOut() {
-		return getTimePassed() >= timerLength;
-	}
-	
-	public void pause() {
-		isPaused = true;
-		timePassed = System.currentTimeMillis() - startTime;
-	}
-	
-	public void resume() {
-		isPaused = false;
-		startTime = System.currentTimeMillis() - timePassed;
-	}
-	
-	public void restart() {
-		setTo(timerLength);
-	}
-	
-	public void setTo(long length) {
-		startTime = System.currentTimeMillis();
-		timerLength = length;
-		isPaused = false;
-	}
+public enum ApplicationState {
+	RUNNING,
+	PAUSED,
+	IDLE;
 }

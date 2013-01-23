@@ -99,7 +99,6 @@ public class PromptPopup {
 
 		// draw background for icon
 		if (showIcon) {
-
 			// draw icon
 			if (icon != null) {
 				applet.fill(iconColour);
@@ -137,6 +136,14 @@ public class PromptPopup {
 		}
 		
 		ttlTimer = new Timer(Settings.promptTTL);
+	}
+	
+	public void pause() {
+		ttlTimer.pause();
+	}
+	
+	public void resume() {
+		ttlTimer.resume();
 	}
 	
 	public void dispose() {

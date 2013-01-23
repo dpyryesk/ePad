@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import processing.core.PConstants;
 import processing.core.PFont;
+import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
@@ -75,6 +77,8 @@ public class FileBrowser extends Zone {
 
 	public FileBrowser(String header, String folder, String extension, int columns, int rows) {
 		super(0, 0, applet.width, applet.height);
+		
+		Application.pauseApplication();
 
 		browserWidth = applet.width - outerPadding * 2;
 		browserHeight = applet.height - outerPadding * 2;
@@ -137,6 +141,7 @@ public class FileBrowser extends Zone {
 	
 	public void close() {
 		TouchClient.remove(this);
+		Application.resumeApplication();
 	}
 	
 	public void nextPage() {
@@ -243,6 +248,8 @@ public class FileBrowser extends Zone {
 		public int fileType;
 		public SaveFile save;
 		
+		private PImage cache;
+		
 		protected boolean buttonDown = false;
 		protected PImage img;
 		
@@ -258,32 +265,43 @@ public class FileBrowser extends Zone {
 				save.load(filePath);
 				img = applet.loadImage(save.thumbnailPath);
 			}
-		}
-		
-		protected void drawImpl() {
-			stroke(Application.secondaryColour);
-			strokeWeight(1);
-			fill(Application.primaryColour);
-			rect(0, 0, itemWidth, itemHeight);
+			
+			// create cached image
+			PGraphics tempG = applet.createGraphics((int)itemWidth, (int)itemHeight, PConstants.JAVA2D);
+			tempG.beginDraw();
+			tempG.smooth();
+			tempG.background(0);
+			
+			tempG.stroke(Application.secondaryColour);
+			tempG.strokeWeight(1);
+			tempG.fill(Application.primaryColour);
+			tempG.rect(0, 0, itemWidth, itemHeight);
 			
 			if (img != null) {
 				if (fileType == FILE_TYPE_IMAGE) {
-					showImage(0, itemHeaderSize + 10, width-20, height-itemHeaderSize-40, true);
+					showImage(tempG, 0, itemHeaderSize + 10, width-20, height-itemHeaderSize-40, true);
 				} else if (fileType == FILE_TYPE_SAVE) {
-					showImage(0, itemHeaderSize + 40, width-20, height-itemHeaderSize-60, true);
+					showImage(tempG, 0, itemHeaderSize + 40, width-20, height-itemHeaderSize-60, true);
 				}
 			}
 			
-			fill(textColour);
-			textFont(itemFont);
+			tempG.fill(textColour);
+			tempG.textFont(itemFont);
 			if (fileType == FILE_TYPE_IMAGE) {
-				text(fileName, 10, itemHeaderSize);
+				tempG.text(fileName, 10, itemHeaderSize);
 			} else if (fileType == FILE_TYPE_SAVE) {
-				text("Name: " + save.userName, 10, itemHeaderSize);
-				text("Date : " + DATE_FORMAT.format(save.saveTime), 10, itemHeaderSize*2);
+				tempG.text("Name: " + save.userName, 10, itemHeaderSize);
+				tempG.text("Date : " + DATE_FORMAT.format(save.saveTime), 10, itemHeaderSize*2);
 			} else {
-				text(filePath, 10, itemHeaderSize);
+				tempG.text(filePath, 10, itemHeaderSize);
 			}
+			
+			tempG.endDraw();
+			cache = tempG.get();
+		}
+		
+		protected void drawImpl() {
+			image(cache, 0, 0);
 		}
 		
 		protected void pickDrawImpl() {
@@ -315,7 +333,7 @@ public class FileBrowser extends Zone {
 			return buttonDown;
 		}
 		
-		private void showImage(int x, int y, int maxWidth, int maxHeight, boolean showBorder) {
+		private void showImage(PGraphics g, int x, int y, int maxWidth, int maxHeight, boolean showBorder) {
 			float bgX = x;
 			float bgY = y;
 			float bgWidth = maxWidth;
@@ -336,13 +354,13 @@ public class FileBrowser extends Zone {
 			}
 			
 			if (showBorder)
-				stroke(Application.secondaryColour);
+				g.stroke(Application.secondaryColour);
 			else
-				noStroke();
-			fill(Application.backgroundColour);
-			rect(bgX, bgY, bgWidth, bgHeight);
+				g.noStroke();
+			g.fill(Application.backgroundColour);
+			g.rect(bgX, bgY, bgWidth, bgHeight);
 			
-			image(img, bgX, bgY, bgWidth, bgHeight);
+			g.image(img, bgX, bgY, bgWidth, bgHeight);
 		}
 	}
 	

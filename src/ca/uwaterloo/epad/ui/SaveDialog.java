@@ -57,6 +57,8 @@ public class SaveDialog extends Zone {
 	
 	public SaveDialog() {
 		super(0, 0, applet.width, applet.height);
+		
+		Application.pauseApplication();
 
 		dialogWidth = applet.width - outerPadding * 2;
 		dialogHeight = applet.height - outerPadding * 2;
@@ -128,6 +130,7 @@ public class SaveDialog extends Zone {
 	
 	public void close() {
 		TouchClient.remove(this);
+		Application.resumeApplication();
 	}
 	
 	public void doSave() {

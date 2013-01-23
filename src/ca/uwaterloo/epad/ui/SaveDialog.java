@@ -73,15 +73,19 @@ public class SaveDialog extends Zone {
 		
 		add(new CloseButton(dialogWidth + outerPadding - 50, outerPadding - 25, 75, 75));
 		
-		keyboard = new KeyboardZone(innerPadding + outerPadding, outerPadding - innerPadding + dialogHeight - keyboardHeight, dialogWidth - innerPadding*2, keyboardHeight, false);
+		int kX = innerPadding + outerPadding;
+		int kY = outerPadding + dialogHeight - innerPadding - keyboardHeight - bGap - buttonHeight;
+		
+		keyboard = new KeyboardZone(kX, kY, dialogWidth - innerPadding*2, keyboardHeight, false);
 		add(keyboard);
 		keyboard.addKeyListener(this);
 		keyboard.backgroundColor = Application.backgroundColour;
 		keyboard.keyColor = Application.primaryColour;
 		keyboard.keyPressedColor = Application.secondaryColour;
+		keyboard.linkColor = 0x00FFFFFF;
 		
 		int bX = outerPadding + (dialogWidth - innerPadding * 2 - buttonWidth - bGap) / 2;
-		int bY = outerPadding - innerPadding + dialogHeight - keyboardHeight - buttonHeight;
+		int bY = outerPadding + dialogHeight - innerPadding - buttonHeight - bGap/2;
 		
 		saveButton = new Button(bX, bY, buttonWidth/2, buttonHeight, uiStrings.getString("SaveButton"), headerSize, headerFont);
 		saveButton.setPressMethod("doSave", this);
@@ -120,8 +124,12 @@ public class SaveDialog extends Zone {
 		textFont(smallFont);
 		text(helpText, outerPadding + innerPadding, outerPadding + innerPadding + headerSize + 5, dialogWidth - innerPadding * 2, headerSize);
 		
+		fill(transparentColour, transparentAlpha);
+		rect(outerPadding + innerPadding * 2, outerPadding + innerPadding + headerSize * 2 + 5, dialogWidth - innerPadding * 4, keyboard.y - (outerPadding + innerPadding + headerSize + 5));
+		
+		fill(textColour);
 		textFont(headerFont);
-		text(mainText, outerPadding + innerPadding * 2, outerPadding + innerPadding + headerSize * 2 + 5, dialogWidth - innerPadding * 4, dialogHeight - innerPadding * 2 - headerSize - 5 - keyboardHeight - buttonHeight);
+		text(mainText, outerPadding + innerPadding * 2, outerPadding + innerPadding + headerSize * 2 + 5, dialogWidth - innerPadding * 4, keyboard.y - (outerPadding + innerPadding + headerSize + 5));
 	}
 	
 	protected void pickDrawImpl() {

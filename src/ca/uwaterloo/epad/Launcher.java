@@ -50,6 +50,7 @@ public class Launcher {
 		SplashScreen.setMessage(uiStrings.getString("StartingMessage"));
 		
 		// Start the applet
-		PApplet.main(new String[] { "--present", "ca.uwaterloo.epad.Application" });
+		args = new String[] {"--location=0,0", "--full-screen", "--hide-stop"};
+		PApplet.main("ca.uwaterloo.epad.Application", args);
 	}
 }

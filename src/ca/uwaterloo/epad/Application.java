@@ -174,6 +174,10 @@ public class Application extends PApplet implements ActionListener {
 		}
 	}
 	
+	public boolean sketchFullScreen() {
+		return true;
+	}
+	
 	private static void makeControlPanel(Container c) {
 		int w = 180;
 		int h = 70;

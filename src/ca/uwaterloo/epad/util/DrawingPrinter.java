@@ -82,10 +82,11 @@ public class DrawingPrinter implements Runnable {
 	}
 	
 	private static class DrawingPage implements Printable {
-		private PImage drawing;
+		private Image image;
 		
 		public DrawingPage(PImage drawing) {
-			this.drawing = drawing;
+			drawing.parent = null;
+			image = (Image) drawing.getNative();
 		}
 
 		@Override
@@ -93,14 +94,25 @@ public class DrawingPrinter implements Runnable {
 			if (page > 0) {
 				return NO_SUCH_PAGE;
 			}
-
-			// Graphics2D g2d = (Graphics2D) g;
-			// g2d.translate(pf.getImageableX(), pf.getImageableY());
+			
 			g.translate(0, 0);
-			int formh = (int) pf.getHeight();
-			int formw = (int) pf.getWidth();
-
-			g.drawImage((Image) drawing.getNative(), 0, 0, formw, formh, null);
+			int x = (int) pf.getImageableX();
+			int y = (int) pf.getImageableY();
+			int h = (int) pf.getImageableHeight();
+			int w = (int) pf.getImageableWidth();
+			
+			double imageAspect = (double)image.getWidth(null) / image.getHeight(null);
+			double pageAspect = pf.getImageableWidth() / pf.getImageableHeight();
+			
+			if (Math.abs(imageAspect - pageAspect) > 0.01) {
+				if (pageAspect > imageAspect) {
+					w = (int) (h * imageAspect);
+				} else {
+					h = (int)((double)w / imageAspect);
+				}
+			}
+			
+			g.drawImage(image, x, y, w, h, null);
 
 			return PAGE_EXISTS;
 		}

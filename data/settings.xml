@@ -14,9 +14,12 @@
 	SMART			-	Smart SDK back end
 	-->
 	<touchSourse>MOUSE</touchSourse>
-	
 	<showPrintDialog>true</showPrintDialog>
+	
+	<!-- TTS settings -->
 	<TTSEnabled>true</TTSEnabled>
+	<TTSVoice>kevin16</TTSVoice>
+	<TTSSpeechRate>120</TTSSpeechRate>
 	
 	<dataFolder>data\</dataFolder>
 	<saveFolder>data\save\</saveFolder>

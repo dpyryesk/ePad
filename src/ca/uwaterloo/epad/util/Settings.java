@@ -44,7 +44,7 @@ public class Settings {
 	
 	@XmlAttribute public static int width = 1024;
 	@XmlAttribute public static int height = 768;
-	@XmlAttribute public static float targetFPS = 60;
+	@XmlAttribute public static float targetFPS = 60f;
 	@XmlAttribute public static String touchSourse = "MOUSE";
 	
 	@XmlAttribute public static String dataFolder = "..\\data\\";
@@ -53,7 +53,11 @@ public class Settings {
 	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
 	@XmlAttribute public static String defaultLayoutFile = "layout_768.xml";
+	
+	// TTS settings
 	@XmlAttribute public static boolean TTSEnabled = true;
+	@XmlAttribute public static String TTSVoice = "kevin16";
+	@XmlAttribute public static float TTSSpeechRate = 120f;
 	
 	// Common GUI settings
 	@XmlAttribute public static int rotatingContainerOffsetAngle = 12;

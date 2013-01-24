@@ -32,15 +32,15 @@ public class TTSManager {
 		if (!Settings.TTSEnabled) return;
 		
 		VoiceManager voiceManager = VoiceManager.getInstance();
-		voice = voiceManager.getVoice("kevin16");
+		voice = voiceManager.getVoice(Settings.TTSVoice);
 
 		if (voice == null) {
-			System.err.println("Error: TTSManager is unable to load voice kevin16");
+			System.err.println("Error: TTSManager is unable to load voice " + Settings.TTSVoice);
 			return;
 		}
 
 		voice.allocate();
-		voice.setRate(120f);
+		voice.setRate(Settings.TTSSpeechRate);
 	}
 
 	public static void say(String text) {

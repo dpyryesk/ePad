@@ -54,8 +54,8 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#63D13E"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#90F500"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#12F729"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#356244"/>
-	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#4B8C61"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#5C8D23"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#3C4F19"/>
 	    
 	     <!-- Blue -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#29568F"/>
@@ -72,6 +72,22 @@
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#9600CD"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#A442DC"/>
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B564E3"/>
+		
+		<!-- Browns -->
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#5A2729"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#763931"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#91554D"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#57412F"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#79604C"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#AB9584"/>
+		
+		<!-- Neutral -->
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B7A6AD"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#BEB2A7"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#CAB388"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#B5B292"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#A8ADB4"/>
+	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#323531"/>
 	    
 	    <!-- Pastels -->
 	    <MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#51C0BF"/>

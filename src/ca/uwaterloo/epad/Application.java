@@ -560,7 +560,7 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void print() {
-		new Thread(new DrawingPrinter(canvas.getDrawing(true), Settings.showPrintDialog)).start();
+		new Thread(new DrawingPrinter(canvas.getDrawing(false), Settings.showPrintDialog)).start();
 	}
 	
 	public static void closeApplication() {

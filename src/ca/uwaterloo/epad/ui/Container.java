@@ -26,11 +26,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import ca.uwaterloo.epad.Application;
 
 import vialab.SMT.Zone;
 
 public abstract class Container extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(Container.class);
+	
 	public static final String MOVED = "moved";
 	
 	public static final int ITEM_WIDTH = 125;
@@ -84,7 +88,7 @@ public abstract class Container extends Zone {
 			if (listener != null)
 				listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_FIRST, message));
 			else
-				System.err.println("Container.notifyListeners(): null list element " + i);
+				LOGGER.error("A listener is null: " + i);
 		}
 	}
 

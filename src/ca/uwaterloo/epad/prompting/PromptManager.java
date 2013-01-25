@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 import vialab.SMT.Zone;
@@ -37,6 +39,8 @@ import ca.uwaterloo.epad.util.TTSManager;
 import ca.uwaterloo.epad.util.Timer;
 
 public class PromptManager implements ActionListener {
+	private static final Logger LOGGER = Logger.getLogger(PromptManager.class);
+	
 	private static ArrayList<PromptPopup> activePrompts = new ArrayList<PromptPopup>();
 	protected static PApplet parent;
 	
@@ -60,6 +64,8 @@ public class PromptManager implements ActionListener {
 	private PromptManager() {};
 	
 	public static void init(PApplet parent) {
+		LOGGER.info("PromptManager initializing.");
+		
 		PromptManager.parent = parent;
 		
 		parent.registerMethod("draw", new PromptManager());
@@ -73,6 +79,13 @@ public class PromptManager implements ActionListener {
 	}
 	
 	public static void reset() {
+		LOGGER.info("PromptManager resetting.");
+		
+		if (parent == null) {
+			System.err.println("Error: PromptManager must be initialized first.");
+			return;
+		}
+		
 		activePrompts.clear();
 		TTSManager.stop();
 		
@@ -83,8 +96,8 @@ public class PromptManager implements ActionListener {
 			rightDrawer.addListener(instance);
 			topDrawer = Application.getDrawer(Application.TOP_DRAWER);
 			topDrawer.addListener(instance);
-		} catch (NullPointerException npe) {
-			System.err.println("Error: PromptManager must be initialized after drawers are created");
+		} catch (NullPointerException e) {
+			System.err.println("Error: PromptManager must be initialized after drawers are created.");
 		}
 		
 		// set up timers
@@ -183,6 +196,7 @@ public class PromptManager implements ActionListener {
 				TTSManager.say(promptStrings.getString("engagementPromptTextPaint"));
 			}
 			
+			LOGGER.info("An engagement prompt displayed.");
 			engagementTimer.restart();
 		} else if (!wasLeftDrawerOpened && !wasBrushPromptDisplayed && brushPromptTimer.isTimeOut() && activePrompts.size() == 0) {
 			// Show setup prompt: brush
@@ -192,6 +206,7 @@ public class PromptManager implements ActionListener {
 			TTSManager.say(promptStrings.getString("brushPromptStep1Text"));
 			wasBrushPromptDisplayed = true;
 			promptStep = 1;
+			LOGGER.info("The brush drawer prompt displayed.");
 		} else if (!wasRightDrawerOpened && !wasPaintPromptDisplayed && paintPromptTimer.isTimeOut() && activePrompts.size() == 0) {
 			// Show setup prompt: paint
 			PVector v = rightDrawer.getHandleLocation();
@@ -200,6 +215,7 @@ public class PromptManager implements ActionListener {
 			TTSManager.say(promptStrings.getString("paintPromptStep1Text"));
 			wasPaintPromptDisplayed = true;
 			promptStep = 1;
+			LOGGER.info("The paint drawer prompt displayed.");
 		}
 		
 		// process prompt flow

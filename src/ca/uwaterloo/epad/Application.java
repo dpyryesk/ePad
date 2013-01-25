@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
@@ -63,6 +65,7 @@ import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Application extends PApplet implements ActionListener {
 	private static final long serialVersionUID = -1354251777507926593L;
+	private static final Logger LOGGER = Logger.getLogger(Application.class);
 
 	public static final int TOP_DRAWER = 0;
 	public static final int LEFT_DRAWER = 1;
@@ -93,7 +96,7 @@ public class Application extends PApplet implements ActionListener {
 	
 	// Misc variables
 	private static PFont font;
-	private static ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
+	private static final ResourceBundle uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
 	private static PImage bg;
 	private static long lastActionTime;
 	private static ApplicationState state;
@@ -107,6 +110,7 @@ public class Application extends PApplet implements ActionListener {
 	public void setup() {
 		size(Settings.width, Settings.height, P3D);
 		frameRate(Settings.targetFPS);
+		LOGGER.info("Application started with parameters: width=" + Settings.width + ", height=" + Settings.height + ", fps=" + Settings.targetFPS);
 		
 		instance = this;
 		
@@ -139,7 +143,7 @@ public class Application extends PApplet implements ActionListener {
 
 	public void draw() {
 		background(backgroundColour);
-		if (backgroundImage != null && backgroundImage.length() > 0) {
+		if (backgroundImage != null && backgroundImage.length() > 0 && bg != null) {
 			imageMode(CORNER);
 			image(bg, 0, 0, displayWidth, displayHeight);
 		}
@@ -254,15 +258,18 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void resumeApplication() {
-		if (state == ApplicationState.PAUSED)
+		if (state == ApplicationState.PAUSED) {
 			PromptManager.resume();
-		else if (state == ApplicationState.IDLE)
+		} else if (state == ApplicationState.IDLE) {
+			LOGGER.info("Application was resumed from idle state");
 			PromptManager.reset();
+		}
 			
 		state = ApplicationState.RUNNING;
 	}
 	
 	public static void idleApplication() {
+		LOGGER.info("Application is idle");
 		state = ApplicationState.IDLE;
 		PromptManager.pause();
 	}
@@ -401,7 +408,7 @@ public class Application extends PApplet implements ActionListener {
 			if (listener != null)
 				listener.actionPerformed(new ActionEvent(source, ActionEvent.ACTION_FIRST, message));
 			else
-				System.err.println("Application.notifyListeners(): null list element " + i);
+				LOGGER.error("A listener is null: " + i);
 		}
 	}
 
@@ -415,15 +422,19 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void loadGUI() {
+		LOGGER.info("Loading GUI from file: " + Settings.dataFolder + Settings.guiFile);
+		
 		try {
 			SimpleMarshaller.unmarshallGui(instance, new File(Settings.dataFolder + Settings.guiFile));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-			instance.exit();
+			LOGGER.fatal("Failed to load GUI. " + e.getLocalizedMessage());
+			System.exit(1);
 		}
 
 		if (backgroundImage != null && backgroundImage.length() > 0) {
 			bg = instance.loadImage(Settings.dataFolder + backgroundImage);
+			if (bg == null)
+				LOGGER.error("Failed to load image: " + Settings.dataFolder + backgroundImage);
 		}
 		
 		// create default canvas (in case it is not specified in the layout file
@@ -434,6 +445,8 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void clearWorkspace() {
+		LOGGER.info("Clearing workspace");
+		
 		brushes.clear();
 		paints.clear();
 		
@@ -448,6 +461,8 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void loadSave(SaveFile save) {
+		LOGGER.info("Loading a save file " + save.filename);
+		
 		clearWorkspace();
 		loadLayout(save.layoutPath);
 		canvas.clearAndLoad(save.drawingPath);
@@ -468,19 +483,22 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void saveLayout(String filename) {
+		LOGGER.info("Saving layout to file: " + filename);
+		
 		try {
 			SimpleMarshaller.marshallLayout(new File(filename));
-			System.out.println("Layout saved: " + filename);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to save layout. " + e.getLocalizedMessage());
 		}
 	}
 	
 	public static void loadLayout(String filename) {
+		LOGGER.info("Loading layout from file: " + filename);
+		
 		try {
 			SimpleMarshaller.unmarshallLayout(new File(filename));
 		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to load layout. " + e.getLocalizedMessage());
 		}
 		
 		// Put drawers on top
@@ -511,9 +529,9 @@ public class Application extends PApplet implements ActionListener {
 		pg.endDraw();
 		
 		if (pg.save(filename))
-			System.out.println("Screenshot saved: " + filename);
+			LOGGER.info("Screenshot saved: " + filename);
 		else
-			System.err.println("Failed to save screenshot");
+			LOGGER.error("Failed to save screenshot.");
 	}
 	
 	public static void save() {
@@ -528,10 +546,12 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void clearCanvas() {
+		LOGGER.info("Clear canvas.");
 		canvas.clear();
 	}
 	
 	public static void resetToDefaults() {
+		LOGGER.info("Reset workspace and load defaults.");
 		clearWorkspace();
 		loadLayout(Settings.dataFolder + Settings.defaultLayoutFile);
 		// Put drawers on top
@@ -548,7 +568,7 @@ public class Application extends PApplet implements ActionListener {
 		setActionPerformed();
 		
 		PromptManager.reset();
-		state = ApplicationState.IDLE;
+		idleApplication();
 	}
 	
 	public static void colouringMode() {
@@ -556,7 +576,6 @@ public class Application extends PApplet implements ActionListener {
 				null, Settings.fileBrowserColumns, Settings.fileBrowserRows);
 		imageFileBrowser.addListener(instance);
 		TouchClient.add(imageFileBrowser);
-		//canvas.toggleOverlay();
 	}
 	
 	public static void print() {
@@ -564,6 +583,7 @@ public class Application extends PApplet implements ActionListener {
 	}
 	
 	public static void closeApplication() {
+		LOGGER.info("Application closing.");
 		TTSManager.dispose();
 		instance.exit();
 	}

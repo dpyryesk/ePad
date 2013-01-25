@@ -21,6 +21,7 @@
 	<TTSVoice>kevin16</TTSVoice>
 	<TTSSpeechRate>120</TTSSpeechRate>
 	
+	<!-- File and folder locations -->
 	<dataFolder>data\</dataFolder>
 	<saveFolder>data\save\</saveFolder>
 	<colouringFolder>data\colouring\</colouringFolder>

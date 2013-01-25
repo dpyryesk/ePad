@@ -24,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PVector;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
@@ -31,6 +33,8 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 
 public abstract class Drawer extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(Drawer.class);
+	
 	public static final String OPEN = "open";
 	public static final String CLOSED = "closed";
 	public static final String MOVED = "moved";
@@ -127,7 +131,7 @@ public abstract class Drawer extends Zone {
 			if (listener != null)
 				listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_FIRST, message));
 			else
-				System.err.println("Drawer.notifyListeners(): null list element " + i);
+				LOGGER.error("A listener is null: " + i);
 		}
 	}
 

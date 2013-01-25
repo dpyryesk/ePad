@@ -40,12 +40,10 @@ public class SpiderBrush extends Brush {
 
 	public SpiderBrush() {
 		super();
-		name = "SpiderBrush";
 	}
 
 	public SpiderBrush(SpiderBrush original) {
 		super(original);
-		name = "SpiderBrush";
 	}
 	
 	public SpiderBrush(MoveableItem original) {

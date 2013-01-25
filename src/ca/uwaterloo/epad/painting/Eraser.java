@@ -32,7 +32,6 @@ public class Eraser extends Brush {
 	public Eraser(int size) {
 		super();
 		this.size = size;
-		name = "Eraser " + size;
 	}
 	
 	public Eraser(Eraser original) {

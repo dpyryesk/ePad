@@ -18,5 +18,6 @@ Class-Path:
  lib/jogl-all.jar lib/libTUIO.jar 
  lib/opengl.jar 
  lib/freetts.jar
+ lib/log4j-1.2.17.jar
 Main-Class: ca.uwaterloo.epad.Launcher
 

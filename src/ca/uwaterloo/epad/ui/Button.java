@@ -23,6 +23,8 @@ package ca.uwaterloo.epad.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
+
 import ca.uwaterloo.epad.Application;
 
 import processing.core.PFont;
@@ -30,6 +32,8 @@ import vialab.SMT.Touch;
 import vialab.SMT.Zone;
 
 public class Button extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(Button.class);
+	
 	protected int fontSize;
 	protected String text;
 	protected PFont font;
@@ -117,7 +121,7 @@ public class Button extends Zone {
 				pressMethod.invoke(pressMethodObject);
 			}
 			catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-				e.printStackTrace();
+				LOGGER.error("Failed to invoke method " + pressMethod.toString() + ". " + e.getLocalizedMessage());
 			}
 		}
 	}
@@ -127,7 +131,7 @@ public class Button extends Zone {
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
 		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to get static method. " + e.getLocalizedMessage());
 		}
 	}
 	
@@ -137,7 +141,7 @@ public class Button extends Zone {
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
 		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
 		}
 	}
 }

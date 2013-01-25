@@ -29,7 +29,6 @@ public abstract class Brush extends MoveableItem {
 	public Brush() {
 		super(0, 0, 150, 150);
 		isSelected = false;
-		name = ""+width+"x"+height;
 	}
 	
 	public Brush(Brush original) {

@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PConstants;
 import processing.core.PFont;
 import processing.core.PGraphics;
@@ -38,12 +40,13 @@ import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.xml.SaveFile;
 
 public class FileBrowser extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(FileBrowser.class);
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd yyyy, hh:mm aaa");
+	
 	public static final String FILE_SELECTED = "file selected";
 	public static final int FILE_TYPE_IMAGE = 0;
 	public static final int FILE_TYPE_SAVE = 1;
 	public static final int FILE_TYPE_OTHER = 2;
-	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd yyyy, hh:mm aaa");
 	
 	public int backgroundColour = Application.backgroundColour;
 	public int borderColour = Application.primaryColour;
@@ -80,6 +83,8 @@ public class FileBrowser extends Zone {
 	public FileBrowser(String header, String folder, String extension, int columns, int rows) {
 		super(0, 0, applet.width, applet.height);
 		
+		LOGGER.info("FileBrowser opened: folder=" + folder + ", extension=" + extension);
+		
 		Application.pauseApplication();
 		isOnScreen = true;
 
@@ -96,9 +101,9 @@ public class FileBrowser extends Zone {
 		headerFont = applet.createFont("Arial", headerSize);
 		itemFont = applet.createFont("Arial", itemHeaderSize);
 		leftArrow = new IconButton(outerPadding - 50, applet.height/2 - 75/2, 75, 75, "arrow_left", borderColour, backgroundColour);
-		leftArrow.setPressMethodByName("prevPage", this);
+		leftArrow.setPressMethod("prevPage", this);
 		rightArrow = new IconButton(applet.width - outerPadding - 25, applet.height/2 - 75/2, 75, 75, "arrow_right", borderColour, backgroundColour);
-		rightArrow.setPressMethodByName("nextPage", this);
+		rightArrow.setPressMethod("nextPage", this);
 		
 		getFiles();
 		showPage();
@@ -143,6 +148,7 @@ public class FileBrowser extends Zone {
 	}
 	
 	public void close() {
+		LOGGER.info("FileBrowser closed.");
 		TouchClient.remove(this);
 		Application.resumeApplication();
 		isOnScreen = false;
@@ -161,6 +167,8 @@ public class FileBrowser extends Zone {
 	}
 
 	protected void getFiles() {
+		LOGGER.info("FileBrowser is retrieving files in the specified folder.");
+		
 		currentRow = 0;
 		currentColumn = 0;
 		currentPage = 0;
@@ -264,13 +272,18 @@ public class FileBrowser extends Zone {
 		protected void initialize() {
 			if (fileType == FILE_TYPE_IMAGE) {
 				img = applet.loadImage(filePath);
+				if (img == null)
+					LOGGER.error("Failed to load image: " + filePath);
 			} else if (fileType == FILE_TYPE_SAVE) {
 				save = new SaveFile();
 				save.load(filePath);
+				
 				img = applet.loadImage(save.thumbnailPath);
+				if (img == null)
+					LOGGER.error("Failed to load image: " + save.thumbnailPath);
 			}
 			
-			// create cached image
+			// create a cached image
 			PGraphics tempG = applet.createGraphics((int)itemWidth, (int)itemHeight, PConstants.JAVA2D);
 			tempG.beginDraw();
 			tempG.smooth();
@@ -373,6 +386,8 @@ public class FileBrowser extends Zone {
 			ActionListener listener = listeners.get(i);
 			if (listener != null)
 				listener.actionPerformed(new ActionEvent(source, ActionEvent.ACTION_FIRST, message));
+			else
+				LOGGER.error("A listener is null: " + i);
 		}
 	}
 

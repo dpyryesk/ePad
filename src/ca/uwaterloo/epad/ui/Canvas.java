@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PGraphics;
 import processing.core.PImage;
 import vialab.SMT.Touch;
@@ -33,6 +35,8 @@ import ca.uwaterloo.epad.painting.SpiderBrush;
 import ca.uwaterloo.epad.painting.Stroke;
 
 public class Canvas extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(Canvas.class);
+	
 	public int backgroundColour = 255;
 	public int borderColour = Application.primaryColour;
 	public int transparentColour = Application.transparentColour;
@@ -123,7 +127,7 @@ public class Canvas extends Zone {
 		PGraphics result = applet.createGraphics(width, height, P2D);
 		result.beginDraw();
 		result.image(drawing, 0, 0, width, height);
-		if (useOverlay)
+		if (useOverlay && overlayImage != null)
 			result.blend(overlayImage, 0, 0, width, height, 0, 0, width, height, DARKEST);
 		result.endDraw();
 		
@@ -150,19 +154,16 @@ public class Canvas extends Zone {
 	}
 	
 	public void clearAndLoad(String filename) {
+		clear();
+		
 		PImage underlayImage = applet.loadImage(filename);
-		
-		drawing.beginDraw();
-		drawing.noStroke();
-		drawing.fill(backgroundColour);
-		drawing.rect(0, 0, width, height);
-		drawing.image(underlayImage, 0, 0, width, height);
-		drawing.endDraw();
-		
-		if (strokes == null)
-			strokes = new HashMap<Long, Stroke>();
-		else
-			strokes.clear();
+		if (underlayImage == null) {
+			LOGGER.error("Failed to load image: " + filename);
+		} else {
+			drawing.beginDraw();
+			drawing.image(underlayImage, 0, 0, width, height);
+			drawing.endDraw();
+		}
 	}
 	
 	public String getOverlayImagePath() {
@@ -172,9 +173,12 @@ public class Canvas extends Zone {
 			return null;
 	}
 	
-	public void setOverlayImage(String path) {
-		overlayImagePath = path;
-		overlayImage = applet.loadImage(path);
+	public void setOverlayImage(String filename) {
+		overlayImagePath = filename;
+		overlayImage = applet.loadImage(filename);
+		if (overlayImage == null)
+			LOGGER.error("Failed to load image: " + filename);
+			
 		useOverlay = true;
 	}
 	

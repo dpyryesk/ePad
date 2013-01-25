@@ -30,11 +30,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PImage;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
 public class SaveFile {
+	private static final Logger LOGGER = Logger.getLogger(SaveFile.class);
+	
 	public static final String USER_NAME = "user_name";
 	public static final String SAVE_TIME = "time";
 	public static final String DIRECTORY = "data_dir";
@@ -66,11 +70,13 @@ public class SaveFile {
 		drawingPath = dirname + "\\drawing.png";
 		layoutPath = dirname + "\\layout.xml";
 
+		LOGGER.info("Saving the workspace into file: " + filename);
+		
 		try {
 			File file = new File(filename);
 			File dir = new File(dirname);
 			if (file.exists()) {
-				System.err.println("Save file already exists " + filename);
+				LOGGER.error("Save file already exists " + filename);
 				return false;
 			}
 			
@@ -86,7 +92,7 @@ public class SaveFile {
 			out.write(LAYOUT + "=" + layoutPath + "\n");
 			out.close();
 		} catch (Exception e) {
-			System.err.println("Error: " + e.getMessage());
+			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}
 		
@@ -103,20 +109,20 @@ public class SaveFile {
 		thumbnail.resize(w, h);
 		
 		if (thumbnail.save(thumbnailPath))
-			System.out.println("Thumbnail saved: " + thumbnailPath);
+			LOGGER.info("Thumbnail saved: " + thumbnailPath);
 		else
-			System.err.println("Failed to save Thumbnail");
+			LOGGER.error("Failed to save Thumbnail");
 		
 		if (drawing.save(drawingPath))
-			System.out.println("Drawing saved: " + drawingPath);
+			LOGGER.info("Drawing saved: " + drawingPath);
 		else
-			System.err.println("Failed to save drawing");
+			LOGGER.error("Failed to save drawing");
 		
 		try {
 			SimpleMarshaller.marshallLayout(new File(layoutPath));
-			System.out.println("Layout saved: " + layoutPath);
+			LOGGER.info("Layout saved: " + layoutPath);
 		} catch (Exception e) {
-			System.err.println("Failed to save layout");
+			LOGGER.error("Failed to save layout");
 		}
 
 		return true;
@@ -161,10 +167,12 @@ public class SaveFile {
 			in.close();
 			
 			// check if all parameters were loaded
-			if (lineCount != PARAMETER_COUNT)
+			if (lineCount != PARAMETER_COUNT) {
+				LOGGER.error("Save file " + filename + " contains fewer parameters than expected.");
 				return false;
+			}
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}
 		

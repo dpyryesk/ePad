@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,7 +39,7 @@ import org.w3c.dom.NodeList;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Settings {
-	private final static String settingsFile = "data\\settings.xml";
+	private static final Logger LOGGER = Logger.getLogger(Settings.class);
 	
 	@XmlAttribute public static Locale locale = new Locale("en");
 	
@@ -46,11 +47,12 @@ public class Settings {
 	@XmlAttribute public static int height = 768;
 	@XmlAttribute public static float targetFPS = 60f;
 	@XmlAttribute public static String touchSourse = "MOUSE";
+	@XmlAttribute public static boolean showPrintDialog = true;
 	
+	// File and folder locations
 	@XmlAttribute public static String dataFolder = "..\\data\\";
 	@XmlAttribute public static String saveFolder = "..\\data\\save\\";
 	@XmlAttribute public static String colouringFolder = "..\\data\\colouring\\";
-	@XmlAttribute public static boolean showPrintDialog = true;
 	@XmlAttribute public static String guiFile = "gui.xml";
 	@XmlAttribute public static String defaultLayoutFile = "layout_768.xml";
 	
@@ -75,9 +77,9 @@ public class Settings {
 	@XmlAttribute public static int resetPromptDelay = 5 * 60 * 1000;
 	@XmlAttribute public static int resetDelay = 5 * 60 * 1000;
 
-	public static void unmarshallSettings() throws TransformerFactoryConfigurationError, TransformerException, IllegalArgumentException, IllegalAccessException {
+	public static void unmarshallSettings(String filename) throws TransformerFactoryConfigurationError, TransformerException, IllegalArgumentException, IllegalAccessException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		StreamSource source = new StreamSource(new File(settingsFile));
+		StreamSource source = new StreamSource(new File(filename));
 		DOMResult result = new DOMResult();
 		transformer.transform(source, result);
 		
@@ -95,7 +97,7 @@ public class Settings {
 				String name = f.getName();
 				NodeList list = root.getElementsByTagName(name);
 				if (list == null || list.getLength() == 0)
-					System.err.println("Settings: no xml value found for field " + name);
+					LOGGER.error("No xml value found for field " + name);
 				else {
 					Node n = list.item(0);
 					String strValue = n.getTextContent();
@@ -121,7 +123,7 @@ public class Settings {
 						Locale l = new Locale(strValue);
 						f.set(null, l);
 					} else {
-						System.err.println("Settings: field type not supported for " + f.getType() + " " + f.getName());
+						LOGGER.error("Field type not supported for " + f.getType() + " " + f.getName());
 					}
 				}
 			}

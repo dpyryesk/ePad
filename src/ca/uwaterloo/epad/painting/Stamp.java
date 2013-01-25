@@ -20,6 +20,8 @@
 
 package ca.uwaterloo.epad.painting;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PGraphics;
 import processing.core.PShape;
 import ca.uwaterloo.epad.ui.MoveableItem;
@@ -27,6 +29,8 @@ import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Stamp extends Brush {
+	private static final Logger LOGGER = Logger.getLogger(Stamp.class);
+	
 	@XmlAttribute public String stampFile;
 	
 	private PShape stampShape;
@@ -50,8 +54,10 @@ public class Stamp extends Brush {
 	
 	private void loadShape() {
 		if (stampShape == null && stampFile != null) {
-			try {
-				stampShape = applet.loadShape(Settings.dataFolder + stampFile);
+			stampShape = applet.loadShape(Settings.dataFolder + stampFile);
+			if (stampShape == null)
+				LOGGER.error("Failed to load shape: " + stampFile);
+			else {
 				stampWidth = stampShape.getWidth();
 				stampHeight = stampShape.getHeight();
 				
@@ -66,9 +72,6 @@ public class Stamp extends Brush {
 				
 				if (disableStyle)
 					stampShape.disableStyle();
-				
-			} catch (Exception e) {
-				System.out.println("Unable to load stamp: " + stampFile + ". Error: " + e.getMessage());
 			}
 		}
 	}
@@ -84,17 +87,19 @@ public class Stamp extends Brush {
 			loadShape();
 			StrokePoint p = s.getPath().get(0);
 			
-			g.beginDraw();
-			g.beginShape();
-			g.shapeMode(CENTER);
-			if (disableStyle) {
-				g.fill(colour);
-				g.noStroke();
-				g.strokeWeight(1);
+			if (stampShape != null) {
+				g.beginDraw();
+				g.beginShape();
+				g.shapeMode(CENTER);
+				if (disableStyle) {
+					g.fill(colour);
+					g.noStroke();
+					g.strokeWeight(1);
+				}
+				g.shape(stampShape, p.x, p.y, stampWidth, stampHeight);
+				g.endShape();
+				g.endDraw();
 			}
-			g.shape(stampShape, p.x, p.y, stampWidth, stampHeight);
-			g.endShape();
-			g.endDraw();
 		}
 	}
 }

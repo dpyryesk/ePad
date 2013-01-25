@@ -23,6 +23,8 @@ package ca.uwaterloo.epad.ui;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PFont;
 
 import ca.uwaterloo.epad.Application;
@@ -33,6 +35,8 @@ import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 
 public class ResetDialog extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(ResetDialog.class);
+	
 	public int backgroundColour = Application.backgroundColour;
 	public int borderColour = Application.primaryColour;
 	public int transparentColour = Application.transparentColour;
@@ -60,6 +64,9 @@ public class ResetDialog extends Zone {
 	
 	public ResetDialog () {
 		super(0, 0, applet.width, applet.height);
+		
+		LOGGER.info("ResetDialog opened.");
+		
 		Application.pauseApplication();
 		isOnScreen = true;
 		resetTimer = new Timer(Settings.resetDelay);
@@ -163,6 +170,7 @@ public class ResetDialog extends Zone {
 	}
 	
 	public void close() {
+		LOGGER.info("ResetDialog closed.");
 		TouchClient.remove(this);
 		Application.resumeApplication();
 		isOnScreen = false;

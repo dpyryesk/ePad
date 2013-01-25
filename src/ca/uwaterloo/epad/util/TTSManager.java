@@ -20,11 +20,16 @@
 
 package ca.uwaterloo.epad.util;
 
+import org.apache.log4j.Logger;
+
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 
 public class TTSManager {
+	private static final Logger LOGGER = Logger.getLogger(TTSManager.class);
+	
 	protected static Voice voice;
+	protected static boolean badVoice = false;
 	
 	private TTSManager(){}
 	
@@ -35,7 +40,8 @@ public class TTSManager {
 		voice = voiceManager.getVoice(Settings.TTSVoice);
 
 		if (voice == null) {
-			System.err.println("Error: TTSManager is unable to load voice " + Settings.TTSVoice);
+			LOGGER.error("TTSManager failed to load voice " + Settings.TTSVoice);
+			badVoice = true;
 			return;
 		}
 
@@ -48,11 +54,12 @@ public class TTSManager {
 		
 		stop();
 		
-		if (voice == null) {
+		if (voice == null && !badVoice) {
 			init();
 		}
 
-		new Thread(new TTSRunnable(text)).start();
+		if (!badVoice)
+			new Thread(new TTSRunnable(text)).start();
 	}
 
 	public static void stop() {

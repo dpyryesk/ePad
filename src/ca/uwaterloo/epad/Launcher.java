@@ -20,34 +20,56 @@
 
 package ca.uwaterloo.epad;
 
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+import processing.core.PApplet;
 import ca.uwaterloo.epad.ui.SplashScreen;
 import ca.uwaterloo.epad.util.Settings;
 
-import processing.core.PApplet;
-
 public class Launcher {
 	private static ResourceBundle uiStrings;
+	private static final Logger LOGGER = Logger.getLogger(Launcher.class);
+	
+	private static String settingsFile = "data\\settings.xml";
+	private static String logConfigFile = "data\\log4j.properties";
 	
 	public static void main(String args[]) {
-		try {
-			Settings.unmarshallSettings();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (args.length == 1) {
+			settingsFile = args[0];
+		} else if (args.length == 2) {
+			settingsFile = args[0];
+			logConfigFile = args[1];
 		}
 		
-		uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
+		// Set up logging
+		PropertyConfigurator.configure(logConfigFile);
+		
+		try {
+			Settings.unmarshallSettings(settingsFile);
+		} catch (Exception e) {
+			LOGGER.fatal("Failed to load settings from file: " + settingsFile);
+			System.exit(1);
+		}
+		
+		try {
+			uiStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.UI", Settings.locale);
+			ResourceBundle.getBundle("ca.uwaterloo.epad.res.Prompts", Settings.locale);
+		} catch (MissingResourceException e) {
+			LOGGER.fatal(e.getLocalizedMessage());
+			System.exit(2);
+		}
 		
 		// Create a splash screen
-		try {
-			SplashScreen.splash(Settings.dataFolder + "images\\epadLogo.png");
-			SplashScreen.setMessage(uiStrings.getString("LoadingMessage"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+		SplashScreen.splash(Settings.dataFolder + "images\\epadLogo.png");
 		SplashScreen.setMessage(uiStrings.getString("StartingMessage"));
+		
+		LOGGER.info("=======================================================================================");
+		LOGGER.info("Starting the application.");
+		
 		
 		// Start the applet
 		args = new String[] {"--location=0,0", "--full-screen", "--hide-stop"};

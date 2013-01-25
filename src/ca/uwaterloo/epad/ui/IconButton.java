@@ -23,6 +23,8 @@ package ca.uwaterloo.epad.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PShape;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
@@ -30,6 +32,8 @@ import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
 public class IconButton extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(IconButton.class);
+	
 	public int backgroundColour;
 	public int iconColour;
 	
@@ -42,7 +46,10 @@ public class IconButton extends Zone {
 		super(x, y, width, height);
 		
 		icon = applet.loadShape(Settings.dataFolder + "vector\\" + iconName + ".svg");
-		icon.disableStyle();
+		if (icon == null)
+			LOGGER.error("Failed to load shape: " + Settings.dataFolder + "vector\\" + iconName + ".svg");
+		else
+			icon.disableStyle();
 		
 		this.backgroundColour = backgroundColour;
 		this.iconColour = iconColour;
@@ -54,9 +61,11 @@ public class IconButton extends Zone {
 		ellipseMode(CORNER);
 		ellipse(0, 0, width, height);
 		
-		fill(iconColour);
-		shapeMode(CENTER);
-		shape(icon, width/2, height/2, width*0.75f, height*0.75f);
+		if (icon != null) {
+			fill(iconColour);
+			shapeMode(CENTER);
+			shape(icon, width/2, height/2, width*0.75f, height*0.75f);
+		}
 	}
 	
 	protected void pickDrawImpl() {
@@ -94,18 +103,27 @@ public class IconButton extends Zone {
 				pressMethod.invoke(pressMethodObject);
 			}
 			catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-				e.printStackTrace();
+				LOGGER.error("Failed to invoke method " + pressMethod.toString() + ". " + e.getLocalizedMessage());
 			}
 		}
 	}
 	
-	public void setPressMethodByName(String methodName, Object obj) {
+	public void setStaticPressMethod(String methodName, Class<?> c) {
+		pressMethodObject = null;
+		try {
+			pressMethod = c.getDeclaredMethod(methodName);
+		} catch (NoSuchMethodException | SecurityException e) {
+			LOGGER.error("Failed to get static method. " + e.getLocalizedMessage());
+		}
+	}
+	
+	public void setPressMethod(String methodName, Object obj) {
 		Class<?> c = obj.getClass();
 		pressMethodObject = obj;
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
 		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
 		}
 	}
 }

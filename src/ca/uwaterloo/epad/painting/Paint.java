@@ -20,13 +20,18 @@
 
 package ca.uwaterloo.epad.painting;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PImage;
 import vialab.SMT.Touch;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
 public class Paint extends MoveableItem {
+	private static final Logger LOGGER = Logger.getLogger(Paint.class);
+	
 	@XmlAttribute public int paintColour;
 	
 	protected static PImage paintImage;
@@ -35,10 +40,12 @@ public class Paint extends MoveableItem {
 		super(0, 0, 150, 150);
 		this.paintColour = colour;
 		isSelected = false;
-		name = ""+colour;
 		
-		if (paintImage == null)
-			paintImage = applet.loadImage("data\\images\\paintCan.png");
+		if (paintImage == null) {
+			paintImage = applet.loadImage(Settings.dataFolder + "images\\paintCan.png");
+			if (paintImage == null)
+				LOGGER.error("Failed to load image: " + Settings.dataFolder + "images\\paintCan.png");
+		}
 	}
 	
 	public Paint(Paint original) {
@@ -50,8 +57,11 @@ public class Paint extends MoveableItem {
 	public Paint(MoveableItem original) {
 		super(original);
 		
-		if (paintImage == null)
-			paintImage = applet.loadImage("..\\data\\images\\paintCan.png");
+		if (paintImage == null) {
+			paintImage = applet.loadImage(Settings.dataFolder + "images\\paintCan.png");
+			if (paintImage == null)
+				LOGGER.error("Failed to load image: " + Settings.dataFolder + "images\\paintCan.png");
+		}
 	}
 	
 	protected void drawItem() {

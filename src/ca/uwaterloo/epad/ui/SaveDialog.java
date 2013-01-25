@@ -23,6 +23,8 @@ package ca.uwaterloo.epad.ui;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PFont;
 import vialab.SMT.KeyboardZone;
 import vialab.SMT.TouchClient;
@@ -32,6 +34,8 @@ import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.xml.SaveFile;
 
 public class SaveDialog extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(SaveDialog.class);
+	
 	public int backgroundColour = Application.backgroundColour;
 	public int borderColour = Application.primaryColour;
 	public int transparentColour = Application.transparentColour;
@@ -60,6 +64,7 @@ public class SaveDialog extends Zone {
 	public SaveDialog() {
 		super(0, 0, applet.width, applet.height);
 		
+		LOGGER.info("SaveDialog opened.");
 		Application.pauseApplication();
 		isOnScreen = true;
 
@@ -141,12 +146,15 @@ public class SaveDialog extends Zone {
 	}
 	
 	public void close() {
+		LOGGER.info("SaveDialog closed.");
 		TouchClient.remove(this);
 		Application.resumeApplication();
 		isOnScreen = false;
 	}
 	
 	public void doSave() {
+		LOGGER.info("SaveDialog saving the workspace.");
+		
 		String name = mainText;
 		mainText = uiStrings.getString("SaveDialogSavingText");
 		
@@ -159,7 +167,7 @@ public class SaveDialog extends Zone {
 		remove(saveButton);
 		remove(cancelButton);
 		
-		// show buttons
+		// show continue and reset buttons
 		int bX = outerPadding + (dialogWidth - innerPadding * 2 - buttonWidth * 2 - bGap) / 2;
 		int bY = outerPadding - innerPadding * 2 + dialogHeight - keyboardHeight;
 		

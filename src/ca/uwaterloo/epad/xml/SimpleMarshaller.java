@@ -36,6 +36,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,6 +53,8 @@ import ca.uwaterloo.epad.ui.RotatingDrawer;
 import ca.uwaterloo.epad.ui.SlidingDrawer;
 
 public class SimpleMarshaller {
+	private static final Logger LOGGER = Logger.getLogger(SimpleMarshaller.class);
+	
 	private static final String NODE_ITEM = "MoveableItem";
 	private static final String NODE_CANVAS = "Canvas";
 	private static final String NODE_LAYOUT = "Layout";
@@ -177,7 +180,7 @@ public class SimpleMarshaller {
 		
 		Node root = result.getNode().getFirstChild();
 		if (root == null) {
-			System.err.println("SimpleMarshaller: no data loaded");
+			LOGGER.error("No data loaded.");
 			return;
 		}
 		
@@ -224,7 +227,7 @@ public class SimpleMarshaller {
 			NoSuchMethodException, SecurityException {
 		NamedNodeMap attributeMap = childNode.getAttributes();
 		if (attributeMap == null || attributeMap.getLength() == 0) {
-			System.err.println("SimpleMarshaller: unable to unmarshall child, no attributes specified in xml");
+			LOGGER.error("Failed to unmarshall child, no attributes specified in xml.");
 			return;
 		}
 
@@ -233,14 +236,14 @@ public class SimpleMarshaller {
 		Class<?> childClass, baseClass;
 
 		if (temp == null) {
-			System.err.println("SimpleMarshaller: unable to unmarshall child, class attribute not specified in xml");
+			LOGGER.error("Failed to unmarshall child, class attribute not specified in xml.");
 			return;
 		} else {
 			String className = temp.getNodeValue();
 			try {
 				childClass = Class.forName(className);
 			} catch (ClassNotFoundException e) {
-				System.err.println("SimpleMarshaller: unable to unmarshall child, class " + className + " is not found");
+				LOGGER.error("Failed to unmarshall child, class " + className + " is not found.");
 				return;
 			}
 		}
@@ -249,7 +252,7 @@ public class SimpleMarshaller {
 		while (!baseClass.equals(MoveableItem.class)) {
 			baseClass = baseClass.getSuperclass();
 			if (baseClass.equals(Object.class)) {
-				System.err.println("SimpleMarshaller: unable to unmarshall child, class " + childClass.getName() + " is not a subclass of MoveableItem");
+				LOGGER.error("Failed to unmarshall child, class " + childClass.getName() + " is not a subclass of MoveableItem.");
 				return;
 			}
 		}
@@ -284,7 +287,7 @@ public class SimpleMarshaller {
 				String name = f.getName();
 				Node n = attributeMap.getNamedItem(name);
 				if (n == null) {
-					System.err.println("SimpleMarshaller: no xml value found for field " + name);
+					LOGGER.error("No xml value found for field " + name);
 				} else {
 					setField(f, childInstance, n.getNodeValue());
 				}
@@ -317,7 +320,7 @@ public class SimpleMarshaller {
 				boolean boolValue = Boolean.parseBoolean(value);
 				f.set(o, boolValue);
 			} else {
-				System.err.println("SimpleMarshaller: field type not supported for " + f.getType() + " " + f.getName());
+				LOGGER.error("Field type not supported for " + f.getType() + " " + f.getName());
 			}
 		}
 	}
@@ -356,7 +359,7 @@ public class SimpleMarshaller {
 		
 		Node root = result.getNode().getFirstChild();
 		if (root == null) {
-			System.err.println("SimpleMarshaller: no data loaded");
+			LOGGER.error("No data loaded.");
 			return;
 		}
 		
@@ -370,7 +373,7 @@ public class SimpleMarshaller {
 				String name = f.getName();
 				Node att = attributeMap.getNamedItem(name);
 				if (att == null) {
-					System.err.println("SimpleMarshaller: no xml value found for field " + name);
+					LOGGER.error("No xml value found for field " + name);
 				} else {
 					setField(f, app, att.getNodeValue());
 				}
@@ -391,7 +394,7 @@ public class SimpleMarshaller {
 				switch (pos) {
 				case LEFT: drawer = RotatingDrawer.makeLeftDrawer(app); drawerId = Application.LEFT_DRAWER; break;
 				case RIGHT: drawer = RotatingDrawer.makeRightDrawer(app); drawerId = Application.RIGHT_DRAWER; break;
-				default: System.err.println("SimpleMarshaller: layout error, only left and right rotating drawers are supported");
+				default: LOGGER.error("Layout error, only left and right rotating drawers are supported.");
 				throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
@@ -419,7 +422,7 @@ public class SimpleMarshaller {
 				
 				switch (pos) {
 				case TOP: drawer = SlidingDrawer.makeTopDrawer(app, drawerWidth); drawerId = Application.TOP_DRAWER; break;
-				default: System.err.println("SimpleMarshaller: layout error, only top sliding drawer is supported");
+				default: LOGGER.error("Layout error, only top sliding drawer is supported");
 				throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
@@ -436,7 +439,7 @@ public class SimpleMarshaller {
 			if (childNode.getNodeName().equals(NODE_ITEM)) {
 				NamedNodeMap attributeMap = childNode.getAttributes();
 				if (attributeMap == null || attributeMap.getLength() == 0) {
-					System.err.println("SimpleMarshaller: unable to unmarshall child, no attributes specified in xml");
+					LOGGER.error("Failed to unmarshall child, no attributes specified in xml.");
 					return;
 				}
 
@@ -445,14 +448,14 @@ public class SimpleMarshaller {
 				Class<?> childClass, baseClass;
 
 				if (temp == null) {
-					System.err.println("SimpleMarshaller: unable to unmarshall child, class attribute not specified in xml");
+					LOGGER.error("Failed to unmarshall child, class attribute not specified in xml.");
 					return;
 				} else {
 					String className = temp.getNodeValue();
 					try {
 						childClass = Class.forName(className);
 					} catch (ClassNotFoundException e) {
-						System.err.println("SimpleMarshaller: unable to unmarshall child, class " + className + " is not found");
+						LOGGER.error("Failed to unmarshall child, class " + className + " is not found.");
 						return;
 					}
 				}
@@ -461,7 +464,7 @@ public class SimpleMarshaller {
 				while (!baseClass.equals(MoveableItem.class)) {
 					baseClass = baseClass.getSuperclass();
 					if (baseClass.equals(Object.class)) {
-						System.err.println("SimpleMarshaller: unable to unmarshall child, class " + childClass.getName() + " is not a subclass of MoveableItem");
+						LOGGER.error("Failed to unmarshall child, class " + childClass.getName() + " is not a subclass of MoveableItem.");
 						return;
 					}
 				}
@@ -482,7 +485,7 @@ public class SimpleMarshaller {
 						String name = f.getName();
 						Node n = attributeMap.getNamedItem(name);
 						if (n == null) {
-							System.err.println("SimpleMarshaller: no xml value found for field " + name);
+							LOGGER.error("No xml value found for field " + name);
 						} else {
 							setField(f, childInstance, n.getNodeValue());
 						}

@@ -28,9 +28,13 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PImage;
 
 public class DrawingPrinter implements Runnable {
+	private static final Logger LOGGER = Logger.getLogger(DrawingPrinter.class);
+	
 	private PImage drawing;
 	private boolean showPrompt;
 
@@ -48,7 +52,7 @@ public class DrawingPrinter implements Runnable {
 			try {
 				pjob.print();
 			} catch (PrinterException e) {
-				e.printStackTrace();
+				LOGGER.error("Printing error: " + e.getLocalizedMessage());
 			}
 		}
 	}
@@ -65,7 +69,7 @@ public class DrawingPrinter implements Runnable {
 		try {
 			pjob.print();
 		} catch (PrinterException e) {
-			e.printStackTrace();
+			LOGGER.error("Printing error: " + e.getLocalizedMessage());
 		}
 	}
 	
@@ -75,6 +79,8 @@ public class DrawingPrinter implements Runnable {
 	}
 
 	public void run() {
+		LOGGER.info("Drawing printer started.");
+		
 		if (showPrompt)
 			printDrawing();
 		else
@@ -110,12 +116,12 @@ public class DrawingPrinter implements Runnable {
 				} else {
 					h = (int)((double)w / imageAspect);
 				}
+				LOGGER.info("The aspect ratio of the printed image is preserved, value=" + imageAspect);
 			}
 			
 			g.drawImage(image, x, y, w, h, null);
 
 			return PAGE_EXISTS;
 		}
-		
 	}
 }

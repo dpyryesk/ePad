@@ -20,6 +20,8 @@
 
 package ca.uwaterloo.epad.prompting;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
@@ -32,6 +34,8 @@ import ca.uwaterloo.epad.util.Timer;
 import ca.uwaterloo.epad.util.Tween;
 
 public class PromptPopup {
+	private static final Logger LOGGER = Logger.getLogger(PromptPopup.class);
+	
 	public static final int LOCATION_TOP_LEFT = 1;
 	public static final int LOCATION_TOP_RIGHT = 2;
 	public static final int LOCATION_BOTTOM_LEFT = 3;
@@ -120,7 +124,7 @@ public class PromptPopup {
 		alphaTween = new Tween(10, 255, 500);
 
 		if (applet == null) {
-			System.err.println("Error: Unable to instantiate PromptPopup before PromptManager.init().");
+			System.err.println("Error: Must call PromptManager.init() before instantiating a PromptPopup.");
 			return;
 		}
 
@@ -154,12 +158,13 @@ public class PromptPopup {
 	}
 	
 	private void loadIcon() {
-		try {
-			icon = applet.loadShape(Settings.dataFolder + "vector\\cue\\" + iconName + ".svg");
+		String filename = Settings.dataFolder + "vector\\cue\\" + iconName + ".svg";
+		icon = applet.loadShape(filename);
+		if (icon == null)
+			LOGGER.error("Failed to load shape: " + filename);
+		else {
 			icon.disableStyle();
 			icon.scale(iconSize / 30f);
-		} catch (Exception e) {
-			icon = null;
 		}
 	}
 

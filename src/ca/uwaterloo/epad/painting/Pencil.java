@@ -31,18 +31,15 @@ public class Pencil extends Brush {
 	public Pencil(int size) {
 		super();
 		this.size = size;
-		name = "Pencil " + size;
 	}
 	
 	public Pencil(Pencil original) {
 		super(original);
 		size = original.size;
-		name = "Pencil " + size;
 	}
 	
 	public Pencil(MoveableItem original) {
 		super(original);
-		name = "Pencil " + size;
 	}
 	
 	public void renderStroke(Stroke s, int colour, PGraphics g) {

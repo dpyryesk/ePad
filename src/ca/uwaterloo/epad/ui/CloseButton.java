@@ -22,6 +22,8 @@ package ca.uwaterloo.epad.ui;
 
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
+
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 import processing.core.PShape;
@@ -30,6 +32,8 @@ import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 
 public class CloseButton extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(CloseButton.class);
+	
 	public int backgroundColour = Application.deleteColour;
 	public int iconColour = Application.backgroundColour;
 	protected static PShape icon;
@@ -40,7 +44,10 @@ public class CloseButton extends Zone {
 		
 		if (icon == null) {
 			icon = applet.loadShape(Settings.dataFolder + "vector\\x.svg");
-			icon.disableStyle();
+			if (icon == null)
+				LOGGER.error("Failed to load shape: " + Settings.dataFolder + "vector\\x.svg");
+			else
+				icon.disableStyle();
 		}
 	}
 	

@@ -29,12 +29,15 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 
+import org.apache.log4j.Logger;
+
 public class SplashScreen extends Frame {
 	private static final long serialVersionUID = -4435437206944198737L;
+	private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
 
 	private Image img;
 	private String text;
-	private Font font = new Font("Arial", Font.PLAIN, 16);
+	private Font font = new Font("Arial", Font.PLAIN, 20);
 	private static SplashScreen instance;
 
 	/**
@@ -45,11 +48,10 @@ public class SplashScreen extends Frame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - width) / 2, (screenSize.height - height) / 2, width, height);
 	}
+	
+	private SplashScreen() {}
 
-	private SplashScreen(String filename) throws Exception {
-		if (instance != null)
-			throw (new Exception("SplashScreen is a singleton"));
-
+	private SplashScreen(String filename) {
 		instance = this;
 		text = "";
 
@@ -60,11 +62,11 @@ public class SplashScreen extends Frame {
 		try {
 			mt.waitForID(0);
 		} catch (InterruptedException e) {
-			System.err.println("Unexpected interrupt in waitForID!");
+			LOGGER.error("Unexpected interrupt in waitForID!");
 			return;
 		}
 		if (mt.isErrorID(0)) {
-			System.err.println("Couldn't load itemImage file " + filename);
+			LOGGER.error("Failed to load image " + filename);
 			return;
 		}
 		
@@ -82,7 +84,7 @@ public class SplashScreen extends Frame {
 		setVisible(true);
 	}
 
-	public static void splash(String filename) throws Exception {
+	public static void splash(String filename) {
 		if (filename != null && instance == null)
 			new SplashScreen(filename);
 	}
@@ -112,7 +114,6 @@ public class SplashScreen extends Frame {
 		else
 			g.clearRect(0, 0, getSize().width, getSize().height);
 		
-		//g.fillRect(120,140,200,40);
 		g.setPaintMode();
 		g.setColor(Color.BLACK);
 		g.setFont(font);

@@ -20,6 +20,8 @@
 
 package ca.uwaterloo.epad.ui;
 
+import org.apache.log4j.Logger;
+
 import processing.core.PImage;
 import processing.core.PShape;
 import vialab.SMT.Touch;
@@ -29,6 +31,8 @@ import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
 public class MoveableItem extends Zone {
+	private static final Logger LOGGER = Logger.getLogger(MoveableItem.class);
+	
 	// Position parameters
 	protected boolean isInDrawer = false;
 	protected boolean isAboveTrash = false;
@@ -65,11 +69,17 @@ public class MoveableItem extends Zone {
 		this.name = name;
 		
 		// Load shapes
-		if (moveIcon == null)
+		if (moveIcon == null) {
 			moveIcon = applet.loadShape(Settings.dataFolder + "vector\\move.svg");
+			if (moveIcon == null)
+				LOGGER.error("Failed to load shape: " + Settings.dataFolder + "vector\\move.svg");
+		}
 		if (deleteIcon == null) {
 			deleteIcon = applet.loadShape(Settings.dataFolder + "vector\\x.svg");
-			deleteIcon.disableStyle();
+			if (moveIcon == null)
+				LOGGER.error("Failed to load shape: " + Settings.dataFolder + "vector\\x.svg");
+			else
+				deleteIcon.disableStyle();
 		}
 	}
 	
@@ -125,11 +135,14 @@ public class MoveableItem extends Zone {
 			
 			if (isAboveTrash) {
 				//draw delete icon
-				fill(deleteColour);
-				shape(deleteIcon, -15, -15, 30, 30);
+				if (deleteIcon != null) {
+					fill(deleteColour);
+					shape(deleteIcon, -15, -15, 30, 30);
+				}
 			} else {
 				//draw move icon
-				shape(moveIcon, -15, -15, 30, 30);
+				if (moveIcon != null)
+					shape(moveIcon, -15, -15, 30, 30);
 			}
 		}
 		
@@ -209,7 +222,7 @@ public class MoveableItem extends Zone {
 		}
 		catch (Exception e) {
 			clone = null;
-			System.err.println("Unable to clone zone " + enclosingClass.getClass().getCanonicalName());
+			LOGGER.error("Failed to clone zone " + enclosingClass.getClass().getCanonicalName());
 		}
 		
 		return clone;
@@ -238,7 +251,7 @@ public class MoveableItem extends Zone {
 		if (isInDrawer) {
 			boolean success = container.addItem(this);
 			if (!success)
-				System.err.println("Failed to add an item to container");
+				LOGGER.error("Failed to add an item to container");
 		} else {
 			isDrawerOpen = drawer.isOpen();
 		}
@@ -279,13 +292,10 @@ public class MoveableItem extends Zone {
 	}
 	
 	public void setImage(String filename) {
-		try {
-			itemImageFilename = filename;
-			itemImage = applet.loadImage(Settings.dataFolder + filename);
-		} catch (Exception e) {
-			e.printStackTrace();
-			itemImage = null;
-		}
+		itemImageFilename = filename;
+		itemImage = applet.loadImage(Settings.dataFolder + filename);
+		if (itemImage == null)
+			LOGGER.error("Failed to load image: " + Settings.dataFolder + filename);
 	}
 	
 	public int getDrawerId() {

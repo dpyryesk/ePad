@@ -72,6 +72,18 @@ public class SaveFile {
 
 		LOGGER.info("Saving the workspace into file: " + filename);
 		
+		// check if save folder exists and create it if necessary
+		try {
+			File savedir = new File(SAVE_FOLDER);
+			if (!savedir.exists())
+				savedir.mkdir();
+			
+			LOGGER.info("Created a save directory: " + SAVE_FOLDER);
+		} catch (Exception e) {
+			LOGGER.error(e.getLocalizedMessage());
+			return false;
+		}
+		
 		try {
 			File file = new File(filename);
 			File dir = new File(dirname);

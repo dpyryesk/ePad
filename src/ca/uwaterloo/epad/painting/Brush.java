@@ -37,7 +37,7 @@ import ca.uwaterloo.epad.ui.MoveableItem;
  */
 public abstract class Brush extends MoveableItem {
 	/**
-	 * Default constructor build a Brush object with dimension 150x150 px.
+	 * Default constructor builds a Brush object with dimension 150x150 px.
 	 */
 	public Brush() {
 		super(0, 0, 150, 150);
@@ -67,7 +67,7 @@ public abstract class Brush extends MoveableItem {
 		super(original);
 		isSelected = false;
 	}
-	
+
 	protected void doTouchDown(Touch touch) {
 		Application.setSelectedBrush(this);
 	}
@@ -90,5 +90,16 @@ public abstract class Brush extends MoveableItem {
 		}
 	}
 
+	/**
+	 * 
+	 * Abstract method that defines how each brush stroke should be rendered
+	 * 
+	 * @param s
+	 *            {@link Stroke} object
+	 * @param colour
+	 *            colour of the stroke
+	 * @param g
+	 *            PGraphics object to render the stroke into
+	 */
 	public abstract void renderStroke(Stroke s, int colour, PGraphics g);
 }

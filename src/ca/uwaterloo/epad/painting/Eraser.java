@@ -26,30 +26,68 @@ import ca.uwaterloo.epad.xml.XmlAttribute;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 
+/**
+ * 
+ * This class represents a circular eraser. It has a single parameter
+ * <b>size</b> which represents the diameter of the eraser.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ * @see Brush
+ */
 public class Eraser extends Brush {
-	@XmlAttribute public int size;
+	/**
+	 * Size parameter, which represents the diameter of the circular
+	 * eraser.</br> This parameter can be retrieved automatically from XML files
+	 * using {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller}
+	 * class.
+	 */
+	@XmlAttribute
+	public int size;
 
+	/**
+	 * Default constructor that allows creating Eraser objects manually.
+	 * 
+	 * @param size
+	 *            diameter of the eraser.
+	 */
 	public Eraser(int size) {
 		super();
 		this.size = size;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another Eraser object
+	 * 
+	 * @param original
+	 *            the original Eraser object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Eraser(Eraser original) {
 		super(original);
 		size = original.size;
 		name = original.name;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another MoveableItem object
+	 * 
+	 * @param original
+	 *            the original MoveableItem object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Eraser(MoveableItem original) {
 		super(original);
 	}
-	
+
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
-		if (length == 0) return;
+		if (length == 0)
+			return;
 		if (length == 1) {
-			StrokePoint p = s.getPath().get(length-1);
-			
+			StrokePoint p = s.getPath().get(length - 1);
+
 			g.beginDraw();
 			g.noStroke();
 			g.fill(Application.getCanvas().backgroundColour);
@@ -57,9 +95,9 @@ public class Eraser extends Brush {
 			g.ellipse(p.x, p.y, size, size);
 			g.endDraw();
 		} else {
-			StrokePoint from = s.getPath().get(length-2);
-			StrokePoint to = s.getPath().get(length-1);
-			
+			StrokePoint from = s.getPath().get(length - 2);
+			StrokePoint to = s.getPath().get(length - 1);
+
 			g.beginDraw();
 			g.strokeJoin(PConstants.ROUND);
 			g.strokeCap(PConstants.ROUND);

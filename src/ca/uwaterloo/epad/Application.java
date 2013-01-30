@@ -51,9 +51,9 @@ import ca.uwaterloo.epad.ui.Canvas;
 import ca.uwaterloo.epad.ui.Container;
 import ca.uwaterloo.epad.ui.Drawer;
 import ca.uwaterloo.epad.ui.FileBrowser;
-import ca.uwaterloo.epad.ui.ResetDialog;
 import ca.uwaterloo.epad.ui.FileBrowser.FileButton;
 import ca.uwaterloo.epad.ui.MoveableItem;
+import ca.uwaterloo.epad.ui.ResetDialog;
 import ca.uwaterloo.epad.ui.SaveDialog;
 import ca.uwaterloo.epad.ui.SplashScreen;
 import ca.uwaterloo.epad.util.DrawingPrinter;
@@ -63,10 +63,19 @@ import ca.uwaterloo.epad.xml.SaveFile;
 import ca.uwaterloo.epad.xml.SimpleMarshaller;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
+/**
+ * This is the main class of ePad application that contains the drawing loop and manages the GUI components
+ * such as Canvas and Drawers. 
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ *
+ */
 public class Application extends PApplet implements ActionListener {
 	private static final long serialVersionUID = -1354251777507926593L;
 	private static final Logger LOGGER = Logger.getLogger(Application.class);
 
+	// Drawer location identifiers
 	public static final int TOP_DRAWER = 0;
 	public static final int LEFT_DRAWER = 1;
 	public static final int RIGHT_DRAWER = 2;

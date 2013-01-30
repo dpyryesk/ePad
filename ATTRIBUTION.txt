@@ -6,8 +6,9 @@ We would like to credit the following people for providing functionality and gra
 2. Developers of Processing framework that enables this Java-based application to render real-time graphics
    
 3. P.J. Onori, the creator of Cue gestural icon system (http://somerandomdude.com/work/cue/) and Iconic icon set (http://somerandomdude.com/work/iconic/)
+   See the website for more details: http://processing.org/
 
-4. Authors of several graphic files (listed below) purchased from depositphotos.com
+4. Authors of the images used by the application purchased from depositphotos.com
    a. dvargg (http://depositphotos.com/5667793/stock-illustration-Paint-Cans.html?id=5667793)
    b. yaskii (http://depositphotos.com/4882066/stock-illustration-Paintbrush.html?id=4882066)
    c. andreakaulitzki (http://depositphotos.com/11704071/stock-illustration-Spider.html?id=11704071)

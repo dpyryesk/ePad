@@ -25,17 +25,44 @@ import vialab.SMT.Touch;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.MoveableItem;
 
+/**
+ * 
+ * This abstract class implements the common functionality of all painting tools
+ * in ePad 2.0 application. Every new painting tool must extend this class and
+ * implement its abstract method {@link #renderStroke(Stroke, int, PGraphics)
+ * renderStroke}.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ */
 public abstract class Brush extends MoveableItem {
+	/**
+	 * Default constructor build a Brush object with dimension 150x150 px.
+	 */
 	public Brush() {
 		super(0, 0, 150, 150);
 		isSelected = false;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another Brush object
+	 * 
+	 * @param original
+	 *            the original Brush object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Brush(Brush original) {
 		super(original);
 		isSelected = false;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another MoveableItem object
+	 * 
+	 * @param original
+	 *            the original MoveableItem object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Brush(MoveableItem original) {
 		super(original);
 		isSelected = false;
@@ -44,11 +71,11 @@ public abstract class Brush extends MoveableItem {
 	protected void doTouchDown(Touch touch) {
 		Application.setSelectedBrush(this);
 	}
-	
+
 	protected void doTouchUp(Touch touch) {
-		
+
 	}
-	
+
 	protected void drawItem() {
 		if (itemImage == null) {
 			fill(secondaryColour);
@@ -62,6 +89,6 @@ public abstract class Brush extends MoveableItem {
 			image(itemImage, width / 2, height / 2, 125, 125);
 		}
 	}
-	
+
 	public abstract void renderStroke(Stroke s, int colour, PGraphics g);
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="lib/libTUIO.jar;lib/log4j-1.2.17.jar;lib/TUIO.jar;lib/jogl-all-natives-windows-amd64.jar;lib/jogl-all-natives-linux-i586.jar;lib/jogl-all-natives-linux-amd64.jar;lib/gluegen-rt-natives-macosx-universal.jar;lib/jogl-all-natives-windows-i586.jar;lib/freetts.jar;lib/gluegen-rt-natives-windows-amd64.jar;lib/SMT.jar;lib/jbox2d-library-2.1.2.2-jar-with-dependencies.jar;lib/gluegen-rt-natives-linux-i586.jar;lib/jogl-all.jar;lib/gluegen-rt.jar;lib/core.jar;lib/android.jar;lib/gluegen-rt-natives-linux-amd64.jar;lib/gluegen-rt-natives-windows-i586.jar;lib/jogl-all-natives-macosx-universal.jar;lib/opengl.jar" destdir="doc" doctitle="ePad 2.0" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="ca.uwaterloo.epad.xml,ca.uwaterloo.epad.prompting,ca.uwaterloo.epad,ca.uwaterloo.epad.painting,ca.uwaterloo.epad.ui,ca.uwaterloo.epad.util" source="1.7" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

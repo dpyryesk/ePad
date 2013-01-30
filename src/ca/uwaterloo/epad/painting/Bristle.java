@@ -22,16 +22,41 @@ package ca.uwaterloo.epad.painting;
 
 import processing.core.PGraphics;
 
+/**
+ * 
+ * This class represents a single bristle of a hard bristle brush.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ */
 class Bristle {
-	private float x, y, width;
-	
-	public Bristle(float x, float y, float width) {
+	private float x, y, diameter;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param x
+	 *            x coordinate of the bristle
+	 * @param y
+	 *            y coordinate of the bristle
+	 * @param diameter
+	 *            diameter of the bristle
+	 */
+	public Bristle(float x, float y, float diameter) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
+		this.diameter = diameter;
 	}
-	
+
+	/**
+	 * Draw the bristle as a circle with the specified x and y coordinates and
+	 * diameter. This method does not specify colour of the bristle. It must
+	 * also be surrounded by PGraphics.beginDraw() and PGraphics.endDraw().
+	 * 
+	 * @param g
+	 *            the graphics object to draw the bristle into
+	 */
 	public void draw(PGraphics g) {
-		g.ellipse(x, y, width, width);
+		g.ellipse(x, y, diameter, diameter);
 	}
 }

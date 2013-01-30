@@ -107,7 +107,7 @@ public class RotatingDrawer extends Drawer {
 	}
 	
 	protected boolean calculateState() {
-		if (getVisibleWidth() > 30) {
+		if (getVisibleWidth() > 100) {
 			return true;
 		} else {
 			return false;

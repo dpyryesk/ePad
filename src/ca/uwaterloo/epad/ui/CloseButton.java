@@ -76,6 +76,7 @@ public class CloseButton extends Zone {
 	}
 
 	// Draw button
+	@Override
 	protected void drawImpl() {
 		noStroke();
 		fill(backgroundColour);
@@ -88,17 +89,20 @@ public class CloseButton extends Zone {
 	}
 
 	// Draw for zone picker
+	@Override
 	protected void pickDrawImpl() {
 		ellipseMode(CORNER);
 		ellipse(0, 0, width, height);
 	}
 
 	// Action on touch event
+	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
 	}
 
 	// Action on touch up event
+	@Override
 	protected void touchUp(Touch touch) {
 		buttonDown = getTouches().length > 0;
 		super.touchUp(touch);
@@ -110,6 +114,7 @@ public class CloseButton extends Zone {
 	}
 
 	// Action on touch down event
+	@Override
 	protected void touchDown(Touch touch) {
 		super.touchDown(touch);
 		buttonDown = true;
@@ -132,5 +137,18 @@ public class CloseButton extends Zone {
 				applet.exit();
 			}
 		}
+	}
+	
+	/**
+	 * Set the colour scheme of the button.
+	 * 
+	 * @param backgroundColour
+	 *            colour of the button's background
+	 * @param iconColour
+	 *            colour of the button's icon
+	 */
+	public void setColourScheme(int backgroundColour, int iconColour) {
+		this.backgroundColour = backgroundColour;
+		this.iconColour = iconColour;
 	}
 }

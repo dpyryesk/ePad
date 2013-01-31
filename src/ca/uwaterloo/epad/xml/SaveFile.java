@@ -111,10 +111,10 @@ public class SaveFile {
 		int w, h;
 		if (thumbnail.width >= thumbnail.height) {
 			w = THUMBNAIL_MAX_SIZE;
-			h = Math.round((float)thumbnail.height * (float)THUMBNAIL_MAX_SIZE / (float)thumbnail.width);
+			h = Math.round((float)thumbnail.height * (float)THUMBNAIL_MAX_SIZE / thumbnail.width);
 		} else {
 			h = THUMBNAIL_MAX_SIZE;
-			w = Math.round((float)thumbnail.width * (float)THUMBNAIL_MAX_SIZE / (float)thumbnail.height);
+			w = Math.round((float)thumbnail.width * (float)THUMBNAIL_MAX_SIZE / thumbnail.height);
 		}
 		thumbnail.resize(w, h);
 		

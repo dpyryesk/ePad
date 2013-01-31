@@ -78,6 +78,7 @@ public class DrawingPrinter implements Runnable {
 		this.showPrompt = showPrompt;
 	}
 
+	@Override
 	public void run() {
 		LOGGER.info("Drawing printer started.");
 		
@@ -114,7 +115,7 @@ public class DrawingPrinter implements Runnable {
 				if (pageAspect > imageAspect) {
 					w = (int) (h * imageAspect);
 				} else {
-					h = (int)((double)w / imageAspect);
+					h = (int)(w / imageAspect);
 				}
 				LOGGER.info("The aspect ratio of the printed image is preserved, value=" + imageAspect);
 			}

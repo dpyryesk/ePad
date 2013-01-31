@@ -30,6 +30,16 @@ import vialab.SMT.Zone;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
+/**
+ * This class creates a simple button widget that has an icon instead of text
+ * and may invoke a certain method when pressed. To set the method to invoke use
+ * either {@link #setStaticPressMethod(String, Class)} (for static methods) or
+ * {@link #setPressMethod(String, Object)} (for instance methods).
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class IconButton extends Zone {
 	private static final Logger LOGGER = Logger.getLogger(IconButton.class);
 
@@ -48,9 +58,13 @@ public class IconButton extends Zone {
 
 	/**
 	 * Default constructor.
-	 * @param x x-coordinate of the top left corner of the button
-	 * @param y y-coordinate of the top left corner of the button
-	 * @param width width of the button
+	 * 
+	 * @param x
+	 *            x-coordinate of the top left corner of the button
+	 * @param y
+	 *            y-coordinate of the top left corner of the button
+	 * @param width
+	 *            width of the button
 	 * @param height
 	 * @param iconName
 	 * @param backgroundColour
@@ -70,6 +84,7 @@ public class IconButton extends Zone {
 	}
 
 	// Draw button
+	@Override
 	protected void drawImpl() {
 		noStroke();
 		fill(backgroundColour);
@@ -84,17 +99,20 @@ public class IconButton extends Zone {
 	}
 
 	// Draw for zone picker
+	@Override
 	protected void pickDrawImpl() {
 		ellipseMode(CORNER);
 		ellipse(0, 0, width, height);
 	}
 
 	// Action on touch event
+	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
 	}
 
 	// Action on touch up event
+	@Override
 	protected void touchUp(Touch touch) {
 		buttonDown = getTouches().length > 0;
 		super.touchUp(touch);
@@ -106,6 +124,7 @@ public class IconButton extends Zone {
 	}
 
 	// Action on touch down event
+	@Override
 	protected void touchDown(Touch touch) {
 		super.touchDown(touch);
 		buttonDown = true;
@@ -157,5 +176,18 @@ public class IconButton extends Zone {
 		} catch (Exception e) {
 			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
 		}
+	}
+
+	/**
+	 * Set the colour scheme of the button.
+	 * 
+	 * @param backgroundColour
+	 *            colour of the button's background
+	 * @param iconColour
+	 *            colour of the button's icon
+	 */
+	public void setColourScheme(int backgroundColour, int iconColour) {
+		this.backgroundColour = backgroundColour;
+		this.iconColour = iconColour;
 	}
 }

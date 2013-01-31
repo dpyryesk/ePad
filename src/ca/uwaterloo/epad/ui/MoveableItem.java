@@ -96,6 +96,7 @@ public class MoveableItem extends Zone {
 		itemImageFilename = original.itemImageFilename;
 	}
 	
+	@Override
 	protected void drawImpl() {
 		isDrawerOpen = Application.getDrawer(Application.LEFT_DRAWER).isOpen() || Application.getDrawer(Application.RIGHT_DRAWER).isOpen();
 		
@@ -155,6 +156,7 @@ public class MoveableItem extends Zone {
 	protected void drawItem() {
 	}
 	
+	@Override
 	protected void pickDrawImpl() {
 		ellipseMode(CENTER);
 		ellipse(width/2, height/2, width, height);
@@ -163,6 +165,7 @@ public class MoveableItem extends Zone {
 		}
 	}
 	
+	@Override
 	protected void touchImpl() {
 		if (!isInDrawer && isDrawerOpen) {
 			rst();
@@ -172,11 +175,9 @@ public class MoveableItem extends Zone {
 		}
 		
 		Application.setActionPerformed();
-		
-		if (isInDrawer)
-			drawer.setActionPerformed();
 	}
 	
+	@Override
 	protected void touchDownImpl(Touch touch) {
 		if (isDrawerOpen) {
 			if (isInDrawer) {
@@ -195,6 +196,7 @@ public class MoveableItem extends Zone {
 		}
 	}
 	
+	@Override
 	protected void touchUpImpl(Touch touch) {
 		if (isDrawerOpen) {
 			isDragged = false;

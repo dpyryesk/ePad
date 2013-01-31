@@ -113,6 +113,7 @@ public class Application extends PApplet implements ActionListener {
 	private static ArrayList<Brush> brushes = new ArrayList<Brush>();
 	private static ArrayList<Paint> paints = new ArrayList<Paint>();
 
+	@Override
 	public void setup() {
 		size(Settings.width, Settings.height, P3D);
 		frameRate(Settings.targetFPS);
@@ -146,6 +147,7 @@ public class Application extends PApplet implements ActionListener {
 		SplashScreen.remove();
 	}
 
+	@Override
 	public void draw() {
 		background(backgroundColour);
 		if (backgroundImage != null && backgroundImage.length() > 0 && bg != null) {
@@ -187,6 +189,7 @@ public class Application extends PApplet implements ActionListener {
 			TouchClient.add(new ResetDialog());
 	}
 	
+	@Override
 	public boolean sketchFullScreen() {
 		return true;
 	}
@@ -247,6 +250,7 @@ public class Application extends PApplet implements ActionListener {
 		*/
 	}
 
+	@Override
 	public void keyPressed() {
 		if (key == ' ') {
 			takeScreenshot();

@@ -49,7 +49,6 @@ public abstract class Drawer extends Zone {
 	protected boolean dragX, dragY;
 	protected Container container;
 
-	protected long lastActionTime;
 	protected boolean wasTouched = false;
 
 	protected ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
@@ -59,18 +58,20 @@ public abstract class Drawer extends Zone {
 
 		isOpen = false;
 		this.position = position;
-
-		setActionPerformed();
 	}
 
+	@Override
 	abstract protected void drawImpl();
 
+	@Override
 	abstract protected void pickDrawImpl();
 
+	@Override
 	protected void touchDownImpl(Touch touch) {
 		TouchClient.putZoneOnTop(this);
 	}
 
+	@Override
 	protected void touchImpl() {
 		drag(dragX, dragY, dragXMin, dragXMax, dragYMin, dragYMax);
 
@@ -82,7 +83,6 @@ public abstract class Drawer extends Zone {
 			else notifyListeners(CLOSED);
 		}
 		Application.setActionPerformed();
-		setActionPerformed();
 	}
 	
 	public boolean isOpen() {
@@ -115,14 +115,6 @@ public abstract class Drawer extends Zone {
 
 	public int getSecondaryColour() {
 		return container.getSecondaryColour();
-	}
-
-	public void setActionPerformed() {
-		lastActionTime = System.currentTimeMillis();
-	}
-
-	public long getInactiveTime() {
-		return System.currentTimeMillis() - lastActionTime;
 	}
 
 	protected void notifyListeners(String message) {

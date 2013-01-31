@@ -87,6 +87,7 @@ public class Button extends Zone {
 	}
 
 	// Draw button
+	@Override
 	protected void drawImpl() {
 		if (buttonDown) {
 			drawImpl(pressedColour, pressedTextColour);
@@ -114,16 +115,19 @@ public class Button extends Zone {
 	}
 
 	// Draw for zone picker
+	@Override
 	protected void pickDrawImpl() {
 		rect(borderWeight, borderWeight, width - 2 * borderWeight, height - 2 * borderWeight, cornerRadius);
 	}
 
 	// Action on touch event
+	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
 	}
 
 	// Action on touch up event
+	@Override
 	protected void touchUp(Touch touch) {
 		buttonDown = getTouches().length > 0;
 		super.touchUp(touch);
@@ -135,25 +139,10 @@ public class Button extends Zone {
 	}
 
 	// Action on touch down event
+	@Override
 	protected void touchDown(Touch touch) {
 		super.touchDown(touch);
 		buttonDown = true;
-	}
-
-	/**
-	 * Set the colour scheme of the button.
-	 * 
-	 * @param colour
-	 *            colour of the button, when it is not pressed
-	 * @param pressedColour
-	 *            colour of the button, when it is pressed
-	 * @param borderColour
-	 *            colour of the button's border
-	 */
-	public void setColourScheme(int colour, int pressedColour, int borderColour) {
-		this.colour = colour;
-		this.pressedColour = pressedColour;
-		this.borderColour = borderColour;
 	}
 
 	/**
@@ -211,5 +200,21 @@ public class Button extends Zone {
 		} catch (Exception e) {
 			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
 		}
+	}
+	
+	/**
+	 * Set the colour scheme of the button.
+	 * 
+	 * @param colour
+	 *            colour of the button, when it is not pressed
+	 * @param pressedColour
+	 *            colour of the button, when it is pressed
+	 * @param borderColour
+	 *            colour of the button's border
+	 */
+	public void setColourScheme(int colour, int pressedColour, int borderColour) {
+		this.colour = colour;
+		this.pressedColour = pressedColour;
+		this.borderColour = borderColour;
 	}
 }

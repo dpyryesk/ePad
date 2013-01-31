@@ -127,6 +127,7 @@ public class Stamp extends Brush {
 	/**
 	 * Load and resize the specified shape in the initialisation step.
 	 */
+	@Override
 	public void doInit() {
 		loadShape();
 	}
@@ -136,6 +137,7 @@ public class Stamp extends Brush {
 	 * point of the stroke. Other points are ignored, so that only a single
 	 * shape is drawn per stroke.
 	 */
+	@Override
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
 		if (length == 0)

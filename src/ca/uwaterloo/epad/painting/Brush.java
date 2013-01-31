@@ -69,14 +69,17 @@ public abstract class Brush extends MoveableItem {
 		isSelected = false;
 	}
 
+	@Override
 	protected void doTouchDown(Touch touch) {
 		Application.setSelectedBrush(this);
 	}
 
+	@Override
 	protected void doTouchUp(Touch touch) {
 
 	}
 
+	@Override
 	protected void drawItem() {
 		if (itemImage == null) {
 			fill(secondaryColour);

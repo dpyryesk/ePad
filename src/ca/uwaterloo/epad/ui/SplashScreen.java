@@ -104,10 +104,12 @@ public class SplashScreen extends Frame {
 		return instance != null;
 	}
 
+	@Override
 	public void update(Graphics g) {
 		paint(g);
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		if (img != null)
 			g.drawImage(img, 0, 0, this);

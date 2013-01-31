@@ -32,56 +32,116 @@ import ca.uwaterloo.epad.Application;
 
 import vialab.SMT.Zone;
 
+/**
+ * This abstract class implements the basic functionality shared by all
+ * container widgets. Container widgets are used to organise child widgets.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public abstract class Container extends Zone {
 	private static final Logger LOGGER = Logger.getLogger(Container.class);
-	
+
+	/**
+	 * The event ID for "container was moved" event.
+	 */
 	public static final String MOVED = "moved";
-	
+
+	/**
+	 * Default width of an item.
+	 */
 	public static final int ITEM_WIDTH = 125;
+
+	/**
+	 * Default height of an item.
+	 */
 	public static final int ITEM_HEIGHT = 125;
-	
+
+	// Colours
 	protected int primaryColour = Application.primaryColour;
 	protected int secondaryColour = Application.secondaryColour;
 	protected int transparentColour = Application.transparentColour;
 	protected int transparentAlpha = Application.transparentAlpha;
-	
+
+	// Map of child zones
 	protected Map<Integer, Zone> items;
+	// Number of child zones
 	protected int itemCount = 0;
+	// Parent drawer
 	protected Drawer parent;
-	
+	// Array of event listeners
 	protected ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
-	
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param x
+	 *            x-coordinate of the top left corner of the container
+	 * @param y
+	 *            y-coordinate of the top left corner of the container
+	 * @param width
+	 *            width of the container
+	 * @param height
+	 *            height of the container
+	 * @param parent
+	 *            parent drawer of the container
+	 */
 	public Container(int x, int y, int width, int height, Drawer parent) {
 		super(x, y, width, height);
 		this.parent = parent;
 		items = new HashMap<Integer, Zone>();
 	}
-	
+
+	/**
+	 * Add a child item to the container.
+	 * 
+	 * @param item
+	 *            a zone object to be added to the container
+	 * @return <b>true</b> if the object was successfully added to the container
+	 *         and <b>false</b> otherwise
+	 */
 	abstract public boolean addItem(Zone item);
-	
+
+	/**
+	 * Retrieve an item contained in the container based on its ID (the ID
+	 * depends on the order in which items were added to the container i.e.
+	 * 0,1,2,3..).
+	 * 
+	 * @param id
+	 *            ID of the item
+	 * @return child item if its ID exists in the list and <b>null</b> otherwise
+	 */
 	public Zone getItemByID(int id) {
 		return items.get(id);
 	}
-	
+
+	// Draw the container
+	@Override
 	abstract protected void drawImpl();
-	
+
+	// Draw for zone picker
+	@Override
 	abstract protected void pickDrawImpl();
-	
+
+	// Action on the touch event
+	@Override
 	abstract protected void touchImpl();
-	
+
 	public void setColourScheme(int primary, int secondary) {
 		primaryColour = primary;
 		secondaryColour = secondary;
 	}
-	
+
 	public int getPrimaryColour() {
 		return primaryColour;
 	}
-	
+
 	public int getSecondaryColour() {
 		return secondaryColour;
 	}
-	
+
+	// Send a message to all listeners
 	protected void notifyListeners(String message) {
 		for (int i = 0; i < listeners.size(); i++) {
 			ActionListener listener = listeners.get(i);
@@ -92,11 +152,24 @@ public abstract class Container extends Zone {
 		}
 	}
 
+	/**
+	 * Add a listener.
+	 * 
+	 * @param listener
+	 *            listener object to add
+	 */
 	public void addListener(ActionListener listener) {
 		if (!listeners.contains(listener))
 			listeners.add(listener);
 	}
-	
+
+	/**
+	 * Remove a listener.
+	 * 
+	 * @param listener
+	 *            listener object to remove
+	 * @return <b>true</b> if the list of listeners contained the specified object
+	 */
 	public boolean removeListener(ActionListener listener) {
 		return listeners.remove(listener);
 	}

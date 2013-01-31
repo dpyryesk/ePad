@@ -105,6 +105,7 @@ public class ResetDialog extends Zone {
 		add(b);
 	}
 	
+	@Override
 	protected void drawImpl() {
 		// check timer
 		if (resetTimer.isTimeOut())
@@ -146,10 +147,12 @@ public class ResetDialog extends Zone {
 		text(resetText, dialogX, textY, dialogWidth, textH);
 	}
 	
+	@Override
 	protected void pickDrawImpl() {
 		rect(0, 0, width, height);
 	}
 	
+	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
 	}

@@ -73,6 +73,7 @@ public class RotatingDrawer extends Drawer {
 		rotateAbout(angle, CENTER);
 	}
 	
+	@Override
 	protected void drawImpl() {
 		pushMatrix();
 		
@@ -96,6 +97,7 @@ public class RotatingDrawer extends Drawer {
 		popMatrix();
 	}
 	
+	@Override
 	protected void pickDrawImpl() {
 		pushMatrix();
 		translate(width/2, height/2);
@@ -106,6 +108,7 @@ public class RotatingDrawer extends Drawer {
 		popMatrix();
 	}
 	
+	@Override
 	protected boolean calculateState() {
 		if (getVisibleWidth() > 100) {
 			return true;
@@ -114,6 +117,7 @@ public class RotatingDrawer extends Drawer {
 		}
 	}
 	
+	@Override
 	public boolean isItemAbove(Zone item) {
 		PVector drawerCetre = getCentre();
 		PVector itemCentre = item.getCentre();
@@ -121,11 +125,13 @@ public class RotatingDrawer extends Drawer {
 		return d < 0;
 	}
 	
+	@Override
 	public PVector getHandleLocation() {
 		PVector handle = new PVector(width/2, height/2 + diameter/2 + 30);
 		return fromZoneVector(handle);
 	}
 	
+	@Override
 	public float getVisibleWidth() {
 		PVector p = fromZoneVector(new PVector(x, y));
 		float w = 0;

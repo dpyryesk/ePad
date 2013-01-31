@@ -47,6 +47,7 @@ public class SlidingDrawer extends Drawer {
 		}
 	}
 	
+	@Override
 	protected void drawImpl() {
 		pushMatrix();
 		
@@ -70,6 +71,7 @@ public class SlidingDrawer extends Drawer {
 		popMatrix();
 	}
 	
+	@Override
 	protected void pickDrawImpl() {
 		pushMatrix();
 		
@@ -83,6 +85,7 @@ public class SlidingDrawer extends Drawer {
 		popMatrix();
 	}
 	
+	@Override
 	protected boolean calculateState() {
 		if (getVisibleWidth() > 100) {
 			return true;
@@ -91,6 +94,7 @@ public class SlidingDrawer extends Drawer {
 		}
 	}
 	
+	@Override
 	public boolean isItemAbove(Zone item) {
 		PVector drawerCentre = getCentre();
 		PVector itemCentre = item.getCentre();
@@ -103,6 +107,7 @@ public class SlidingDrawer extends Drawer {
 		return d < 0;
 	}
 	
+	@Override
 	public PVector getHandleLocation() {
 		if (position == TOP) {
 			PVector handle = new PVector(width/2, height + 30);
@@ -110,6 +115,7 @@ public class SlidingDrawer extends Drawer {
 		} else return null;
 	}
 	
+	@Override
 	public float getVisibleWidth() {
 		PVector p = fromZoneVector(new PVector(x, y));
 		float w = 0;

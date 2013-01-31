@@ -105,6 +105,7 @@ public class RectangularBristleBrush extends Brush {
 	 * 
 	 * @see Bristle#draw(PGraphics)
 	 */
+	@Override
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
 		if (length == 0)

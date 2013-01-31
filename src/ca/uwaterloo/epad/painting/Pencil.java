@@ -82,6 +82,7 @@ public class Pencil extends Brush {
 	 * Pencil renders strokes by drawing lines with stroke weight equal to
 	 * <b>size</b> parameter.
 	 */
+	@Override
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
 		if (length == 0)

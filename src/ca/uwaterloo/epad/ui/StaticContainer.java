@@ -23,22 +23,39 @@ package ca.uwaterloo.epad.ui;
 import ca.uwaterloo.epad.Application;
 import vialab.SMT.Zone;
 
+/**
+ * This container class keeps the coordinates of the child objects.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ */
 public class StaticContainer extends Container {
-	
-	public StaticContainer (int width, int height, Drawer parent) {
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param width
+	 *            width of the container
+	 * @param height
+	 *            height of the container
+	 * @param parent
+	 *            parent drawer of the container
+	 */
+	public StaticContainer(int width, int height, Drawer parent) {
 		super(0, 0, width, height, parent);
 	}
 
 	@Override
 	public boolean addItem(Zone item) {
 		add(item);
-		
+
 		items.put(new Integer(itemCount), item);
 		itemCount++;
-		
+
 		return true;
 	}
 
+	// Draw the container
 	@Override
 	protected void drawImpl() {
 		if (parent.getPosition() == TOP) {
@@ -51,16 +68,16 @@ public class StaticContainer extends Container {
 		}
 	}
 
+	// Draw for zone picker
 	@Override
 	protected void pickDrawImpl() {
 		rectMode(CORNER);
 		rect(0, 0, width, height - 30);
 	}
 
+	// Action on the touch event
 	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
-		parent.setActionPerformed();
 	}
-
 }

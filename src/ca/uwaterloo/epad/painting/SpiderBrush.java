@@ -87,6 +87,7 @@ public class SpiderBrush extends Brush {
 	 * (thicker) and then the points which are located close enough to each
 	 * other are connected by secondary lines (thinner).
 	 */
+	@Override
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
 		if (length == 0)

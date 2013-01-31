@@ -115,6 +115,7 @@ public class FileBrowser extends Zone {
 		this(header, folder, extension, 5, 3);
 	}
 
+	@Override
 	protected void drawImpl() {
 		noStroke();
 		fill(transparentColour, transparentAlpha);
@@ -139,10 +140,12 @@ public class FileBrowser extends Zone {
 		text(headerText, outerPadding + innerPadding, outerPadding + innerPadding, browserWidth - innerPadding * 2, headerSize);
 	}
 
+	@Override
 	protected void pickDrawImpl() {
 		rect(0, 0, width, height);
 	}
 	
+	@Override
 	protected void touchImpl() {
 		Application.setActionPerformed();
 	}
@@ -313,18 +316,22 @@ public class FileBrowser extends Zone {
 			cache = tempG.get();
 		}
 		
+		@Override
 		protected void drawImpl() {
 			image(cache, 0, 0);
 		}
 		
+		@Override
 		protected void pickDrawImpl() {
 			rect(0, 0, itemWidth, itemHeight);
 		}
 		
+		@Override
 		public void touchImpl() {
 			Application.setActionPerformed();
 		}
 		
+		@Override
 		public void touchUp(Touch touch) {
 			setButtonDown();
 			super.touchUp(touch);
@@ -336,6 +343,7 @@ public class FileBrowser extends Zone {
 			buttonDown = false;
 		}
 		
+		@Override
 		public void touchDown(Touch touch) {
 			super.touchDown(touch);
 			buttonDown = true;
@@ -356,7 +364,7 @@ public class FileBrowser extends Zone {
 				return;
 			}
 
-			float aspectBoard = (float) bgWidth / bgHeight;
+			float aspectBoard = bgWidth / bgHeight;
 			float aspectImage = (float) img.width / img.height;
 			if (aspectBoard < aspectImage) {
 				bgHeight = bgWidth / aspectImage;

@@ -438,6 +438,7 @@ public class PromptManager implements ActionListener {
 	 * Listen to the events sent by drawers and the application and manage the
 	 * prompts accordingly.
 	 */
+	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals(Drawer.OPEN)) {
 			if (event.getSource() == leftDrawer) {

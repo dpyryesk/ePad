@@ -101,16 +101,19 @@ public class Paint extends MoveableItem {
 		}
 	}
 
+	@Override
 	protected void drawItem() {
 		imageMode(CENTER);
 		tint(paintColour);
 		image(paintImage, width / 2, height / 2, 100, 100);
 	}
 
+	@Override
 	protected void doTouchDown(Touch touch) {
 		Application.setSelectedPaint(this);
 	}
 
+	@Override
 	protected void doTouchUp(Touch touch) {
 	}
 

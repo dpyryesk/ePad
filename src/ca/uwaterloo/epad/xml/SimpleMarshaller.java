@@ -419,7 +419,7 @@ public class SimpleMarshaller {
 				if (temp !=null ) {
 					String value = temp.getNodeValue();
 					if (value.endsWith("%")) {
-						drawerWidth = (int) ((float)app.height * Float.parseFloat(value.substring(0, value.length()-1)) / 100);
+						drawerWidth = (int) (app.height * Float.parseFloat(value.substring(0, value.length()-1)) / 100);
 					} else {
 						drawerWidth = Integer.parseInt(value);
 					}

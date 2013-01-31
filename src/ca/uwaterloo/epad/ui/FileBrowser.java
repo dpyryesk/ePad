@@ -236,13 +236,9 @@ public class FileBrowser extends Zone {
 		fb.fileName = fileName.substring(0, fileName.lastIndexOf('.')).replaceAll("_", " ");
 		fb.filePath = file.getPath();
 		
-		switch (fileExt) {
-		case SaveFile.SAVE_FILE_EXT: fb.fileType = FILE_TYPE_SAVE; break;
-		case ".png":
-		case ".jpg":
-		case ".jpeg": fb.fileType = FILE_TYPE_IMAGE; break;
-		default: fb.fileType = FILE_TYPE_OTHER;
-		}
+		if (SaveFile.SAVE_FILE_EXT.equals(fileExt)) fb.fileType = FILE_TYPE_SAVE;
+		else if (".png".equals(fileExt) || ".jpg".equals(fileExt) || ".jpeg".equals(fileExt)) fb.fileType = FILE_TYPE_IMAGE;
+		else fb.fileType = FILE_TYPE_OTHER;
 		
 		fb.initialize();
 		add(fb);

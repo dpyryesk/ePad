@@ -78,7 +78,7 @@ public class PromptPopup {
 	public int textColour = 0;
 
 	/**
-	 * Tween object that controls fading in and out.
+	 * Tween object that controls prompt's fading in and out.
 	 */
 	private Tween alphaTween;
 

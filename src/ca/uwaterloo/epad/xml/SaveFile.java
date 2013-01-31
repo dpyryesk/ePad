@@ -25,8 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -183,7 +181,7 @@ public class SaveFile {
 				LOGGER.error("Save file " + filename + " contains fewer parameters than expected.");
 				return false;
 			}
-		} catch (IOException | ParseException e) {
+		} catch (Exception e) {
 			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}

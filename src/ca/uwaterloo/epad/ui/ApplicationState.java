@@ -20,8 +20,19 @@
 
 package ca.uwaterloo.epad.ui;
 
+/**
+ * Enumerator of application's states. When the application is first stated, it
+ * is in IDLE state. When a user starts interacting with it, it switches to
+ * RUNNING state. If a user resets the application or it resets automatically
+ * after a period of inactivity, it changes the state back to IDLE. Whenever the
+ * state is changed from IDLE to RUNNING all timers in PromptManager are reset.
+ * Application is switched to PAUSED state when a full-screen dialog is
+ * displayed such as Save Dialog or File Browser.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public enum ApplicationState {
-	RUNNING,
-	PAUSED,
-	IDLE;
+	RUNNING, PAUSED, IDLE;
 }

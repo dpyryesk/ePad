@@ -20,20 +20,29 @@
 
 package ca.uwaterloo.epad.ui;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 
-import ca.uwaterloo.epad.Application;
-
 import processing.core.PFont;
 import vialab.SMT.Touch;
 import vialab.SMT.Zone;
+import ca.uwaterloo.epad.Application;
 
+/**
+ * This class creates a simple button widget that may invoke a certain method
+ * when pressed. To set the method to invoke use either
+ * {@link #setStaticPressMethod(String, Class)} (for static methods) or
+ * {@link #setPressMethod(String, Object)} (for instance methods).
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class Button extends Zone {
 	private static final Logger LOGGER = Logger.getLogger(Button.class);
-	
+
+	// Variables used to render the button
 	protected int fontSize;
 	protected String text;
 	protected PFont font;
@@ -44,50 +53,49 @@ public class Button extends Zone {
 	protected int borderColour = Application.secondaryColour;
 	protected int textColour = 0;
 	protected int pressedTextColour = 0;
+
+	// Button down flag
 	protected boolean buttonDown = false;
+	// Method to invoke when the button is pressed
 	protected Method pressMethod;
+	// Object that contains the method to invoke (for instance methods)
 	protected Object pressMethodObject;
-	
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param x
+	 *            x-coordinate of the top left corner of the button
+	 * @param y
+	 *            y-coordinate of the top left corner of the button
+	 * @param width
+	 *            width of the button
+	 * @param height
+	 *            height of the button
+	 * @param text
+	 *            text to display on the button
+	 * @param fontSize
+	 *            size of the font
+	 * @param font
+	 *            PFont to use
+	 */
 	public Button(int x, int y, int width, int height, String text, int fontSize, PFont font) {
 		super(x, y, width, height);
 		this.text = text;
 		this.fontSize = fontSize;
 		this.font = font;
 	}
-	
-	public void touchImpl() {
-		Application.setActionPerformed();
-	}
-	
-	public void touchUp(Touch touch) {
-		setButtonDown();
-		super.touchUp(touch);
 
-		if (isButtonDown()) {
-			invokePress();
-		}
-		buttonDown = false;
-	}
-	
-	public void touchDown(Touch touch) {
-		super.touchDown(touch);
-		buttonDown = true;
-	}
-	
-	protected boolean setButtonDown() {
-		buttonDown = getTouches().length > 0;
-		return buttonDown;
-	}
-	
-	public void drawImpl() {
+	// Draw button
+	protected void drawImpl() {
 		if (buttonDown) {
 			drawImpl(pressedColour, pressedTextColour);
-		}
-		else {
+		} else {
 			drawImpl(colour, textColour);
 		}
 	}
-	
+
+	// Draw button
 	protected void drawImpl(int buttonColour, int textColour) {
 		stroke(borderColour);
 		strokeWeight(borderWeight);
@@ -104,43 +112,103 @@ public class Button extends Zone {
 			text(text, width / 2 - borderWeight, height / 2 - borderWeight);
 		}
 	}
-	
+
+	// Draw for zone picker
+	protected void pickDrawImpl() {
+		rect(borderWeight, borderWeight, width - 2 * borderWeight, height - 2 * borderWeight, cornerRadius);
+	}
+
+	// Action on touch event
+	protected void touchImpl() {
+		Application.setActionPerformed();
+	}
+
+	// Action on touch up event
+	protected void touchUp(Touch touch) {
+		buttonDown = getTouches().length > 0;
+		super.touchUp(touch);
+
+		if (isButtonDown()) {
+			invokePress();
+		}
+		buttonDown = false;
+	}
+
+	// Action on touch down event
+	protected void touchDown(Touch touch) {
+		super.touchDown(touch);
+		buttonDown = true;
+	}
+
+	/**
+	 * Set the colour scheme of the button.
+	 * 
+	 * @param colour
+	 *            colour of the button, when it is not pressed
+	 * @param pressedColour
+	 *            colour of the button, when it is pressed
+	 * @param borderColour
+	 *            colour of the button's border
+	 */
 	public void setColourScheme(int colour, int pressedColour, int borderColour) {
 		this.colour = colour;
 		this.pressedColour = pressedColour;
 		this.borderColour = borderColour;
 	}
-	
+
+	/**
+	 * Return the state of the button.
+	 * 
+	 * @return true if button is pressed and false otherwise
+	 */
 	public boolean isButtonDown() {
 		return buttonDown;
 	}
-	
+
+	// Invoke the specified method
 	protected void invokePress() {
 		if (pressMethod != null) {
 			try {
 				pressMethod.invoke(pressMethodObject);
-			}
-			catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+			} catch (Exception e) {
 				LOGGER.error("Failed to invoke method " + pressMethod.toString() + ". " + e.getLocalizedMessage());
 			}
 		}
 	}
-	
+
+	/**
+	 * Set a static method to be invoked when the button is pressed. The method
+	 * must not have any arguments.
+	 * 
+	 * @param methodName
+	 *            name of the method
+	 * @param c
+	 *            class that contains the static method
+	 */
 	public void setStaticPressMethod(String methodName, Class<?> c) {
 		pressMethodObject = null;
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			LOGGER.error("Failed to get static method. " + e.getLocalizedMessage());
 		}
 	}
-	
+
+	/**
+	 * Set an instance method to be invoked when the button is pressed. The
+	 * method must not have any arguments.
+	 * 
+	 * @param methodName
+	 *            name of the method
+	 * @param obj
+	 *            object that contains the instance method
+	 */
 	public void setPressMethod(String methodName, Object obj) {
 		Class<?> c = obj.getClass();
 		pressMethodObject = obj;
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
 		}
 	}

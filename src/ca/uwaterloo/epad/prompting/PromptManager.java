@@ -107,8 +107,6 @@ public class PromptManager implements ActionListener {
 
 		// Add the instance as a listener to Application
 		Application.addListener(instance);
-
-		reset();
 	}
 
 	/**

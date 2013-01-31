@@ -23,13 +23,10 @@ package ca.uwaterloo.epad;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
-
-import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
 
@@ -127,14 +124,13 @@ public class Application extends PApplet implements ActionListener {
 		
 		// figure out the touch source
 		TouchSource source;
-		switch (Settings.touchSourse.toUpperCase()) {
-		case "TUIO_DEVICE": source = TouchSource.TUIO_DEVICE; break;
-		case "MOUSE": source = TouchSource.MOUSE; break;
-		case "WM_TOUCH": source = TouchSource.WM_TOUCH; break;
-		case "ANDROID": source = TouchSource.ANDROID; break;
-		case "SMART": source = TouchSource.SMART; break;
-		default: source = TouchSource.MOUSE;
-		}
+		String sourceString = Settings.touchSourse.toUpperCase();
+		if ("TUIO_DEVICE".equals(sourceString)) source = TouchSource.TUIO_DEVICE;
+		else if ("MOUSE".equals(sourceString)) source = TouchSource.MOUSE;
+		else if ("WM_TOUCH".equals(sourceString)) source = TouchSource.WM_TOUCH;
+		else if ("ANDROID".equals(sourceString)) source = TouchSource.ANDROID;
+		else if ("SMART".equals(sourceString)) source = TouchSource.SMART;
+		else source = TouchSource.MOUSE;
 
 		TouchClient.init(this, source);
 		TouchClient.setWarnUnimplemented(false);
@@ -435,7 +431,7 @@ public class Application extends PApplet implements ActionListener {
 		
 		try {
 			SimpleMarshaller.unmarshallGui(instance, new File(Settings.dataFolder + Settings.guiFile));
-		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			LOGGER.fatal("Failed to load GUI. " + e.getLocalizedMessage());
 			System.exit(1);
 		}
@@ -506,7 +502,7 @@ public class Application extends PApplet implements ActionListener {
 		
 		try {
 			SimpleMarshaller.unmarshallLayout(new File(filename));
-		} catch (IllegalArgumentException | IllegalAccessException | TransformerException | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			LOGGER.error("Failed to load layout. " + e.getLocalizedMessage());
 		}
 		
@@ -582,7 +578,7 @@ public class Application extends PApplet implements ActionListener {
 	
 	public static void colouringMode() {
 		FileBrowser imageFileBrowser = new FileBrowser(uiStrings.getString("ImageFileBrowserHeaderText"), Settings.colouringFolder,
-				null, Settings.fileBrowserColumns, Settings.fileBrowserRows);
+				".png", Settings.fileBrowserColumns, Settings.fileBrowserRows);
 		imageFileBrowser.addListener(instance);
 		TouchClient.add(imageFileBrowser);
 	}

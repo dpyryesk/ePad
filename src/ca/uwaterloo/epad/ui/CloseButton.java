@@ -31,17 +31,41 @@ import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
 import vialab.SMT.Zone;
 
+/**
+ * This class represents a close button widget that can be added to any zone and
+ * will attempt to close or remove the parent when pressed.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class CloseButton extends Zone {
 	private static final Logger LOGGER = Logger.getLogger(CloseButton.class);
-	
-	public int backgroundColour = Application.deleteColour;
-	public int iconColour = Application.backgroundColour;
+
+	// Variables used to render the button
+	protected int backgroundColour = Application.deleteColour;
+	protected int iconColour = Application.backgroundColour;
+
+	// Shape of the icon
 	protected static PShape icon;
+	// Button down flag
 	protected boolean buttonDown = false;
 
+	/**
+	 * Default constructor.
+	 * 
+	 * @param x
+	 *            x-coordinate of the top left corner of the button
+	 * @param y
+	 *            y-coordinate of the top left corner of the button
+	 * @param width
+	 *            width of the button
+	 * @param height
+	 *            height of the button
+	 */
 	public CloseButton(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		
+
 		if (icon == null) {
 			icon = applet.loadShape(Settings.dataFolder + "vector\\x.svg");
 			if (icon == null)
@@ -50,29 +74,33 @@ public class CloseButton extends Zone {
 				icon.disableStyle();
 		}
 	}
-	
+
+	// Draw button
 	protected void drawImpl() {
 		noStroke();
 		fill(backgroundColour);
 		ellipseMode(CORNER);
 		ellipse(0, 0, width, height);
-		
+
 		fill(iconColour);
 		shapeMode(CENTER);
-		shape(icon, width/2, height/2, width*0.75f, height*0.75f);
+		shape(icon, width / 2, height / 2, width * 0.75f, height * 0.75f);
 	}
-	
+
+	// Draw for zone picker
 	protected void pickDrawImpl() {
 		ellipseMode(CORNER);
 		ellipse(0, 0, width, height);
 	}
-	
-	public void touchImpl() {
+
+	// Action on touch event
+	protected void touchImpl() {
 		Application.setActionPerformed();
 	}
-	
-	public void touchUp(Touch touch) {
-		setButtonDown();
+
+	// Action on touch up event
+	protected void touchUp(Touch touch) {
+		buttonDown = getTouches().length > 0;
 		super.touchUp(touch);
 
 		if (buttonDown) {
@@ -80,29 +108,27 @@ public class CloseButton extends Zone {
 		}
 		buttonDown = false;
 	}
-	
-	public void touchDown(Touch touch) {
+
+	// Action on touch down event
+	protected void touchDown(Touch touch) {
 		super.touchDown(touch);
 		buttonDown = true;
 	}
-	
-	protected boolean setButtonDown() {
-		buttonDown = getTouches().length > 0;
-		return buttonDown;
-	}
-	
+
+	// Attempt to close or remove the parent zone
 	protected void invokePress() {
-		// try to use parent's close() method
 		try {
+			// Attempt to use the parent's close() method
 			Class<?> c = parent.getClass();
 			Method closeMethod = c.getDeclaredMethod("close");
 			closeMethod.invoke(parent);
 		} catch (Exception e) {
 			if (parent != null) {
-				// if it doesn't exist, simply remove parent from the client
+				// If it doesn't exist, simply remove parent from the client
 				TouchClient.remove(parent);
 			} else {
-				// if the close button is on the top layer, use it to exit application
+				// If the close button is on the top layer, use it to exit the
+				// application
 				applet.exit();
 			}
 		}

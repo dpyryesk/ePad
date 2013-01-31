@@ -391,11 +391,16 @@ public class SimpleMarshaller {
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
-				switch (pos) {
-				case LEFT: drawer = RotatingDrawer.makeLeftDrawer(app); drawerId = Application.LEFT_DRAWER; break;
-				case RIGHT: drawer = RotatingDrawer.makeRightDrawer(app); drawerId = Application.RIGHT_DRAWER; break;
-				default: LOGGER.error("Layout error, only left and right rotating drawers are supported.");
-				throw (new DOMException((short)0, "Layout error"));
+				
+				if (LEFT.equals(pos)) {
+					drawer = RotatingDrawer.makeLeftDrawer(app);
+					drawerId = Application.LEFT_DRAWER;
+				} else if (RIGHT.equals(pos)) {
+					drawer = RotatingDrawer.makeRightDrawer(app);
+					drawerId = Application.RIGHT_DRAWER;
+				} else {
+					LOGGER.error("Layout error, only left and right rotating drawers are supported.");
+					throw (new DOMException((short)0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
 				Application.setDrawer(drawer, drawerId);
@@ -420,11 +425,14 @@ public class SimpleMarshaller {
 					}
 				}
 				
-				switch (pos) {
-				case TOP: drawer = SlidingDrawer.makeTopDrawer(app, drawerWidth); drawerId = Application.TOP_DRAWER; break;
-				default: LOGGER.error("Layout error, only top sliding drawer is supported");
-				throw (new DOMException((short)0, "Layout error"));
+				if (TOP.equals(pos)) {
+					drawer = SlidingDrawer.makeTopDrawer(app, drawerWidth);
+					drawerId = Application.TOP_DRAWER;
+				} else {
+					LOGGER.error("Layout error, only top sliding drawer is supported");
+					throw (new DOMException((short)0, "Layout error"));
 				}
+				
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
 				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);

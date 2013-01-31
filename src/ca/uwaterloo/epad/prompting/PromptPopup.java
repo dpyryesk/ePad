@@ -33,14 +33,27 @@ import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.util.Timer;
 import ca.uwaterloo.epad.util.Tween;
 
+/**
+ * This class represents a prompt pop-up message. It uses a set of icons located
+ * in folder /data/vector/cue to display multi-touch gestures (these icons were
+ * developed by P.J. Onori and can be found here: <a
+ * href="http://somerandomdude.com/work/cue/"
+ * >http://somerandomdude.com/work/cue/</a>).
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see PromptManager
+ */
 public class PromptPopup {
 	private static final Logger LOGGER = Logger.getLogger(PromptPopup.class);
-	
+
+	// Location constants
 	public static final int LOCATION_TOP_LEFT = 1;
 	public static final int LOCATION_TOP_RIGHT = 2;
 	public static final int LOCATION_BOTTOM_LEFT = 3;
 	public static final int LOCATION_BOTTOM_RIGHT = 4;
 
+	// Prompt parameters
 	protected int x, y;
 	protected String iconName = "tap";
 	protected float iconSize = 75;
@@ -54,10 +67,9 @@ public class PromptPopup {
 	protected float xOffset = 75;
 	protected float yOffset = 30;
 	protected int location = LOCATION_BOTTOM_RIGHT;
-	protected String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras accumsan iaculis vehicula.";
+	protected String text = "";
 	protected boolean showIcon = true;
 	protected boolean showText = true;
-	protected boolean readText = true;
 
 	// Colours
 	public int backgroundColour = 255;
@@ -65,24 +77,57 @@ public class PromptPopup {
 	public int iconColour = 0xFFFF8800;
 	public int textColour = 0;
 
+	/**
+	 * Tween object that controls fading in and out.
+	 */
+	private Tween alphaTween;
+
+	/**
+	 * Time-to-live timer that indicated when a prompt must be disposed of.
+	 */
+	private Timer ttlTimer;
+
+	/**
+	 * Flag that indicates that the prompt has been disposed and is currently
+	 * fading out.
+	 */
+	private boolean isDisposing = false;
+
+	// Misc. variables
 	protected PShape icon;
 	protected static PFont font;
-	protected Tween alphaTween;
-	
 	private float cx = 0;
 	private float cy = 0;
 	private PImage cache;
 	private PApplet applet;
-	private Timer ttlTimer;
-	private boolean isDisposing = false;
 
-	public PromptPopup(int x, int y) {
-		this.x = x;
-		this.y = y;
-
-		init();
+	/**
+	 * Make a prompt with the given coordinates and icon.
+	 * 
+	 * @param x
+	 *            x-coordinate
+	 * @param y
+	 *            y-coordinate
+	 * @param iconName
+	 *            name of the icon file <i>not including the extension .svg</i>
+	 */
+	public PromptPopup(int x, int y, String iconName) {
+		this(x, y, iconName, null);
+		showText = false;
 	}
 
+	/**
+	 * Make a prompt with the given coordinates, icon and message.
+	 * 
+	 * @param x
+	 *            x-coordinate
+	 * @param y
+	 *            y-coordinate
+	 * @param iconName
+	 *            name of the icon file <i>not including the extension .svg</i>
+	 * @param text
+	 *            prompt message
+	 */
 	public PromptPopup(int x, int y, String iconName, String text) {
 		this.x = x;
 		this.y = y;
@@ -90,26 +135,65 @@ public class PromptPopup {
 		this.iconName = iconName;
 		this.text = text;
 
-		init();
+		// Save the pointer to the parent applet
+		applet = PromptManager.parent;
+
+		if (applet == null) {
+			System.err.println("Error: Must call PromptManager.init() before instantiating a PromptPopup.");
+			return;
+		}
+
+		// Initialise the tween for the fade-in effect. It will change the value
+		// of alpha from 10 to 255 in 0.5 seconds
+		alphaTween = new Tween(10, 255, 500);
+
+		// Create the font
+		font = applet.createFont(fontName, fontSize);
+
+		// Load specified the icon
+		loadIcon();
+
+		// Calculate the location of the message and create cache
+		if (showText) {
+			calculateTextLocation();
+			createCache();
+		}
+
+		// Initialise the TTL timer
+		ttlTimer = new Timer(Settings.promptTTL);
 	}
 
+	/**
+	 * Draw the prompt using the given parameters. PropmtManager must be
+	 * initialised <i>before</i> this function is called.
+	 * 
+	 * @see PromptManager#init(PApplet)
+	 */
 	public void draw() {
+		if (applet == null) {
+			System.err.println("Error: Must call PromptManager.init() before instantiating a PromptPopup.");
+			return;
+		}
+
+		// Check the TTL timer and dispose of the prompt if it has ran out
 		if (ttlTimer.isTimeOut())
 			dispose();
-		
+
 		applet.pushMatrix();
 		applet.pushStyle();
+
 		applet.translate(x, y);
 
-		// draw background for icon
+		// Draw background for icon
 		if (showIcon) {
-			// draw icon
+			// Draw the icon
 			if (icon != null) {
 				applet.fill(iconColour);
 				applet.shape(icon, -iconSize / 2, -iconSize / 2);
 			}
 		}
 
+		// Draw the cache image with the prompt message
 		if (showText) {
 			applet.tint(255, alphaTween.getValue());
 			applet.image(cache, cx, cy);
@@ -119,44 +203,35 @@ public class PromptPopup {
 		applet.popMatrix();
 	}
 
-	public void init() {
-		applet = PromptManager.parent;
-		alphaTween = new Tween(10, 255, 500);
-
-		if (applet == null) {
-			System.err.println("Error: Must call PromptManager.init() before instantiating a PromptPopup.");
-			return;
-		}
-
-		font = applet.createFont(fontName, fontSize);
-
-		loadIcon();
-		
-		calculateLocation();
-
-		if (showText) {
-			calculateTextLocation();
-			createCache();
-		}
-		
-		ttlTimer = new Timer(Settings.promptTTL);
-	}
-	
+	/**
+	 * Pause the prompt.
+	 */
 	public void pause() {
 		ttlTimer.pause();
 	}
-	
+
+	/**
+	 * Resume the prompt.
+	 */
 	public void resume() {
 		ttlTimer.resume();
 	}
-	
+
+	/**
+	 * Start the disposal of the prompt. The prompt will gradually fade out and
+	 * then will get removed by the draw() function of PromptManager.
+	 * 
+	 * @see PromptManager#draw()
+	 */
 	public void dispose() {
-		if (isDisposing) return;
-		
+		if (isDisposing)
+			return;
+
 		isDisposing = true;
 		alphaTween = new Tween(255, 0, 700);
 	}
-	
+
+	// Load the specified icon
 	private void loadIcon() {
 		String filename = Settings.dataFolder + "vector\\cue\\" + iconName + ".svg";
 		icon = applet.loadShape(filename);
@@ -168,29 +243,30 @@ public class PromptPopup {
 		}
 	}
 
+	// Create the cache for faster processing
 	private void createCache() {
-		// create cached image of the message
+		// Create cached image of the message
 		PGraphics tempG = applet.createGraphics(messageWidth, messageHeight, PConstants.JAVA2D);
 
 		tempG.beginDraw();
 		tempG.smooth();
 		tempG.background(0);
 
-		// draw background for text
+		// Draw background for text
 		tempG.rectMode(PConstants.CORNER);
 		tempG.fill(backgroundColour);
 		tempG.stroke(hightlightColour);
 		tempG.strokeWeight(3);
 		tempG.rect(0, 0, messageWidth, messageHeight);
 
-		// draw text highlight
+		// Draw text highlight
 		tempG.fill(hightlightColour);
 		if (location == LOCATION_TOP_LEFT || location == LOCATION_BOTTOM_LEFT)
 			tempG.rect(messageWidth - hightlightWidth, 0, hightlightWidth, messageHeight);
 		else if (location == LOCATION_TOP_RIGHT || location == LOCATION_BOTTOM_RIGHT)
 			tempG.rect(0, 0, hightlightWidth, messageHeight);
 
-		// draw text
+		// Draw text
 		tempG.fill(textColour);
 		tempG.textFont(font, fontSize);
 		tempG.textAlign(PConstants.CENTER, PConstants.CENTER);
@@ -204,7 +280,8 @@ public class PromptPopup {
 		cache = tempG.get();
 	}
 
-	private void calculateLocation() {
+	// Calculate the location of the text relative to the icon
+	private void calculateTextLocation() {
 		int centerX = applet.width / 2;
 		int centerY = applet.height / 2;
 
@@ -219,9 +296,7 @@ public class PromptPopup {
 			else
 				location = LOCATION_TOP_LEFT;
 		}
-	}
 
-	private void calculateTextLocation() {
 		if (location == LOCATION_TOP_RIGHT) {
 			cx = xOffset;
 			cy = -yOffset - messageHeight / 2;
@@ -237,47 +312,93 @@ public class PromptPopup {
 		}
 	}
 
+	/**
+	 * Change the coordinates of the prompt to the given x and y.
+	 * 
+	 * @param x
+	 *            x-coordinate
+	 * @param y
+	 *            y-coordinate
+	 */
 	public void setCoordinates(int x, int y) {
 		this.x = x;
 		this.y = y;
-		
-		calculateLocation();
 
 		if (showText)
 			calculateTextLocation();
 	}
-	
+
+	/**
+	 * Change the coordinates of the prompt to the given x and y.
+	 * 
+	 * @param x
+	 *            x-coordinate
+	 * @param y
+	 *            y-coordinate
+	 */
 	public void setCoordinates(float x, float y) {
-		setCoordinates((int)x, (int)y);
+		setCoordinates((int) x, (int) y);
 	}
-	
+
+	/**
+	 * Change the coordinates of the prompt to the coordinates of the vector.
+	 * 
+	 * @param v
+	 *            vector
+	 */
 	public void setCoordinates(PVector v) {
 		setCoordinates(v.x, v.y);
 	}
-	
+
+	/**
+	 * Change the icon to the provided one.
+	 * 
+	 * @param icon
+	 *            name of the icon must match one of the .svg files in folder
+	 *            /data/vector/cue and must <b>not</b> contain the extension
+	 *            .svg. For example: setting icon to the string "tap" will load
+	 *            shape from file <i>/data/vector/cue/tap.svg</i>.
+	 */
 	public void setIcon(String icon) {
-		if (isDisposing) return;
-		
+		if (isDisposing)
+			return;
+
 		this.iconName = icon;
 		loadIcon();
 		alphaTween = new Tween(10, 255, 500);
 		ttlTimer = new Timer(Settings.promptTTL);
 	}
 
+	/**
+	 * Change the message to the provided text.
+	 * 
+	 * @param text
+	 *            text of the message
+	 */
 	public void setText(String text) {
-		if (isDisposing) return;
-		
+		if (isDisposing)
+			return;
+
 		this.text = text;
 		showText = true;
 		createCache();
 		alphaTween = new Tween(10, 255, 700);
 		ttlTimer = new Timer(Settings.promptTTL);
 	}
-	
+
+	/**
+	 * Stop showing the text.
+	 */
 	public void hideText() {
 		showText = false;
 	}
-	
+
+	/**
+	 * Get the visibility of the prompt.
+	 * 
+	 * @return <b>true</b> if alpha of the prompt is equal to 0 and <b>false</b>
+	 *         otherwise
+	 */
 	public boolean isInvisible() {
 		return alphaTween.getValue() == 0;
 	}

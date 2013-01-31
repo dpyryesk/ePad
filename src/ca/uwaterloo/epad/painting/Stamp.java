@@ -28,15 +28,53 @@ import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
+/**
+ * This class represents a Stamp widget that paints a certain shape on the
+ * screen. It has a single parameter <b>stampFile</b> which represents the path
+ * to the shape file (a vector image with the extension <i>svg</i>).
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see Brush
+ * @see MoveableItem
+ * 
+ */
 public class Stamp extends Brush {
 	private static final Logger LOGGER = Logger.getLogger(Stamp.class);
-	
-	@XmlAttribute public String stampFile;
-	
+
+	/**
+	 * The path to the shape file.</br>This parameter can be retrieved
+	 * automatically from XML files using
+	 * {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller} class.
+	 */
+	@XmlAttribute
+	public String stampFile;
+
+	// Shape of the stamp
 	private PShape stampShape;
+	// Should the style of the shape be disabled?
 	private boolean disableStyle = true;
+	// Shape dimensions
 	private float stampWidth, stampHeight;
-	
+
+	/**
+	 * Default constructor that allows creating Stamp objects manually.
+	 * 
+	 * @param path
+	 *            path to the shape file.
+	 */
+	public Stamp(String path) {
+		stampFile = path;
+		loadShape();
+	}
+
+	/**
+	 * Constructor that builds a copy of another Stamp object
+	 * 
+	 * @param original
+	 *            the original Stamp object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Stamp(Stamp original) {
 		super(original);
 		stampFile = original.stampFile;
@@ -47,11 +85,21 @@ public class Stamp extends Brush {
 		stampHeight = original.stampHeight;
 		loadShape();
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another MoveableItem object
+	 * 
+	 * @param original
+	 *            the original MoveableItem object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Stamp(MoveableItem original) {
 		super(original);
 	}
-	
+
+	/**
+	 * Load and resize the specified shape.
+	 */
 	private void loadShape() {
 		if (stampShape == null && stampFile != null) {
 			stampShape = applet.loadShape(Settings.dataFolder + stampFile);
@@ -60,8 +108,8 @@ public class Stamp extends Brush {
 			else {
 				stampWidth = stampShape.getWidth();
 				stampHeight = stampShape.getHeight();
-				
-				// scale while preserving proportions
+
+				// Scale the shape while preserving proportions
 				if (stampWidth > stampHeight) {
 					stampHeight = 100 * stampHeight / stampWidth;
 					stampWidth = 100;
@@ -69,24 +117,34 @@ public class Stamp extends Brush {
 					stampWidth = 100 * stampWidth / stampHeight;
 					stampHeight = 100;
 				}
-				
+
 				if (disableStyle)
 					stampShape.disableStyle();
 			}
 		}
 	}
-	
+
+	/**
+	 * Load and resize the specified shape in the initialisation step.
+	 */
 	public void doInit() {
 		loadShape();
 	}
-	
+
+	/**
+	 * Pencil renders strokes by drawing the specified shape in the initial
+	 * point of the stroke. Other points are ignored, so that only a single
+	 * shape is drawn per stroke.
+	 */
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
-		if (length == 0) return;
+		if (length == 0)
+			return;
 		if (length == 1) {
+			// Try loading the shape in case it is missing
 			loadShape();
 			StrokePoint p = s.getPath().get(0);
-			
+
 			if (stampShape != null) {
 				g.beginDraw();
 				g.beginShape();

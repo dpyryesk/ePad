@@ -28,47 +28,94 @@ import vialab.SMT.Touch;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.ui.Canvas;
 
-
+/**
+ * This class represents a single stroke on the canvas.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see StrokePoint
+ */
 public class Stroke {
+	/**
+	 * Unique identifier of the stroke object. Is equal to the ID of the Touch
+	 * object that created the stroke.
+	 */
 	public long id;
+
+	// A collection of points that define the stroke
 	private Vector<StrokePoint> path;
 	private Canvas canvas;
 	private Paint paint;
 	private Brush brush;
-	
+
+	/**
+	 * Default constructor creates a Stroke object and stores the coordinated of
+	 * the Touch object translated to the coordinate space of the Canvas.
+	 * 
+	 * @param t
+	 *            Touch object.
+	 * @param c
+	 *            Canvas.
+	 */
 	public Stroke(Touch t, Canvas c) {
 		id = t.sessionID;
 		canvas = c;
 		path = new Vector<StrokePoint>();
-		
+
 		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));
 		getPath().add(new StrokePoint(v.x, v.y, 0, 0, t.xSpeed, t.ySpeed, t.motionSpeed, t.motionAcceleration));
-		
+
+		// Save the currently selected paint
 		paint = Application.getSelectedPaint();
+		// Save the currently selected brush
 		brush = Application.getSelectedBrush();
 	}
-	
+
+	/**
+	 * Update the stroke by adding the coordinates of the given Touch object
+	 * translated to the coordinate space of the Canvas to it.
+	 * 
+	 * @param t
+	 *            Touch object.
+	 */
 	public void update(Touch t) {
 		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));
 		getPath().add(new StrokePoint(v.x, v.y, 0, 0, t.xSpeed, t.ySpeed, t.motionSpeed, t.motionAcceleration));
 	}
-	
-	public StrokePoint getLastPoint() {
-		if (getPath().size() == 0)
-			return null;
-		else return getPath().lastElement();
-	}
-	
+
+	/**
+	 * Render the stroke based on the Brush and Paint objects.
+	 * 
+	 * @param g
+	 *            PGraphics to render the stroke into.
+	 * @see Brush#renderStroke(Stroke, int, PGraphics)
+	 * @see Paint#getColour()
+	 */
 	public void render(PGraphics g) {
 		int colour = 0;
 		if (paint != null)
 			colour = paint.getColour();
-		
+
 		if (brush != null)
 			brush.renderStroke(this, colour, g);
 	}
 
+	/**
+	 * 
+	 * @return the entire path of the stroke.
+	 */
 	public Vector<StrokePoint> getPath() {
 		return path;
+	}
+
+	/**
+	 * 
+	 * @return the last point of the stroke.
+	 */
+	public StrokePoint getLastPoint() {
+		if (getPath().size() == 0)
+			return null;
+		else
+			return getPath().lastElement();
 	}
 }

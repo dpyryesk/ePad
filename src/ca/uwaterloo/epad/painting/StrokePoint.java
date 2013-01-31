@@ -20,9 +20,31 @@
 
 package ca.uwaterloo.epad.painting;
 
+/**
+ * This class represents a single point in a stroke object. It contains
+ * information copied from a Touch object that may be used by a {@link Brush} to
+ * render the stroke, such as x and y coordinates, motion speed, acceleration,
+ * etc.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see Stroke
+ */
 public class StrokePoint {
 	public float x, y, width, height, xSpeed, ySpeed, motionSpeed, motionAcceleration;
-	
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param xSpeed
+	 * @param ySpeed
+	 * @param motionSpeed
+	 * @param motionAcceleration
+	 */
 	public StrokePoint(float x, float y, float width, float height, float xSpeed, float ySpeed, float motionSpeed, float motionAcceleration) {
 		this.x = x;
 		this.y = y;
@@ -33,10 +55,17 @@ public class StrokePoint {
 		this.motionSpeed = motionSpeed;
 		this.motionAcceleration = motionAcceleration;
 	}
-	
+
+	/**
+	 * Find the distance between two points.
+	 * 
+	 * @param p
+	 *            another point.
+	 * @return distance between the points.
+	 */
 	public float dist(StrokePoint p) {
 		float dx = x - p.x;
-	    float dy = y - p.y;
-	    return (float) Math.sqrt(dx*dx + dy*dy);
+		float dy = y - p.y;
+		return (float) Math.sqrt(dx * dx + dy * dy);
 	}
 }

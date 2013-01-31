@@ -149,6 +149,9 @@ public class MoveableItem extends Zone {
 		popMatrix();
 	}
 	
+	/**
+	 * Override this function in a subclass to draw custom graphics on top of the item.
+	 */
 	protected void drawItem() {
 	}
 	
@@ -228,14 +231,22 @@ public class MoveableItem extends Zone {
 		return clone;
 	}
 	
+	/**
+	 * Override this function in a subclass to invoke some functionality on <i>touch down</i> event.
+	 * @param touch
+	 */
 	protected void doTouchDown(Touch touch) {
 	}
 	
+	/**
+	 * Override this function in a subclass to invoke some functionality on <i>touch up</i> event.
+	 * @param touch
+	 */
 	protected void doTouchUp(Touch touch) {
 	}
 	
 	/**
-	 * Performs an initialisation step
+	 * Override this function in a subclass to performs an initialisation step.
 	 */
 	public void doInit() {
 	}

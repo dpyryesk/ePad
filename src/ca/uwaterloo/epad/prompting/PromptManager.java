@@ -38,57 +38,97 @@ import ca.uwaterloo.epad.util.Settings;
 import ca.uwaterloo.epad.util.TTSManager;
 import ca.uwaterloo.epad.util.Timer;
 
+/**
+ * This class manages the prompts, determines when they should be displayed and
+ * controls their flow.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see PromptPopup
+ */
 public class PromptManager implements ActionListener {
 	private static final Logger LOGGER = Logger.getLogger(PromptManager.class);
-	
+
+	// Array of currently visible prompts
 	private static ArrayList<PromptPopup> activePrompts = new ArrayList<PromptPopup>();
+	// Parent applet
 	protected static PApplet parent;
-	
+
+	// How long the application has been inactive (in milliseconds)
 	private static long appInactiveTime;
+	// Prompt display flags
 	private static boolean wasBrushPromptDisplayed, wasPaintPromptDisplayed;
-	
-	private static PromptPopup brushPrompt, paintPrompt, engagementPromp;
-	private static int promptStep;
-	
-	private static PromptManager instance;
-	private static boolean isInitialized = false;
-	
-	private static ResourceBundle promptStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.Prompts", Settings.locale);
-	
-	private static Drawer leftDrawer, rightDrawer, topDrawer;
+	// Drawer state flags
 	private static boolean wasLeftDrawerOpened, wasRightDrawerOpened;
-	private static Zone focalItem;
+
+	// Prompt variables
+	private static PromptPopup brushPrompt, paintPrompt, engagementPromp;
+	// Prompt timers
 	private static Timer tempTimer, brushPromptTimer, paintPromptTimer, engagementTimer;
+	// Counter for prompt progress
+	private static int promptStep;
+
+	// Resource bundle that contains the strings
+	private static ResourceBundle promptStrings = ResourceBundle.getBundle("ca.uwaterloo.epad.res.Prompts", Settings.locale);
+
+	// The only instance of PromptManager class
+	private static PromptManager instance;
+	// PromptManager status flags
+	private static boolean isInitialized = false;
 	private static boolean isPaused;
-	
-	private PromptManager() {};
-	
+
+	// Drawer pointers
+	private static Drawer leftDrawer, rightDrawer, topDrawer;
+	// Pointer to an item of interest
+	private static Zone focalItem;
+
+	// Private constructor to prevent instantiation
+	private PromptManager() {
+	};
+
+	/**
+	 * Initialise the Prompt Manager. This function should be called
+	 * <i>after</i> the GUI is loaded, but <i>before</i> any prompt is diplayed.
+	 * 
+	 * @param parent parent applet
+	 */
 	public static void init(PApplet parent) {
 		LOGGER.info("PromptManager initializing.");
-		
+
+		// Save a pointer to the parent applet
 		PromptManager.parent = parent;
-		
+
+		// Register draw and pre methods to be called automatically
 		parent.registerMethod("draw", new PromptManager());
 		parent.registerMethod("pre", new PromptManager());
-		
+
+		// Create a single instance of the class
 		instance = new PromptManager();
-		
+
+		// Add the instance as a listener to Application
 		Application.addListener(instance);
-		
+
 		reset();
 	}
-	
+
+	/**
+	 * Reset the state of the Prompt Manager and the timers. This function must
+	 * be called <i>after</i> function {@link #init(PApplet)}.
+	 */
 	public static void reset() {
 		LOGGER.info("PromptManager resetting.");
-		
+
+		// Check if the parent was set
 		if (parent == null) {
 			System.err.println("Error: PromptManager must be initialized first.");
 			return;
 		}
-		
+
+		// Clear the list of prompts and stop the Text-To-Speech engine
 		activePrompts.clear();
 		TTSManager.stop();
-		
+
+		// Get pointers to the drawers and add listeners
 		try {
 			leftDrawer = Application.getDrawer(Application.LEFT_DRAWER);
 			leftDrawer.addListener(instance);
@@ -99,22 +139,30 @@ public class PromptManager implements ActionListener {
 		} catch (NullPointerException e) {
 			System.err.println("Error: PromptManager must be initialized after drawers are created.");
 		}
-		
-		// set up timers
+
+		// Set up timers
 		brushPromptTimer = new Timer(Settings.brushPromptDelay);
 		paintPromptTimer = new Timer(Settings.paintPromptDelay);
 		engagementTimer = new Timer(Settings.engagementPromptRepeatDelay);
-		
+
+		// Reset flags
 		wasBrushPromptDisplayed = false;
 		wasPaintPromptDisplayed = false;
 		wasLeftDrawerOpened = false;
 		wasRightDrawerOpened = false;
 		promptStep = 1;
-		
+
+		// Set the state to initialised and running
 		isInitialized = true;
 		isPaused = false;
 	}
-	
+
+	/**
+	 * Pause all timers and all active prompts.
+	 * 
+	 * @see PromptPopup#pause()
+	 * @see Timer#pause()
+	 */
 	public static void pause() {
 		isPaused = true;
 		if (tempTimer != null)
@@ -122,13 +170,19 @@ public class PromptManager implements ActionListener {
 		brushPromptTimer.pause();
 		paintPromptTimer.pause();
 		engagementTimer.pause();
-		
-		for (int i=0; i < activePrompts.size(); i++) {
+
+		for (int i = 0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);
 			pp.pause();
 		}
 	}
-	
+
+	/**
+	 * Resume all timers and all active prompts.
+	 * 
+	 * @see PromptPopup#resume()
+	 * @see Timer#resume()
+	 */
 	public static void resume() {
 		isPaused = false;
 		if (tempTimer != null)
@@ -136,70 +190,92 @@ public class PromptManager implements ActionListener {
 		brushPromptTimer.resume();
 		paintPromptTimer.resume();
 		engagementTimer.resume();
-		
-		for (int i=0; i < activePrompts.size(); i++) {
+
+		for (int i = 0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);
 			pp.resume();
 		}
 	}
-	
+
+	/**
+	 * Add a prompt to the list of active prompts.
+	 * 
+	 * @param pp
+	 *            a new prompt.
+	 */
 	public static void addPrompt(PromptPopup pp) {
 		activePrompts.add(pp);
 	}
-	
+
+	/**
+	 * The draw loop calls the draw() method of every active prompt and also
+	 * removes the prompts that exceeded their time to live and became
+	 * invisible.
+	 * 
+	 * @see PromptPopup#draw()
+	 */
 	public static void draw() {
-		if (!isInitialized || isPaused) return;
-		
-		for (int i=0; i < activePrompts.size(); i++) {
+		if (!isInitialized || isPaused)
+			return;
+
+		for (int i = 0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);
+			// Remove invisible prompts
 			if (pp.isInvisible()) {
 				activePrompts.remove(i);
 				if (pp == brushPrompt)
 					brushPrompt = null;
 				else if (pp == paintPrompt)
 					paintPrompt = null;
-			}
-			else pp.draw();
+			} else
+				pp.draw();
 		}
 	}
-	
+
+	/**
+	 * This functions runs before a draw() function is called and manages the
+	 * creation and the flow of prompts.
+	 */
 	public static void pre() {
-		if (!isInitialized || isPaused) return;
-		
+		if (!isInitialized || isPaused)
+			return;
+
+		// Get the time the application has been inactive
 		appInactiveTime = Application.getInactiveTime();
-		
+
 		if (appInactiveTime >= Settings.engagementPromptDelay && activePrompts.size() == 0 && !leftDrawer.isOpen() && !rightDrawer.isOpen()) {
-			if (!engagementTimer.isTimeOut()) return;
-				
-			// show random engagement prompt to recapture attention
+			if (!engagementTimer.isTimeOut())
+				return;
+
+			// Show a random engagement prompt to recapture attention
 			if (Math.random() > 0.5 && Application.getAllBrushes().size() > 1) {
-				// create a random brush engagement prompt
+				// Create a random brush engagement prompt
 				ArrayList<MoveableItem> list = new ArrayList<MoveableItem>(Application.getAllBrushes());
 				list.remove(Application.getSelectedBrush());
 				Collections.shuffle(list);
 				MoveableItem item = list.get(0);
-				
+
 				PVector v = item.getCentre();
 				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextBrush"));
 				PromptManager.addPrompt(engagementPromp);
 				TTSManager.say(promptStrings.getString("engagementPromptTextBrush"));
 			} else if (Application.getAllPaints().size() > 1) {
-				// create a random paint engagement prompt
+				// Create a random paint engagement prompt
 				ArrayList<MoveableItem> list = new ArrayList<MoveableItem>(Application.getAllPaints());
 				list.remove(Application.getSelectedPaint());
 				Collections.shuffle(list);
 				MoveableItem item = list.get(0);
-				
+
 				PVector v = item.getCentre();
 				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextPaint"));
 				PromptManager.addPrompt(engagementPromp);
 				TTSManager.say(promptStrings.getString("engagementPromptTextPaint"));
 			}
-			
+
 			LOGGER.info("An engagement prompt displayed.");
 			engagementTimer.restart();
 		} else if (!wasLeftDrawerOpened && !wasBrushPromptDisplayed && brushPromptTimer.isTimeOut() && activePrompts.size() == 0) {
-			// Show setup prompt: brush
+			// Show a setup prompt for brush drawer
 			PVector v = leftDrawer.getHandleLocation();
 			brushPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("brushPromptStep1Icon"), promptStrings.getString("brushPromptStep1Text"));
 			PromptManager.addPrompt(brushPrompt);
@@ -208,7 +284,7 @@ public class PromptManager implements ActionListener {
 			promptStep = 1;
 			LOGGER.info("The brush drawer prompt displayed.");
 		} else if (!wasRightDrawerOpened && !wasPaintPromptDisplayed && paintPromptTimer.isTimeOut() && activePrompts.size() == 0) {
-			// Show setup prompt: paint
+			// Show a setup prompt for paint drawer
 			PVector v = rightDrawer.getHandleLocation();
 			paintPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("paintPromptStep1Icon"), promptStrings.getString("paintPromptStep1Text"));
 			PromptManager.addPrompt(paintPrompt);
@@ -217,13 +293,13 @@ public class PromptManager implements ActionListener {
 			promptStep = 1;
 			LOGGER.info("The paint drawer prompt displayed.");
 		}
-		
-		// process prompt flow
+
+		// Manage the prompt flow
 		if (brushPrompt != null) {
 			if (promptStep == 1) {
 				PVector v = leftDrawer.getHandleLocation();
 				brushPrompt.setCoordinates(v);
-				
+
 				if (leftDrawer.getVisibleWidth() > 200) {
 					brushPrompt.setCoordinates(v.x - 270, v.y);
 					brushPrompt.setIcon(promptStrings.getString("brushPromptStep2Icon"));
@@ -246,7 +322,7 @@ public class PromptManager implements ActionListener {
 				}
 			} else if (promptStep == 3) {
 				if (focalItem != null && focalItem instanceof MoveableItem) {
-					if (!((MoveableItem)focalItem).getIsDragged()) {
+					if (!((MoveableItem) focalItem).getIsDragged()) {
 						brushPrompt.setIcon(promptStrings.getString("brushPromptStep4Icon"));
 						brushPrompt.setText(promptStrings.getString("brushPromptStep4Text"));
 						TTSManager.say(promptStrings.getString("brushPromptStep4Text"));
@@ -254,7 +330,7 @@ public class PromptManager implements ActionListener {
 						promptStep++;
 					}
 				}
-				
+
 				PVector v = new PVector();
 				if (focalItem != null) {
 					v = focalItem.getCentre();
@@ -262,7 +338,7 @@ public class PromptManager implements ActionListener {
 					Zone item = leftDrawer.getContainer().getItemByID(1);
 					v = item.getCentre();
 				}
-				
+
 				brushPrompt.setCoordinates(v);
 			} else if (promptStep == 4) {
 				if (tempTimer.isTimeOut()) {
@@ -278,7 +354,7 @@ public class PromptManager implements ActionListener {
 					}
 					focalItem = null;
 				}
-				
+
 				if (focalItem != null) {
 					PVector v = focalItem.getCentre();
 					brushPrompt.setCoordinates(v);
@@ -288,12 +364,12 @@ public class PromptManager implements ActionListener {
 				brushPrompt.setCoordinates(v);
 			}
 		}
-		
+
 		if (paintPrompt != null) {
 			if (promptStep == 1) {
 				PVector v = rightDrawer.getHandleLocation();
 				paintPrompt.setCoordinates(v);
-				
+
 				if (rightDrawer.getVisibleWidth() > 200) {
 					paintPrompt.setCoordinates(v.x + 270, v.y);
 					paintPrompt.setIcon(promptStrings.getString("paintPromptStep2Icon"));
@@ -316,7 +392,7 @@ public class PromptManager implements ActionListener {
 				}
 			} else if (promptStep == 3) {
 				if (focalItem != null && focalItem instanceof MoveableItem) {
-					if (!((MoveableItem)focalItem).getIsDragged()) {
+					if (!((MoveableItem) focalItem).getIsDragged()) {
 						paintPrompt.setIcon(promptStrings.getString("paintPromptStep4Icon"));
 						paintPrompt.setText(promptStrings.getString("paintPromptStep4Text"));
 						TTSManager.say(promptStrings.getString("paintPromptStep4Text"));
@@ -324,7 +400,7 @@ public class PromptManager implements ActionListener {
 						promptStep++;
 					}
 				}
-				
+
 				PVector v = new PVector();
 				if (focalItem != null) {
 					v = focalItem.getCentre();
@@ -332,7 +408,7 @@ public class PromptManager implements ActionListener {
 					Zone item = rightDrawer.getContainer().getItemByID(1);
 					v = item.getCentre();
 				}
-				
+
 				paintPrompt.setCoordinates(v);
 			} else if (promptStep == 4) {
 				if (tempTimer.isTimeOut()) {
@@ -348,7 +424,7 @@ public class PromptManager implements ActionListener {
 					}
 					focalItem = null;
 				}
-				
+
 				if (focalItem != null) {
 					PVector v = focalItem.getCentre();
 					paintPrompt.setCoordinates(v);
@@ -359,8 +435,11 @@ public class PromptManager implements ActionListener {
 			}
 		}
 	}
-	
-	@Override
+
+	/**
+	 * Listen to the events sent by drawers and the application and manage the
+	 * prompts accordingly.
+	 */
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals(Drawer.OPEN)) {
 			if (event.getSource() == leftDrawer) {
@@ -394,7 +473,7 @@ public class PromptManager implements ActionListener {
 				focalItem = null;
 				paintPrompt.dispose();
 			}
-		}  else if (event.getActionCommand().equals(Application.PAINT_SELECTED) || event.getActionCommand().equals(Application.BRUSH_SELECTED)) {
+		} else if (event.getActionCommand().equals(Application.PAINT_SELECTED) || event.getActionCommand().equals(Application.BRUSH_SELECTED)) {
 			if (engagementPromp != null) {
 				engagementPromp.dispose();
 				TTSManager.stop();

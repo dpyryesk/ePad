@@ -33,15 +33,14 @@ import processing.core.PGraphics;
  * 
  * @author Dmitry Pyryeskin
  * @version 1.0
- * 
  * @see Brush
+ * @see MoveableItem
  */
 public class Eraser extends Brush {
 	/**
-	 * Size parameter, which represents the diameter of the circular
-	 * eraser.</br> This parameter can be retrieved automatically from XML files
-	 * using {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller}
-	 * class.
+	 * The diameter of the circular eraser.</br>This parameter can be retrieved
+	 * automatically from XML files using
+	 * {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller} class.
 	 */
 	@XmlAttribute
 	public int size;
@@ -81,6 +80,13 @@ public class Eraser extends Brush {
 		super(original);
 	}
 
+	/**
+	 * Eraser renders strokes by drawing thick lines with stroke weight equal to
+	 * <b>size</b> parameter and colour equal to the background colour of the
+	 * canvas.
+	 * 
+	 * @see Canvas
+	 */
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
 		if (length == 0)

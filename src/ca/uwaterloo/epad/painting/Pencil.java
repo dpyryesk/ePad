@@ -25,29 +25,71 @@ import processing.core.PGraphics;
 import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.xml.XmlAttribute;
 
+/**
+ * This class represents a pencil widget that lets a user to paint using
+ * continuous lines of a certain thickness and colour. It has a single parameter
+ * <b>size</b> which represents the thickness of the pencil.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see Brush
+ * @see MoveableItem
+ */
 public class Pencil extends Brush {
-	@XmlAttribute public int size;
+	/**
+	 * The thickness of the pencil.</br>This parameter can be retrieved
+	 * automatically from XML files using
+	 * {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller} class.
+	 */
+	@XmlAttribute
+	public int size;
 
+	/**
+	 * Default constructor that allows creating Pencil objects manually.
+	 * 
+	 * @param size
+	 *            thickness of the pencil.
+	 */
 	public Pencil(int size) {
 		super();
 		this.size = size;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another Pencil object
+	 * 
+	 * @param original
+	 *            the original Pencil object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Pencil(Pencil original) {
 		super(original);
 		size = original.size;
 	}
-	
+
+	/**
+	 * Constructor that builds a copy of another MoveableItem object
+	 * 
+	 * @param original
+	 *            the original MoveableItem object.
+	 * @see MoveableItem#MoveableItem(MoveableItem)
+	 */
 	public Pencil(MoveableItem original) {
 		super(original);
 	}
-	
+
+	/**
+	 * Pencil renders strokes by drawing lines with stroke weight equal to
+	 * <b>size</b> parameter.
+	 */
 	public void renderStroke(Stroke s, int colour, PGraphics g) {
 		int length = s.getPath().size();
-		if (length == 0) return;
+		if (length == 0)
+			return;
 		if (length == 1) {
-			StrokePoint p = s.getPath().get(length-1);
-			
+			// Draw a circle in the beginning of the stroke
+			StrokePoint p = s.getPath().get(length - 1);
+
 			g.beginDraw();
 			g.noStroke();
 			g.fill(colour);
@@ -55,9 +97,10 @@ public class Pencil extends Brush {
 			g.ellipse(p.x, p.y, size, size);
 			g.endDraw();
 		} else {
-			StrokePoint from = s.getPath().get(length-2);
-			StrokePoint to = s.getPath().get(length-1);
-			
+			// Connect the new point to the previous by drawing a line
+			StrokePoint from = s.getPath().get(length - 2);
+			StrokePoint to = s.getPath().get(length - 1);
+
 			g.beginDraw();
 			g.strokeJoin(PConstants.ROUND);
 			g.strokeCap(PConstants.ROUND);

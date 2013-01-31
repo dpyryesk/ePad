@@ -34,6 +34,7 @@ import ca.uwaterloo.epad.ui.MoveableItem;
  * 
  * @author Dmitry Pyryeskin
  * @version 1.0
+ * @see MoveableItem
  */
 public abstract class Brush extends MoveableItem {
 	/**

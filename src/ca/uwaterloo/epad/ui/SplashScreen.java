@@ -31,31 +31,53 @@ import java.awt.Toolkit;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This class displays a splash screen that is shown when the application is
+ * loading.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class SplashScreen extends Frame {
 	private static final long serialVersionUID = -4435437206944198737L;
 	private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
 
+	// Image on the splash screen
 	private Image img;
+	// Text on the splash screen
 	private String text;
+	// Text font
 	private Font font = new Font("Arial", Font.PLAIN, 20);
+	// Instance
 	private static SplashScreen instance;
 
 	/**
 	 * Positions the window at the centre of the screen, taking into account the
-	 * specified width and height
+	 * specified width and height.
+	 * 
+	 * @param width
+	 *            width of the splash screen
+	 * @param height
+	 *            height of the splash screen
 	 */
 	private void positionAtCenter(int width, int height) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - width) / 2, (screenSize.height - height) / 2, width, height);
 	}
-	
-	private SplashScreen() {}
 
+	// Private constructor to prevent instantiation
+	private SplashScreen() {
+	}
+
+	// Private constructor to prevent instantiation
 	private SplashScreen(String filename) {
 		instance = this;
 		text = "";
 
+		// Load splash image
 		img = Toolkit.getDefaultToolkit().getImage(filename);
+		// Load toolbar icon image
 		Image icon = Toolkit.getDefaultToolkit().getImage("data\\images\\e.png");
 		MediaTracker mt = new MediaTracker(this);
 		mt.addImage(img, 0);
@@ -65,17 +87,22 @@ public class SplashScreen extends Frame {
 			LOGGER.error("Unexpected interrupt in waitForID!");
 			return;
 		}
+
 		if (mt.isErrorID(0)) {
 			LOGGER.error("Failed to load image " + filename);
 			return;
 		}
-		
+
+		// Get the dimensions of the splash image
 		int w = img.getWidth(null);
 		int h = img.getHeight(null);
-		
-		if (w < 0) w = 592;
-		if (h < 0) h = 533;
 
+		if (w < 0)
+			w = 592;
+		if (h < 0)
+			h = 533;
+
+		// Set up the frame
 		setUndecorated(true);
 		setSize(w, h);
 		positionAtCenter(w, h);
@@ -84,22 +111,43 @@ public class SplashScreen extends Frame {
 		setVisible(true);
 	}
 
+	/**
+	 * Create a splash screen using the provided image.
+	 * 
+	 * @param filename
+	 *            path to the image file
+	 */
 	public static void splash(String filename) {
 		if (filename != null && instance == null)
 			new SplashScreen(filename);
 	}
-	
+
+	/**
+	 * Remove the splash screen.
+	 */
 	public static void remove() {
 		if (instance != null) {
 			instance.dispose();
 			instance = null;
 		}
 	}
-	
+
+	/**
+	 * Set the text on the splash screen to the provided value.
+	 * 
+	 * @param text
+	 *            text to display on the splash screen
+	 */
 	public static void setMessage(String text) {
 		instance.text = text;
 	}
-	
+
+	/**
+	 * Check if the splash screen is currently displayed.
+	 * 
+	 * @return <b>true</b> if the splash screen is displayed and <b>false</b>
+	 *         otherwise
+	 */
 	public static boolean isUp() {
 		return instance != null;
 	}
@@ -115,7 +163,7 @@ public class SplashScreen extends Frame {
 			g.drawImage(img, 0, 0, this);
 		else
 			g.clearRect(0, 0, getSize().width, getSize().height);
-		
+
 		g.setPaintMode();
 		g.setColor(Color.BLACK);
 		g.setFont(font);

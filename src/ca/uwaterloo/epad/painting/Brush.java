@@ -46,7 +46,7 @@ public abstract class Brush extends MoveableItem {
 	}
 
 	/**
-	 * Constructor that builds a copy of another Brush object
+	 * Constructor that builds a copy of another Brush object.
 	 * 
 	 * @param original
 	 *            the original Brush object.
@@ -58,7 +58,7 @@ public abstract class Brush extends MoveableItem {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

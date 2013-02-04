@@ -57,7 +57,7 @@ public class Eraser extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another Eraser object
+	 * Constructor that builds a copy of another Eraser object.
 	 * 
 	 * @param original
 	 *            the original Eraser object.
@@ -66,11 +66,10 @@ public class Eraser extends Brush {
 	public Eraser(Eraser original) {
 		super(original);
 		size = original.size;
-		name = original.name;
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.
@@ -85,7 +84,7 @@ public class Eraser extends Brush {
 	 * <b>size</b> parameter and colour equal to the background colour of the
 	 * canvas.
 	 * 
-	 * @see Canvas
+	 * @see ca.uwaterloo.epad.ui.Canvas
 	 */
 	@Override
 	public void renderStroke(Stroke s, int colour, PGraphics g) {

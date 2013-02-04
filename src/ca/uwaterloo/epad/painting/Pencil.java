@@ -56,7 +56,7 @@ public class Pencil extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another Pencil object
+	 * Constructor that builds a copy of another Pencil object.
 	 * 
 	 * @param original
 	 *            the original Pencil object.
@@ -68,7 +68,7 @@ public class Pencil extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

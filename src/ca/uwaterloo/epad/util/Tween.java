@@ -20,24 +20,53 @@
 
 package ca.uwaterloo.epad.util;
 
+/**
+ * This class provides simple tweening functionality useful for time-based
+ * animation.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class Tween {
+	// When the tween was started
 	private long startTime;
+	// How long should the tween last, in milliseconds
 	private int tweenLength;
+	// Starting and ending value of the variable to tween
 	private float startValue, endValue;
-	
+
+	/**
+	 * Create and start a tween.
+	 * 
+	 * @param startValue
+	 *            the initial value
+	 * @param endValue
+	 *            the final value
+	 * @param tweenLength
+	 *            the length of the tween
+	 */
 	public Tween(int startValue, int endValue, int tweenLength) {
 		startTime = System.currentTimeMillis();
 		this.tweenLength = tweenLength;
 		this.startValue = startValue;
 		this.endValue = endValue;
 	}
-	
+
+	/**
+	 * Calculate the time-based tween value. For example, if you would like to
+	 * tween a variable between 0 and 100 in 1000 milliseconds, than calling
+	 * this method after 500 milliseconds will return 50. If you call this
+	 * method after 2000 milliseconds, the final value (100) will be returned.
+	 * 
+	 * @return the tweened value based on the current time
+	 */
 	public float getValue() {
 		int timePassed = (int) (System.currentTimeMillis() - startTime);
-		
+
 		if (timePassed >= tweenLength)
 			return endValue;
 		else
-			return startValue + (endValue - startValue)*((float)timePassed/(float)tweenLength);
+			return startValue + (endValue - startValue) * ((float) timePassed / (float) tweenLength);
 	}
 }

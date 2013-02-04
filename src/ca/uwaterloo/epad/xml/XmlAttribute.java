@@ -23,10 +23,20 @@ package ca.uwaterloo.epad.xml;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * This annotation is used by {@link ca.uwaterloo.epad.xml.SimpleMarshaller
+ * SimpleMarshaller} class to determine which fields should be saved and loaded
+ * to and from XML layout files. When creating a new widget, make a subclass of
+ * {@link ca.uwaterloo.epad.ui.MoveableItem MoveableItem} and mark the important
+ * fields that need to be preserved (size as width and height of a brush, etc.)
+ * with this annotation, the new subclass will now be handled by
+ * {@link ca.uwaterloo.epad.xml.SimpleMarshaller SimpleMarshaller} automatically
+ * when the application is saving and loading.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see SimpleMarshaller
+ */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface XmlAttribute {
-	public static final String NULL = "[unassigned]";
-	
-	String name() default NULL;
-	String defaultValue() default NULL;
 }

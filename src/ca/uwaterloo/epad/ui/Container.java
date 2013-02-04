@@ -73,21 +73,8 @@ public abstract class Container extends Zone {
 	// Array of event listeners
 	protected ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param x
-	 *            x-coordinate of the top left corner of the container
-	 * @param y
-	 *            y-coordinate of the top left corner of the container
-	 * @param width
-	 *            width of the container
-	 * @param height
-	 *            height of the container
-	 * @param parent
-	 *            parent drawer of the container
-	 */
-	public Container(int x, int y, int width, int height, Drawer parent) {
+	// Default constructor
+	protected Container(int x, int y, int width, int height, Drawer parent) {
 		super(x, y, width, height);
 		this.parent = parent;
 		items = new HashMap<Integer, Zone>();
@@ -128,6 +115,14 @@ public abstract class Container extends Zone {
 	@Override
 	abstract protected void touchImpl();
 
+	/**
+	 * Set the colour scheme of the container.
+	 * 
+	 * @param primary
+	 *            primary colour
+	 * @param secondary
+	 *            secondary colour
+	 */
 	public void setColourScheme(int primary, int secondary) {
 		primaryColour = primary;
 		secondaryColour = secondary;
@@ -168,7 +163,8 @@ public abstract class Container extends Zone {
 	 * 
 	 * @param listener
 	 *            listener object to remove
-	 * @return <b>true</b> if the list of listeners contained the specified object
+	 * @return <b>true</b> if the list of listeners contained the specified
+	 *         object
 	 */
 	public boolean removeListener(ActionListener listener) {
 		return listeners.remove(listener);

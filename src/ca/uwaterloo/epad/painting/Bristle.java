@@ -33,7 +33,7 @@ class Bristle {
 	private float x, y, diameter;
 
 	/**
-	 * Constructor
+	 * Default constructor.
 	 * 
 	 * @param x
 	 *            x coordinate of the bristle

@@ -24,97 +24,122 @@ import processing.core.PApplet;
 import processing.core.PVector;
 import vialab.SMT.Zone;
 
+/**
+ * This class represents a square sliding drawer widget. The child items are
+ * organised by a {@link RectangularContainer}. Currently only TOP position is
+ * supported.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * @see RectangularContainer
+ */
 public class SlidingDrawer extends Drawer {
-	public static SlidingDrawer makeTopDrawer(PApplet parent, int drawerWidth) {
-		SlidingDrawer instance = new SlidingDrawer(0, -drawerWidth, parent.width, drawerWidth, TOP);
-		
-		instance.container = new StaticContainer(instance.width, instance.height, instance);
+	/**
+	 * Automatically make a sliding drawer on the top of the screen. Width of
+	 * the drawer is equal to the width of the screen and depth of the drawer is
+	 * equal to the specified value.
+	 * 
+	 * @param parent
+	 *            parent applet
+	 * @param drawerDepth
+	 *            depth of the drawer in pixels
+	 * @return resulting SlidingDrawer instance
+	 */
+	public static SlidingDrawer makeTopDrawer(PApplet parent, int drawerDepth) {
+		SlidingDrawer instance = new SlidingDrawer(0, -drawerDepth, parent.width, drawerDepth, TOP);
+
+		instance.container = new RectangularContainer(instance.width, instance.height, instance);
 		instance.add(instance.container);
-		
+
 		return instance;
 	}
-	
-	private SlidingDrawer (int x, int y, int width, int height, int position) {
+
+	// Constructor is private to prevent manual instantiation
+	private SlidingDrawer(int x, int y, int width, int height, int position) {
 		super(x, y, width, height, position);
-		
+
 		if (position == TOP) {
 			dragX = false;
 			dragY = true;
 			dragXMin = Integer.MIN_VALUE;
 			dragXMax = Integer.MAX_VALUE;
 			dragYMin = y;
-			dragYMax = y + height*2;
+			dragYMax = y + height * 2;
 		}
 	}
-	
+
+	// Draw the drawer
 	@Override
 	protected void drawImpl() {
 		pushMatrix();
-		
+
 		if (position == TOP) {
 			noStroke();
 			fill(secondaryColour);
-			
+
 			rectMode(CORNER);
 			rect(0, 0, width, height);
-			
-			translate(width/2, height);
+
+			translate(width / 2, height);
 			noStroke();
 			triangle(-100, 0, 0, 60, 100, 0);
-			
+
 			stroke(primaryColour);
 			strokeWeight(3);
 			line(-100, 0, 0, 60);
 			line(0, 60, 100, 0);
 		}
-		
+
 		popMatrix();
 	}
-	
+
+	// Draw for zone picker
 	@Override
 	protected void pickDrawImpl() {
 		pushMatrix();
-		
+
 		if (position == TOP) {
 			rectMode(CORNER);
 			rect(0, 0, width, height);
-			translate(width/2, height);
+			translate(width / 2, height);
 			triangle(-100, 0, 0, 60, 100, 0);
 		}
-		
+
 		popMatrix();
 	}
-	
+
+	// Calculate whether or not the drawer is opened
 	@Override
-	protected boolean calculateState() {
+	protected boolean calculateOpenedState() {
 		if (getVisibleWidth() > 100) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean isItemAbove(Zone item) {
 		PVector drawerCentre = getCentre();
 		PVector itemCentre = item.getCentre();
 		float d = 0;
-		
+
 		if (position == TOP) {
-			d = itemCentre.y - drawerCentre.y - height/2;
+			d = itemCentre.y - drawerCentre.y - height / 2;
 		}
-		
+
 		return d < 0;
 	}
-	
+
 	@Override
 	public PVector getHandleLocation() {
 		if (position == TOP) {
-			PVector handle = new PVector(width/2, height + 30);
+			PVector handle = new PVector(width / 2, height + 30);
 			return fromZoneVector(handle);
-		} else return null;
+		} else
+			return null;
 	}
-	
+
 	@Override
 	public float getVisibleWidth() {
 		PVector p = fromZoneVector(new PVector(x, y));
@@ -122,7 +147,7 @@ public class SlidingDrawer extends Drawer {
 		if (position == TOP) {
 			w = height - y + p.y;
 		}
-		
+
 		return w;
 	}
 }

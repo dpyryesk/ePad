@@ -80,6 +80,8 @@ public class Launcher {
 			LOGGER.fatal("Failed to load settings from file: " + settingsFile);
 			System.exit(1);
 		}
+		
+		//TODO: make sure that all required folders exist
 
 		// Make sure that the resource bundles can be loaded
 		try {

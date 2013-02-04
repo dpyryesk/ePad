@@ -76,7 +76,7 @@ public class RectangularBristleBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another RectangularBristleBrush object
+	 * Constructor that builds a copy of another RectangularBristleBrush object.
 	 * 
 	 * @param original
 	 *            the original RectangularBristleBrush object.
@@ -89,7 +89,7 @@ public class RectangularBristleBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

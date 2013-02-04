@@ -53,9 +53,9 @@ public class Stroke {
 	 * the Touch object translated to the coordinate space of the Canvas.
 	 * 
 	 * @param t
-	 *            Touch object.
+	 *            Touch object
 	 * @param c
-	 *            Canvas.
+	 *            Canvas
 	 */
 	public Stroke(Touch t, Canvas c) {
 		id = t.sessionID;
@@ -76,7 +76,7 @@ public class Stroke {
 	 * translated to the coordinate space of the Canvas to it.
 	 * 
 	 * @param t
-	 *            Touch object.
+	 *            Touch object
 	 */
 	public void update(Touch t) {
 		PVector v = canvas.toZoneVector(new PVector(t.x, t.y));

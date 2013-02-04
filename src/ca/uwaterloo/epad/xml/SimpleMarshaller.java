@@ -52,16 +52,27 @@ import ca.uwaterloo.epad.ui.MoveableItem;
 import ca.uwaterloo.epad.ui.RotatingDrawer;
 import ca.uwaterloo.epad.ui.SlidingDrawer;
 
+/**
+ * This class handles saving and loading the workspace layout as well as loading
+ * the GUI layout. It handles subclasses of {@link MoveableItem} class
+ * automatically, saving and loading the basic parameters (x, y, width, height,
+ * drawerId, image, transformation matrix and class name) as well as all extra
+ * fields that are marked with {@link XmlAttribute} annotation.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class SimpleMarshaller {
 	private static final Logger LOGGER = Logger.getLogger(SimpleMarshaller.class);
-	
+
 	private static final String NODE_ITEM = "MoveableItem";
 	private static final String NODE_CANVAS = "Canvas";
 	private static final String NODE_LAYOUT = "Layout";
 	private static final String NODE_MATRIX = "matrix";
 	private static final String NODE_ROTATING_DRAWER = "RotatingDrawer";
 	private static final String NODE_SLIDING_DRAWER = "SlidingDrawer";
-	
+
 	private static final String ATTR_X = "x";
 	private static final String ATTR_Y = "y";
 	private static final String ATTR_WIDTH = "width";
@@ -74,13 +85,23 @@ public class SimpleMarshaller {
 	private static final String ATTR_SECONDARY_COLOUR = "secondaryColour";
 	private static final String ATTR_BACKGROUND_COLOUR = "backgroundColour";
 	private static final String ATTR_OVERLAY = "overlay";
-	
+
 	private static final String LEFT = "left";
 	private static final String RIGHT = "right";
 	private static final String TOP = "top";
 	@SuppressWarnings("unused")
 	private static final String BOTTOM = "bottom";
 
+	/**
+	 * Save the layout of the workspace into the specified file.
+	 * 
+	 * @param file
+	 *            a valid file instance to save the layout into
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerException
+	 */
 	public static void marshallLayout(File file) throws IllegalArgumentException, IllegalAccessException, ParserConfigurationException, TransformerException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -90,7 +111,7 @@ public class SimpleMarshaller {
 		for (Zone z : Application.getChildren())
 			marshallItemLayout(z, rootElement);
 		document.appendChild(rootElement);
-		
+
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		DOMSource source = new DOMSource(document);
 		StreamResult result = new StreamResult(file);
@@ -98,16 +119,17 @@ public class SimpleMarshaller {
 		transformer.transform(source, result);
 	}
 
+	// Save individual item
 	private static void marshallItemLayout(Zone z, Element root) throws IllegalArgumentException, IllegalAccessException {
-		// ignore zones not on top level and drawers
+		// Ignore zones not on top level and drawers
 		if (z.getParent() != null)
 			return;
 		if (z instanceof MoveableItem) {
 			Class<? extends Object> c = z.getClass();
-	
+
 			Element child = root.getOwnerDocument().createElement(NODE_ITEM);
-	
-			// save default properties
+
+			// Save default properties
 			child.setAttribute(ATTR_X, Integer.toString(z.x));
 			child.setAttribute(ATTR_Y, Integer.toString(z.y));
 			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
@@ -115,8 +137,8 @@ public class SimpleMarshaller {
 			child.setAttribute(ATTR_DRAWER, Integer.toString(((MoveableItem) z).getDrawerId()));
 			child.setAttribute(ATTR_IMAGE, ((MoveableItem) z).getImage());
 			child.setAttribute(ATTR_CLASS, c.getName());
-	
-			// save custom fields
+
+			// Save custom fields
 			for (Field f : c.getFields()) {
 				XmlAttribute attr = f.getAnnotation(XmlAttribute.class);
 				if (attr != null) {
@@ -125,33 +147,34 @@ public class SimpleMarshaller {
 					child.setAttribute(name, value);
 				}
 			}
-	
-			// save transformation matrix
+
+			// Save transformation matrix
 			Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
 			saveMatrix(z.getGlobalMatrix(), matrix);
 			child.appendChild(matrix);
-	
+
 			root.appendChild(child);
 		} else if (z instanceof Canvas) {
 			Element child = root.getOwnerDocument().createElement(NODE_CANVAS);
-			
-			// save default properties
+
+			// Save default properties
 			child.setAttribute(ATTR_X, Integer.toString(z.x));
 			child.setAttribute(ATTR_Y, Integer.toString(z.y));
 			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
 			child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
 			child.setAttribute(ATTR_BACKGROUND_COLOUR, Integer.toString(((Canvas) z).backgroundColour));
-			child.setAttribute(ATTR_OVERLAY, ((Canvas)z).getOverlayImagePath());
-			
-			// save transformation matrix
+			child.setAttribute(ATTR_OVERLAY, ((Canvas) z).getOverlayImagePath());
+
+			// Save transformation matrix
 			Element matrix = root.getOwnerDocument().createElement(NODE_MATRIX);
 			saveMatrix(z.getGlobalMatrix(), matrix);
 			child.appendChild(matrix);
-			
+
 			root.appendChild(child);
 		}
 	}
 
+	// Save a transformation matrix
 	private static void saveMatrix(PMatrix3D matrix, Element xml) {
 		xml.setAttribute("m00", Float.toString(matrix.m00));
 		xml.setAttribute("m01", Float.toString(matrix.m01));
@@ -171,19 +194,32 @@ public class SimpleMarshaller {
 		xml.setAttribute("m33", Float.toString(matrix.m33));
 	}
 
+	/**
+	 * Load the workspace layout from the specified file.
+	 * 
+	 * @param file
+	 *            valid XML file that contains a workspace layout
+	 * @throws TransformerException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
 	public static void unmarshallLayout(File file) throws TransformerException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		StreamSource source = new StreamSource(file);
 		DOMResult result = new DOMResult();
 		transformer.transform(source, result);
-		
+
 		Node root = result.getNode().getFirstChild();
 		if (root == null) {
 			LOGGER.error("No data loaded.");
 			return;
 		}
-		
+
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node childNode = children.item(i);
@@ -196,10 +232,10 @@ public class SimpleMarshaller {
 				int width = Integer.parseInt(attributeMap.getNamedItem(ATTR_WIDTH).getNodeValue());
 				int height = Integer.parseInt(attributeMap.getNamedItem(ATTR_HEIGHT).getNodeValue());
 				int backgroundColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_BACKGROUND_COLOUR).getNodeValue());
-				
+
 				Canvas canvas = new Canvas(x, y, width, height, backgroundColour);
-				
-				// load overlay image path
+
+				// Load overlay image path
 				String overlayPath;
 				Node overlayNode = attributeMap.getNamedItem(ATTR_OVERLAY);
 				if (overlayNode != null) {
@@ -207,8 +243,8 @@ public class SimpleMarshaller {
 					if (overlayPath != null && overlayPath.length() > 0 && !overlayPath.equals("null"))
 						canvas.setOverlayImage(overlayPath);
 				}
-				
-				// load transformation matrix
+
+				// Load transformation matrix
 				PMatrix3D matrix = new PMatrix3D();
 				NodeList children1 = childNode.getChildNodes();
 				for (int j = 0; j < children1.getLength(); j++) {
@@ -216,15 +252,16 @@ public class SimpleMarshaller {
 					if (childNode.getNodeName().equals(NODE_MATRIX))
 						matrix = loadMatrix(childNode);
 				}
-				
+
 				canvas.setMatrix(matrix);
 				Application.setCanvas(canvas);
 			}
 		}
 	}
-	
-	private static void unmarshallItemLayout(Node childNode) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException {
+
+	// Load individual item
+	private static void unmarshallItemLayout(Node childNode) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
+			SecurityException {
 		NamedNodeMap attributeMap = childNode.getAttributes();
 		if (attributeMap == null || attributeMap.getLength() == 0) {
 			LOGGER.error("Failed to unmarshall child, no attributes specified in xml.");
@@ -299,6 +336,7 @@ public class SimpleMarshaller {
 		childInstance.addToScreen();
 	}
 
+	// Parse a value and set the field
 	private static void setField(Field f, Object o, String value) throws IllegalArgumentException, IllegalAccessException, NumberFormatException {
 		if (value == null) {
 			f.set(o, null);
@@ -309,6 +347,7 @@ public class SimpleMarshaller {
 			} else if (type.equals(int.class)) {
 				int intValue;
 				if (value.startsWith("#"))
+					// Handle hexadecimal integers
 					intValue = Integer.parseInt(value.substring(1), 16) + 0xFF000000;
 				else
 					intValue = Integer.parseInt(value);
@@ -325,6 +364,7 @@ public class SimpleMarshaller {
 		}
 	}
 
+	// Load a transformation matrix
 	private static PMatrix3D loadMatrix(Node xml) {
 		PMatrix3D matrix = new PMatrix3D();
 
@@ -350,24 +390,42 @@ public class SimpleMarshaller {
 
 		return matrix;
 	}
-	
-	public static void unmarshallGui(Application app, File file) throws TransformerException, NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException, InstantiationException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+	/**
+	 * Load the GUI layout from the specified file.
+	 * 
+	 * @param app
+	 *            Application object
+	 * @param file
+	 *            valid XML file that contains the GUI layout
+	 * @throws TransformerException
+	 * @throws NumberFormatException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws DOMException
+	 * @throws InstantiationException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public static void unmarshallGui(Application app, File file) throws TransformerException, NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException,
+			InstantiationException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		StreamSource source = new StreamSource(file);
 		DOMResult result = new DOMResult();
 		transformer.transform(source, result);
-		
+
 		Node root = result.getNode().getFirstChild();
 		if (root == null) {
 			LOGGER.error("No data loaded.");
 			return;
 		}
-		
+
 		NamedNodeMap attributeMap = root.getAttributes();
 
 		Class<? extends Object> c = Application.class;
 
-		// load fields
+		// Load fields
 		for (Field f : c.getFields()) {
 			if (f.getAnnotation(XmlAttribute.class) != null) {
 				String name = f.getName();
@@ -379,8 +437,8 @@ public class SimpleMarshaller {
 				}
 			}
 		}
-		
-		// process children
+
+		// Process children
 		NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node childNode = children.item(i);
@@ -391,7 +449,7 @@ public class SimpleMarshaller {
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
-				
+
 				if (LEFT.equals(pos)) {
 					drawer = RotatingDrawer.makeLeftDrawer(app);
 					drawerId = Application.LEFT_DRAWER;
@@ -400,7 +458,7 @@ public class SimpleMarshaller {
 					drawerId = Application.RIGHT_DRAWER;
 				} else {
 					LOGGER.error("Layout error, only left and right rotating drawers are supported.");
-					throw (new DOMException((short)0, "Layout error"));
+					throw (new DOMException((short) 0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
 				Application.setDrawer(drawer, drawerId);
@@ -412,35 +470,37 @@ public class SimpleMarshaller {
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
-				
-				// determine drawer width
+
+				// Determine drawer width
 				int drawerWidth = app.height / 3;
 				Node temp = attributeMap.getNamedItem(ATTR_WIDTH);
-				if (temp !=null ) {
+				if (temp != null) {
 					String value = temp.getNodeValue();
 					if (value.endsWith("%")) {
-						drawerWidth = (int) (app.height * Float.parseFloat(value.substring(0, value.length()-1)) / 100);
+						drawerWidth = (int) (app.height * Float.parseFloat(value.substring(0, value.length() - 1)) / 100);
 					} else {
 						drawerWidth = Integer.parseInt(value);
 					}
 				}
-				
+
 				if (TOP.equals(pos)) {
 					drawer = SlidingDrawer.makeTopDrawer(app, drawerWidth);
 					drawerId = Application.TOP_DRAWER;
 				} else {
 					LOGGER.error("Layout error, only top sliding drawer is supported");
-					throw (new DOMException((short)0, "Layout error"));
+					throw (new DOMException((short) 0, "Layout error"));
 				}
-				
+
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
 				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);
 			}
 		}
 	}
-	
-	private static void unmarshallDrawerItems(int drawerId, Node xml) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException, InstantiationException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+	// Load items in each drawer
+	private static void unmarshallDrawerItems(int drawerId, Node xml) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, DOMException, InstantiationException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		NodeList children = xml.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node childNode = children.item(i);
@@ -451,7 +511,7 @@ public class SimpleMarshaller {
 					return;
 				}
 
-				// find the name of the child's class
+				// Find the name of the child's class
 				Node temp = attributeMap.getNamedItem(ATTR_CLASS);
 				Class<?> childClass, baseClass;
 
@@ -476,18 +536,18 @@ public class SimpleMarshaller {
 						return;
 					}
 				}
-				
-				// create new instance
+
+				// Create a new instance
 				MoveableItem item = new MoveableItem(0, 0, 125, 125);
-				
-				// read image path
+
+				// Read image path
 				temp = attributeMap.getNamedItem(ATTR_IMAGE);
 				if (temp != null)
 					item.setImage(temp.getNodeValue());
 
 				MoveableItem childInstance = (MoveableItem) childClass.getConstructor(MoveableItem.class).newInstance(item);
 
-				// load fields
+				// Load fields
 				for (Field f : childClass.getFields()) {
 					if (f.getAnnotation(XmlAttribute.class) != null) {
 						String name = f.getName();
@@ -499,7 +559,7 @@ public class SimpleMarshaller {
 						}
 					}
 				}
-				
+
 				childInstance.setDrawer(drawerId, true);
 				childInstance.doInit();
 			}

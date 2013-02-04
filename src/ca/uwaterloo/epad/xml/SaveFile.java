@@ -34,34 +34,97 @@ import processing.core.PImage;
 import ca.uwaterloo.epad.Application;
 import ca.uwaterloo.epad.util.Settings;
 
+/**
+ * This class represents a save file created by ePad application and also
+ * handles saving the workspace and loading the save files.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class SaveFile {
 	private static final Logger LOGGER = Logger.getLogger(SaveFile.class);
-	
+
+	// String keys
 	public static final String USER_NAME = "user_name";
 	public static final String SAVE_TIME = "time";
 	public static final String DIRECTORY = "data_dir";
 	public static final String THUMBNAIL = "thumbnailPath";
 	public static final String DRAWING = "drawingPath";
-	public static final String LAYOUT= "layoutPath";
-	
+	public static final String LAYOUT = "layoutPath";
+
+	/**
+	 * Default extension of the save files.
+	 */
 	public static final String SAVE_FILE_EXT = ".sav";
+	/**
+	 * Default suffix of the directories paired with the save files.
+	 */
 	public static final String DIRECTORY_SUFFIX = "_data";
-	
+
+	// Path to the save folder
 	private static final String SAVE_FOLDER = Settings.saveFolder;
+	// Date formatter
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS");
+	// Maximum dimension of a thumbnail in pixels
 	private static final int THUMBNAIL_MAX_SIZE = 300;
-	private static final int PARAMETER_COUNT = 6; // number of parameters that have to be loaded from the save file (name, date, directory, thumbnail, drawing and layout)
 
+	// Number of parameters that have to be loaded from the save file (name,
+	// date, directory, thumbnail, drawing and layout)
+	private static final int PARAMETER_COUNT = 6;
+
+	/**
+	 * Name of the save file.
+	 */
 	public String filename;
+	/**
+	 * Name of the data directory paired with the save file.
+	 */
 	public String dirname;
+	/**
+	 * Name of the user.
+	 */
 	public String userName;
+	/**
+	 * Time when the save file was created.
+	 */
 	public Date saveTime;
-	public PImage thumbnail, drawing;
-	public String thumbnailPath, drawingPath, layoutPath;
+	/**
+	 * Thumbnail image.
+	 */
+	public PImage thumbnail;
+	/**
+	 * Drawing image.
+	 */
+	public PImage drawing;
+	/**
+	 * Path to the thumbnail image.
+	 */
+	public String thumbnailPath;
+	/**
+	 * Path to the drawing image.
+	 */
+	public String drawingPath;
+	/**
+	 * Path to the saved layout.
+	 */
+	public String layoutPath;
 
+	/**
+	 * Create a save file for the specified user and save the current drawing
+	 * and workspace layout.
+	 * 
+	 * @param userName
+	 *            name of the user
+	 * @return <b>true</b> if the file was saved successfully and <b>false</b>
+	 *         if something went wrong
+	 */
 	public boolean save(String userName) {
+		// Get time stamp
 		saveTime = new Date();
 		String timestamp = DATE_FORMAT.format(saveTime);
+
+		// Create file and directory names
 		filename = SAVE_FOLDER + timestamp + SAVE_FILE_EXT;
 		dirname = SAVE_FOLDER + timestamp + DIRECTORY_SUFFIX;
 		thumbnailPath = dirname + "\\thumbnail.png";
@@ -69,29 +132,30 @@ public class SaveFile {
 		layoutPath = dirname + "\\layout.xml";
 
 		LOGGER.info("Saving the workspace into file: " + filename);
-		
-		// check if save folder exists and create it if necessary
+
+		// Check if the save folder exists and create it if necessary
 		try {
 			File savedir = new File(SAVE_FOLDER);
 			if (!savedir.exists())
 				savedir.mkdir();
-			
+
 			LOGGER.info("Created a save directory: " + SAVE_FOLDER);
 		} catch (Exception e) {
 			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}
-		
+
 		try {
+			// Write the data into the save file
 			File file = new File(filename);
 			File dir = new File(dirname);
 			if (file.exists()) {
 				LOGGER.error("Save file already exists " + filename);
 				return false;
 			}
-			
+
 			dir.mkdir();
-			
+
 			FileWriter fw = new FileWriter(file);
 			BufferedWriter out = new BufferedWriter(fw);
 			out.write(USER_NAME + "=" + userName + "\n");
@@ -105,29 +169,35 @@ public class SaveFile {
 			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}
-		
+
+		// Get drawing and thumbnail images from the canvas
 		drawing = Application.getCanvas().getDrawing(true);
 		thumbnail = Application.getCanvas().getDrawing(false);
+
+		// Resize the thumbnail while preserving the aspect ratio
 		int w, h;
 		if (thumbnail.width >= thumbnail.height) {
 			w = THUMBNAIL_MAX_SIZE;
-			h = Math.round((float)thumbnail.height * (float)THUMBNAIL_MAX_SIZE / thumbnail.width);
+			h = Math.round((float) thumbnail.height * (float) THUMBNAIL_MAX_SIZE / thumbnail.width);
 		} else {
 			h = THUMBNAIL_MAX_SIZE;
-			w = Math.round((float)thumbnail.width * (float)THUMBNAIL_MAX_SIZE / thumbnail.height);
+			w = Math.round((float) thumbnail.width * (float) THUMBNAIL_MAX_SIZE / thumbnail.height);
 		}
 		thumbnail.resize(w, h);
-		
+
+		// Save thumbnail
 		if (thumbnail.save(thumbnailPath))
 			LOGGER.info("Thumbnail saved: " + thumbnailPath);
 		else
 			LOGGER.error("Failed to save Thumbnail");
-		
+
+		// Save drawing
 		if (drawing.save(drawingPath))
 			LOGGER.info("Drawing saved: " + drawingPath);
 		else
 			LOGGER.error("Failed to save drawing");
-		
+
+		// Save layout
 		try {
 			SimpleMarshaller.marshallLayout(new File(layoutPath));
 			LOGGER.info("Layout saved: " + layoutPath);
@@ -138,44 +208,54 @@ public class SaveFile {
 		return true;
 	}
 
+	/**
+	 * Load the specified save file and retrieve the recorded data such as
+	 * user's name, time stamp as well as the paths to the thumbnail, drawing
+	 * and layout files.
+	 * 
+	 * @param filename
+	 *            valid path to a save file to load
+	 * @return <b>true</b> if the file was loaded and parsed successfully and
+	 *         <b>false</b> if something went wrong
+	 */
 	public boolean load(String filename) {
 		this.filename = filename;
 		File file = new File(filename);
 		if (!file.exists())
 			return false;
-		
+
 		try {
 			FileReader fr = new FileReader(file);
 			BufferedReader in = new BufferedReader(fr);
-			
+
 			String line = in.readLine();
 			int lineCount = 0;
 			while (line != null) {
 				if (line.startsWith(USER_NAME)) {
-					userName = line.substring(USER_NAME.length()+1);
+					userName = line.substring(USER_NAME.length() + 1);
 					lineCount++;
 				} else if (line.startsWith(SAVE_TIME)) {
-					saveTime = DATE_FORMAT.parse(line.substring(SAVE_TIME.length()+1));
+					saveTime = DATE_FORMAT.parse(line.substring(SAVE_TIME.length() + 1));
 					lineCount++;
 				} else if (line.startsWith(DIRECTORY)) {
-					dirname = line.substring(DIRECTORY.length()+1);
+					dirname = line.substring(DIRECTORY.length() + 1);
 					lineCount++;
 				} else if (line.startsWith(THUMBNAIL)) {
-					thumbnailPath = line.substring(THUMBNAIL.length()+1);
+					thumbnailPath = line.substring(THUMBNAIL.length() + 1);
 					lineCount++;
 				} else if (line.startsWith(DRAWING)) {
-					drawingPath = line.substring(DRAWING.length()+1);
+					drawingPath = line.substring(DRAWING.length() + 1);
 					lineCount++;
 				} else if (line.startsWith(LAYOUT)) {
-					layoutPath = line.substring(LAYOUT.length()+1);
+					layoutPath = line.substring(LAYOUT.length() + 1);
 					lineCount++;
 				}
-				
+
 				line = in.readLine();
 			}
-			
+
 			in.close();
-			
+
 			// check if all parameters were loaded
 			if (lineCount != PARAMETER_COUNT) {
 				LOGGER.error("Save file " + filename + " contains fewer parameters than expected.");
@@ -185,7 +265,7 @@ public class SaveFile {
 			LOGGER.error(e.getLocalizedMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
 }

@@ -25,17 +25,40 @@ import org.apache.log4j.Logger;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 
+/**
+ * This class initialises and manages the Text-To-Speech system
+ * (freeTTS).</br>See <a href="http://freetts.sourceforge.net/docs/index.php"
+ * >http://freetts.sourceforge.net/docs/index.php</a> for more information about
+ * the system.
+ * 
+ * @author Dmitry Pyryeskin
+ * @version 1.0
+ * 
+ */
 public class TTSManager {
 	private static final Logger LOGGER = Logger.getLogger(TTSManager.class);
-	
+
+	// The voice to use
 	protected static Voice voice;
+	// Indicated that the voice failed to load
 	protected static boolean badVoice = false;
-	
-	private TTSManager(){}
-	
+
+	// Private constructor to prevent instantiation
+	private TTSManager() {
+	}
+
+	/**
+	 * Initialise the Text-To-Speech system: load and allocate the default voice
+	 * and also set the speech rate.
+	 * 
+	 * @see Settings#TTSEnabled
+	 * @see Settings#TTSVoice
+	 * @see Settings#TTSSpeechRate
+	 */
 	public static void init() {
-		if (!Settings.TTSEnabled) return;
-		
+		if (!Settings.TTSEnabled)
+			return;
+
 		VoiceManager voiceManager = VoiceManager.getInstance();
 		voice = voiceManager.getVoice(Settings.TTSVoice);
 
@@ -49,11 +72,18 @@ public class TTSManager {
 		voice.setRate(Settings.TTSSpeechRate);
 	}
 
+	/**
+	 * Say a string if TTS system is enabled and initialised.
+	 * 
+	 * @param text
+	 *            string to say
+	 */
 	public static void say(String text) {
-		if (!Settings.TTSEnabled) return;
-		
+		if (!Settings.TTSEnabled)
+			return;
+
 		stop();
-		
+
 		if (voice == null && !badVoice) {
 			init();
 		}
@@ -62,18 +92,50 @@ public class TTSManager {
 			new Thread(new TTSRunnable(text)).start();
 	}
 
+	/**
+	 * Stop the TTS system.
+	 */
 	public static void stop() {
-		if (!Settings.TTSEnabled) return;
+		if (!Settings.TTSEnabled)
+			return;
 		if (voice != null)
 			voice.getAudioPlayer().cancel();
 	}
-	
+
+	/**
+	 * Deallocate the resources.
+	 */
 	public static void dispose() {
-		if (!Settings.TTSEnabled) return;
-		
+		if (!Settings.TTSEnabled)
+			return;
+
 		if (voice != null) {
 			stop();
 			voice.deallocate();
+		}
+	}
+
+	/**
+	 * This class synthesises speech in a separate thread to avoid interrupting
+	 * the drawing loop.
+	 * 
+	 * @author Dmitry Pyryeskin
+	 * @version 1.0
+	 * 
+	 */
+	private static class TTSRunnable implements Runnable {
+		// String to say
+		private String text;
+
+		public TTSRunnable(String text) {
+			this.text = text;
+		}
+
+		@Override
+		public void run() {
+			// Synthesise speech
+			TTSManager.stop();
+			TTSManager.voice.speak(text);
 		}
 	}
 }

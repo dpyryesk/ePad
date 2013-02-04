@@ -65,7 +65,7 @@ public class RoundBristleBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another RoundBristleBrush object
+	 * Constructor that builds a copy of another RoundBristleBrush object.
 	 * 
 	 * @param original
 	 *            the original RoundBristleBrush object.
@@ -77,7 +77,7 @@ public class RoundBristleBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

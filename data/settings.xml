@@ -33,9 +33,9 @@
 	<rotatingContainerOffsetDistance>60</rotatingContainerOffsetDistance>
 	<fileBrowserColumns>5</fileBrowserColumns>
 	<fileBrowserRows>3</fileBrowserRows>
-	<showDebugInfo>true</showDebugInfo>
+	<showDebugInfo>false</showDebugInfo>
 	
-	<!-- Prompt delays in ms -->
+	<!-- Prompt delays in milliseconds -->
 	<promptTTL>15000</promptTTL>
 	<brushPromptDelay>60000</brushPromptDelay>
 	<paintPromptDelay>30000</paintPromptDelay>

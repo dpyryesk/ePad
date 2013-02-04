@@ -69,7 +69,7 @@ public class Stamp extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another Stamp object
+	 * Constructor that builds a copy of another Stamp object.
 	 * 
 	 * @param original
 	 *            the original Stamp object.
@@ -87,7 +87,7 @@ public class Stamp extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.
@@ -102,7 +102,11 @@ public class Stamp extends Brush {
 	 */
 	private void loadShape() {
 		if (stampShape == null && stampFile != null) {
-			stampShape = applet.loadShape(Settings.dataFolder + stampFile);
+			try {
+				stampShape = applet.loadShape(Settings.dataFolder + stampFile);
+			} catch (Exception e) {
+				stampShape = null;
+			}
 			if (stampShape == null)
 				LOGGER.error("Failed to load shape: " + stampFile);
 			else {
@@ -120,6 +124,27 @@ public class Stamp extends Brush {
 
 				if (disableStyle)
 					stampShape.disableStyle();
+
+				// This code was removed, because the generated cache images do
+				// not look as good as ones created manually
+				// Create the cache image
+				// float shapeX = (300f - stampWidth*2.5f) / 2;
+				// float shapeY = (300f - stampHeight*2.5f) / 2;
+				// PGraphics g = applet.createGraphics(300, 300, P2D);
+				// g.beginDraw();
+				// g.beginShape();
+				// g.background(255, 0);
+				// g.shapeMode(CORNER);
+				// if (disableStyle) {
+				// g.fill(0);
+				// g.stroke(0);
+				// g.strokeWeight(1);
+				// }
+				// g.shape(stampShape, shapeX, shapeY, stampWidth*2.5f,
+				// stampHeight*2.5f);
+				// g.endShape();
+				// g.endDraw();
+				// itemImage = g;
 			}
 		}
 	}
@@ -150,13 +175,12 @@ public class Stamp extends Brush {
 			if (stampShape != null) {
 				g.beginDraw();
 				g.beginShape();
-				g.shapeMode(CENTER);
+				g.shapeMode(CORNER);
 				if (disableStyle) {
 					g.fill(colour);
 					g.noStroke();
-					g.strokeWeight(1);
 				}
-				g.shape(stampShape, p.x, p.y, stampWidth, stampHeight);
+				g.shape(stampShape, p.x-50, p.y-50, stampWidth, stampHeight);
 				g.endShape();
 				g.endDraw();
 			}

@@ -60,8 +60,8 @@ public class StrokePoint {
 	 * Find the distance between two points.
 	 * 
 	 * @param p
-	 *            another point.
-	 * @return distance between the points.
+	 *            another point
+	 * @return distance between the points
 	 */
 	public float dist(StrokePoint p) {
 		float dx = x - p.x;

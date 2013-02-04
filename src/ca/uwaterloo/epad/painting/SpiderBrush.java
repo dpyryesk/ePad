@@ -61,7 +61,7 @@ public class SpiderBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another SpiderBrush object
+	 * Constructor that builds a copy of another SpiderBrush object.
 	 * 
 	 * @param original
 	 *            the original SpiderBrush object.
@@ -72,7 +72,7 @@ public class SpiderBrush extends Brush {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

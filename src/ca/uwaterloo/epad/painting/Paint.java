@@ -71,7 +71,7 @@ public class Paint extends MoveableItem {
 	}
 
 	/**
-	 * Constructor that builds a copy of another Paint object
+	 * Constructor that builds a copy of another Paint object.
 	 * 
 	 * @param original
 	 *            the original Paint object.
@@ -84,7 +84,7 @@ public class Paint extends MoveableItem {
 	}
 
 	/**
-	 * Constructor that builds a copy of another MoveableItem object
+	 * Constructor that builds a copy of another MoveableItem object.
 	 * 
 	 * @param original
 	 *            the original MoveableItem object.

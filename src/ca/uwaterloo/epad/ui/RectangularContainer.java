@@ -24,12 +24,13 @@ import ca.uwaterloo.epad.Application;
 import vialab.SMT.Zone;
 
 /**
- * This container class keeps the coordinates of the child objects.
+ * This container class keeps the child objects together while preserving their
+ * original coordinates.
  * 
  * @author Dmitry Pyryeskin
  * @version 1.0
  */
-public class StaticContainer extends Container {
+public class RectangularContainer extends Container {
 
 	/**
 	 * Default constructor.
@@ -41,7 +42,7 @@ public class StaticContainer extends Container {
 	 * @param parent
 	 *            parent drawer of the container
 	 */
-	public StaticContainer(int width, int height, Drawer parent) {
+	public RectangularContainer(int width, int height, Drawer parent) {
 		super(0, 0, width, height, parent);
 	}
 

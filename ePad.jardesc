@@ -11,7 +11,9 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <file path="/ePad/README.txt"/>
         <javaElement handleIdentifier="=ePad/src"/>
+        <file path="/ePad/README"/>
+        <file path="/ePad/CREDITS"/>
+        <file path="/ePad/COPYING"/>
     </selectedElements>
 </jardesc>

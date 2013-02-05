@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Class-Path: 
- lib/HoverWidgets.jar 
  lib/SMT.jar 
  lib/TUIO.jar 
  lib/core.jar 
@@ -15,9 +14,10 @@ Class-Path:
  lib/jogl-all-natives-macosx-universal.jar 
  lib/jogl-all-natives-windows-amd64.jar 
  lib/jogl-all-natives-windows-i586.jar 
- lib/jogl-all.jar lib/libTUIO.jar 
+ lib/jogl-all.jar 
+ lib/libTUIO.jar 
  lib/opengl.jar 
  lib/freetts.jar 
- lib/log4j-1.2.17.jar
+ lib/log4j-1.2.17.jar 
 Main-Class: ca.uwaterloo.epad.Launcher
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <settings>
-	<width>1918</width>
-	<height>1078</height>
+	<width>1920</width>
+	<height>1080</height>
 	<targetFPS>60</targetFPS>
 	<locale>en</locale>
 	
 	<!-- Source of the touch events. Options are:
-	TUIO_DEVICE		-	pure TUIO event from port 3333)
+	TUIO_DEVICE		-	pure TUIO events from port 3333
 	MOUSE			-	mouse emulation
 	WM_TOUCH		-	Windows Touch back end
 	ANDROID			-	Android back end
@@ -20,6 +20,8 @@
 	<TTSEnabled>true</TTSEnabled>
 	<TTSVoice>kevin16</TTSVoice>
 	<TTSSpeechRate>120</TTSSpeechRate>
+	<playChime>true</playChime>
+	<chimeFile>sound\164088__hypocore__chime.wav</chimeFile>
 	
 	<!-- File and folder locations -->
 	<dataFolder>data\</dataFolder>

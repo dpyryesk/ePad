@@ -127,6 +127,17 @@ public class Settings {
 	 */
 	@XmlAttribute
 	public static float TTSSpeechRate = 120f;
+	/**
+	 * Flag indicating whether or not a chime sound should be played before each
+	 * time the Text-To-Speech system synthesises speech.
+	 */
+	@XmlAttribute
+	public static boolean playChime = true;
+	/**
+	 * Path to the sound file with the chime sound.
+	 */
+	@XmlAttribute
+	public static String chimeFile = "sound\\chime.wav";
 
 	// Common GUI settings
 	/**
@@ -227,7 +238,8 @@ public class Settings {
 
 		Class<?> c = Settings.class;
 
-		// Attempt to find and parse a value for each field that is marked with @XmlAttribute annotation
+		// Attempt to find and parse a value for each field that is marked with
+		// @XmlAttribute annotation
 		for (Field f : c.getFields()) {
 			if (f.getAnnotation(XmlAttribute.class) != null) {
 				String name = f.getName();

@@ -20,6 +20,12 @@
 
 package ca.uwaterloo.epad.util;
 
+import java.io.File;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import org.apache.log4j.Logger;
 
 import com.sun.speech.freetts.Voice;
@@ -133,9 +139,39 @@ public class TTSManager {
 
 		@Override
 		public void run() {
-			// Synthesise speech
 			TTSManager.stop();
+
+			if (Settings.playChime) {
+				// Play a chime first
+				chimeAndSpeak();
+			} else {
+				speak();
+			}
+		}
+
+		/**
+		 * Synthesise speech.
+		 */
+		public void speak() {
 			TTSManager.voice.speak(text);
+		}
+
+		/**
+		 * Play a chime sound then synthesise speech.
+		 */
+		public void chimeAndSpeak() {
+			try {
+				final Clip clip = AudioSystem.getClip();
+				AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(Settings.dataFolder + Settings.chimeFile));
+				clip.open(inputStream);
+				clip.start();
+
+				Thread.sleep(500);
+			} catch (Exception e) {
+				LOGGER.error("Error while trying to play chime sound. ", e);
+			}
+			
+			speak();
 		}
 	}
 }

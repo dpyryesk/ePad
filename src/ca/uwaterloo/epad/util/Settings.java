@@ -128,12 +128,6 @@ public class Settings {
 	@XmlAttribute
 	public static float TTSSpeechRate = 120f;
 	/**
-	 * Flag indicating whether or not a chime sound should be played before each
-	 * time the Text-To-Speech system synthesises speech.
-	 */
-	@XmlAttribute
-	public static boolean playChime = true;
-	/**
 	 * Path to the sound file with the chime sound.
 	 */
 	@XmlAttribute

@@ -141,7 +141,6 @@ public class PromptManager implements ActionListener {
 		// Set up timers
 		brushPromptTimer = new Timer(Settings.brushPromptDelay);
 		paintPromptTimer = new Timer(Settings.paintPromptDelay);
-		engagementTimer = new Timer(Settings.engagementPromptRepeatDelay);
 
 		// Reset flags
 		wasBrushPromptDisplayed = false;
@@ -242,8 +241,13 @@ public class PromptManager implements ActionListener {
 		appInactiveTime = Application.getInactiveTime();
 
 		if (appInactiveTime >= Settings.engagementPromptDelay && activePrompts.size() == 0 && !leftDrawer.isOpen() && !rightDrawer.isOpen()) {
-			if (!engagementTimer.isTimeOut())
+			if (engagementTimer == null) {
+				// Start the repeat timer
+				engagementTimer = new Timer(Settings.engagementPromptRepeatDelay);
+			} else	if (!engagementTimer.isTimeOut()) {
+				// Return if the repeat timer has not ran out yet
 				return;
+			}
 
 			// Show a random engagement prompt to recapture attention
 			if (Math.random() > 0.5 && Application.getAllBrushes().size() > 1) {
@@ -256,7 +260,7 @@ public class PromptManager implements ActionListener {
 				PVector v = item.getCentre();
 				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextBrush"));
 				PromptManager.addPrompt(engagementPromp);
-				TTSManager.say(promptStrings.getString("engagementPromptTextBrush"));
+				TTSManager.say(promptStrings.getString("engagementPromptTextBrush"), true);
 			} else if (Application.getAllPaints().size() > 1) {
 				// Create a random paint engagement prompt
 				ArrayList<MoveableItem> list = new ArrayList<MoveableItem>(Application.getAllPaints());
@@ -267,7 +271,7 @@ public class PromptManager implements ActionListener {
 				PVector v = item.getCentre();
 				engagementPromp = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("engagementPromptIcon"), promptStrings.getString("engagementPromptTextPaint"));
 				PromptManager.addPrompt(engagementPromp);
-				TTSManager.say(promptStrings.getString("engagementPromptTextPaint"));
+				TTSManager.say(promptStrings.getString("engagementPromptTextPaint"), true);
 			}
 
 			LOGGER.info("An engagement prompt displayed.");
@@ -277,7 +281,7 @@ public class PromptManager implements ActionListener {
 			PVector v = leftDrawer.getHandleLocation();
 			brushPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("brushPromptStep1Icon"), promptStrings.getString("brushPromptStep1Text"));
 			PromptManager.addPrompt(brushPrompt);
-			TTSManager.say(promptStrings.getString("brushPromptStep1Text"));
+			TTSManager.say(promptStrings.getString("brushPromptStep1Text"), true);
 			wasBrushPromptDisplayed = true;
 			promptStep = 1;
 			LOGGER.info("The brush drawer prompt displayed.");
@@ -286,7 +290,7 @@ public class PromptManager implements ActionListener {
 			PVector v = rightDrawer.getHandleLocation();
 			paintPrompt = new PromptPopup((int) v.x, (int) v.y, promptStrings.getString("paintPromptStep1Icon"), promptStrings.getString("paintPromptStep1Text"));
 			PromptManager.addPrompt(paintPrompt);
-			TTSManager.say(promptStrings.getString("paintPromptStep1Text"));
+			TTSManager.say(promptStrings.getString("paintPromptStep1Text"), true);
 			wasPaintPromptDisplayed = true;
 			promptStep = 1;
 			LOGGER.info("The paint drawer prompt displayed.");
@@ -302,7 +306,7 @@ public class PromptManager implements ActionListener {
 					brushPrompt.setCoordinates(v.x - 270, v.y);
 					brushPrompt.setIcon(promptStrings.getString("brushPromptStep2Icon"));
 					brushPrompt.setText(promptStrings.getString("brushPromptStep2Text"));
-					TTSManager.say(promptStrings.getString("brushPromptStep2Text"));
+					TTSManager.say(promptStrings.getString("brushPromptStep2Text"), false);
 					leftDrawer.getContainer().addListener(instance);
 					tempTimer = new Timer(5000);
 					promptStep++;
@@ -313,7 +317,7 @@ public class PromptManager implements ActionListener {
 				if (tempTimer != null && tempTimer.isTimeOut()) {
 					brushPrompt.setIcon(promptStrings.getString("brushPromptStep3Icon"));
 					brushPrompt.setText(promptStrings.getString("brushPromptStep3Text"));
-					TTSManager.say(promptStrings.getString("brushPromptStep3Text"));
+					TTSManager.say(promptStrings.getString("brushPromptStep3Text"), false);
 					tempTimer = null;
 					leftDrawer.getContainer().removeListener(instance);
 					promptStep++;
@@ -323,7 +327,7 @@ public class PromptManager implements ActionListener {
 					if (!((MoveableItem) focalItem).getIsDragged()) {
 						brushPrompt.setIcon(promptStrings.getString("brushPromptStep4Icon"));
 						brushPrompt.setText(promptStrings.getString("brushPromptStep4Text"));
-						TTSManager.say(promptStrings.getString("brushPromptStep4Text"));
+						TTSManager.say(promptStrings.getString("brushPromptStep4Text"), false);
 						tempTimer = new Timer(7000);
 						promptStep++;
 					}
@@ -345,7 +349,7 @@ public class PromptManager implements ActionListener {
 						brushPrompt.setCoordinates(v);
 						brushPrompt.setIcon(promptStrings.getString("brushPromptStep5Icon"));
 						brushPrompt.setText(promptStrings.getString("brushPromptStep5Text"));
-						TTSManager.say(promptStrings.getString("brushPromptStep5Text"));
+						TTSManager.say(promptStrings.getString("brushPromptStep5Text"), false);
 						promptStep++;
 					} else {
 						brushPrompt.dispose();
@@ -372,7 +376,7 @@ public class PromptManager implements ActionListener {
 					paintPrompt.setCoordinates(v.x + 270, v.y);
 					paintPrompt.setIcon(promptStrings.getString("paintPromptStep2Icon"));
 					paintPrompt.setText(promptStrings.getString("paintPromptStep2Text"));
-					TTSManager.say(promptStrings.getString("paintPromptStep2Text"));
+					TTSManager.say(promptStrings.getString("paintPromptStep2Text"), false);
 					rightDrawer.getContainer().addListener(instance);
 					tempTimer = new Timer(5000);
 					promptStep++;
@@ -383,7 +387,7 @@ public class PromptManager implements ActionListener {
 				if (tempTimer != null && tempTimer.isTimeOut()) {
 					paintPrompt.setIcon(promptStrings.getString("paintPromptStep3Icon"));
 					paintPrompt.setText(promptStrings.getString("paintPromptStep3Text"));
-					TTSManager.say(promptStrings.getString("paintPromptStep3Text"));
+					TTSManager.say(promptStrings.getString("paintPromptStep3Text"), false);
 					tempTimer = null;
 					rightDrawer.getContainer().removeListener(instance);
 					promptStep++;
@@ -393,7 +397,7 @@ public class PromptManager implements ActionListener {
 					if (!((MoveableItem) focalItem).getIsDragged()) {
 						paintPrompt.setIcon(promptStrings.getString("paintPromptStep4Icon"));
 						paintPrompt.setText(promptStrings.getString("paintPromptStep4Text"));
-						TTSManager.say(promptStrings.getString("paintPromptStep4Text"));
+						TTSManager.say(promptStrings.getString("paintPromptStep4Text"), false);
 						tempTimer = new Timer(6000);
 						promptStep++;
 					}
@@ -415,7 +419,7 @@ public class PromptManager implements ActionListener {
 						paintPrompt.setCoordinates(v);
 						paintPrompt.setIcon(promptStrings.getString("paintPromptStep5Icon"));
 						paintPrompt.setText(promptStrings.getString("paintPromptStep5Text"));
-						TTSManager.say(promptStrings.getString("paintPromptStep5Text"));
+						TTSManager.say(promptStrings.getString("paintPromptStep5Text"), false);
 						promptStep++;
 					} else {
 						paintPrompt.dispose();

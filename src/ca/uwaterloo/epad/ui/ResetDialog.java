@@ -133,7 +133,7 @@ public class ResetDialog extends Zone {
 		add(new CloseButton(dialogX + dialogWidth - 25, dialogY - 50, 75, 75));
 
 		// Say the header text
-		TTSManager.say(mainText);
+		TTSManager.say(mainText, true);
 	}
 
 	// Draw the dialog

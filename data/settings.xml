@@ -20,7 +20,6 @@
 	<TTSEnabled>true</TTSEnabled>
 	<TTSVoice>kevin16</TTSVoice>
 	<TTSSpeechRate>120</TTSSpeechRate>
-	<playChime>true</playChime>
 	<chimeFile>sound\164088__hypocore__chime.wav</chimeFile>
 	
 	<!-- File and folder locations -->

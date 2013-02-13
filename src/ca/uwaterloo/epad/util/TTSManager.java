@@ -46,8 +46,12 @@ public class TTSManager {
 
 	// The voice to use
 	protected static Voice voice;
-	// Indicated that the voice failed to load
+	// Indicates that the voice failed to load
 	protected static boolean badVoice = false;
+	// Chime sound
+	protected static Clip chime;
+	// Indicates that the chime file failed to load
+	protected static boolean badChime = false;
 
 	// Private constructor to prevent instantiation
 	private TTSManager() {
@@ -76,6 +80,18 @@ public class TTSManager {
 
 		voice.allocate();
 		voice.setRate(Settings.TTSSpeechRate);
+
+		if (chime == null) {
+			String chimeFile = Settings.dataFolder + Settings.chimeFile;
+			try {
+				chime = AudioSystem.getClip();
+				AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(chimeFile));
+				chime.open(inputStream);
+			} catch (Exception e) {
+				LOGGER.error("TTSManager failed to load chime file " + chimeFile);
+				badChime = true;
+			}
+		}
 	}
 
 	/**
@@ -83,8 +99,10 @@ public class TTSManager {
 	 * 
 	 * @param text
 	 *            string to say
+	 * @param playChime
+	 *            play chime sound before synthesising text if <b>true</b>
 	 */
-	public static void say(String text) {
+	public static void say(String text, boolean playChime) {
 		if (!Settings.TTSEnabled)
 			return;
 
@@ -95,7 +113,7 @@ public class TTSManager {
 		}
 
 		if (!badVoice)
-			new Thread(new TTSRunnable(text)).start();
+			new Thread(new TTSRunnable(text, playChime)).start();
 	}
 
 	/**
@@ -106,6 +124,11 @@ public class TTSManager {
 			return;
 		if (voice != null)
 			voice.getAudioPlayer().cancel();
+
+		if (chime != null) {
+			chime.stop();
+			chime.setFramePosition(0);
+		}
 	}
 
 	/**
@@ -121,6 +144,18 @@ public class TTSManager {
 		}
 	}
 
+	public static int getChimeDuration() {
+		if (chime == null || badChime)
+			return -1;
+
+		long d = chime.getMicrosecondLength();
+
+		if (d == AudioSystem.NOT_SPECIFIED)
+			return -1;
+
+		return Math.round(d / 1000);
+	}
+
 	/**
 	 * This class synthesises speech in a separate thread to avoid interrupting
 	 * the drawing loop.
@@ -132,46 +167,29 @@ public class TTSManager {
 	private static class TTSRunnable implements Runnable {
 		// String to say
 		private String text;
+		// Flag to play chime
+		private boolean playChime;
 
-		public TTSRunnable(String text) {
+		public TTSRunnable(String text, boolean playChime) {
 			this.text = text;
+			this.playChime = playChime;
 		}
 
 		@Override
 		public void run() {
 			TTSManager.stop();
 
-			if (Settings.playChime) {
-				// Play a chime first
-				chimeAndSpeak();
-			} else {
-				speak();
-			}
-		}
+			if (playChime && !badChime) {
+				try {
+					chime.start();
 
-		/**
-		 * Synthesise speech.
-		 */
-		public void speak() {
+					Thread.sleep(getChimeDuration());
+				} catch (Exception e) {
+					LOGGER.error("Error in Thread.sleep ", e);
+				}
+			}
+
 			TTSManager.voice.speak(text);
-		}
-
-		/**
-		 * Play a chime sound then synthesise speech.
-		 */
-		public void chimeAndSpeak() {
-			try {
-				final Clip clip = AudioSystem.getClip();
-				AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(Settings.dataFolder + Settings.chimeFile));
-				clip.open(inputStream);
-				clip.start();
-
-				Thread.sleep(500);
-			} catch (Exception e) {
-				LOGGER.error("Error while trying to play chime sound. ", e);
-			}
-			
-			speak();
 		}
 	}
 }

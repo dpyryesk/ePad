@@ -160,7 +160,7 @@ public class Button extends Zone {
 			try {
 				pressMethod.invoke(pressMethodObject);
 			} catch (Exception e) {
-				LOGGER.error("Failed to invoke method " + pressMethod.toString() + ". " + e.getLocalizedMessage());
+				LOGGER.error("Failed to invoke method " + pressMethod.toString() + ". ", e);
 			}
 		}
 	}
@@ -179,7 +179,7 @@ public class Button extends Zone {
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
 		} catch (Exception e) {
-			LOGGER.error("Failed to get static method. " + e.getLocalizedMessage());
+			LOGGER.error("Failed to get static method.", e);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class Button extends Zone {
 		try {
 			pressMethod = c.getDeclaredMethod(methodName);
 		} catch (Exception e) {
-			LOGGER.error("Failed to get method. " + e.getLocalizedMessage());
+			LOGGER.error("Failed to get method.", e);
 		}
 	}
 	

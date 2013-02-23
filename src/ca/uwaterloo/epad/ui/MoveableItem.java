@@ -406,7 +406,7 @@ public class MoveableItem extends Zone {
 	 * 
 	 * @return the path to the item's image.
 	 */
-	public String getImage() {
+	public String getImageFilename() {
 		return itemImageFilename;
 	}
 

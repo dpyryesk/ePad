@@ -14,7 +14,7 @@
 	SMART			-	Smart SDK back end
 	-->
 	<touchSourse>MOUSE</touchSourse>
-	<showPrintDialog>true</showPrintDialog>
+	<showPrintDialog>false</showPrintDialog>
 	
 	<!-- TTS settings -->
 	<TTSEnabled>true</TTSEnabled>

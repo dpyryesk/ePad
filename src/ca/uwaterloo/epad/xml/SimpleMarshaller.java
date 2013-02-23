@@ -135,7 +135,7 @@ public class SimpleMarshaller {
 			child.setAttribute(ATTR_WIDTH, Integer.toString(z.width));
 			child.setAttribute(ATTR_HEIGHT, Integer.toString(z.height));
 			child.setAttribute(ATTR_DRAWER, Integer.toString(((MoveableItem) z).getDrawerId()));
-			child.setAttribute(ATTR_IMAGE, ((MoveableItem) z).getImage());
+			child.setAttribute(ATTR_IMAGE, ((MoveableItem) z).getImageFilename());
 			child.setAttribute(ATTR_CLASS, c.getName());
 
 			// Save custom fields

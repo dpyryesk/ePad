@@ -166,7 +166,8 @@ public class PromptManager implements ActionListener {
 			tempTimer.pause();
 		brushPromptTimer.pause();
 		paintPromptTimer.pause();
-		engagementTimer.pause();
+		if (engagementTimer != null)
+			engagementTimer.pause();
 
 		for (int i = 0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);
@@ -186,7 +187,8 @@ public class PromptManager implements ActionListener {
 			tempTimer.resume();
 		brushPromptTimer.resume();
 		paintPromptTimer.resume();
-		engagementTimer.resume();
+		if (engagementTimer != null)
+			engagementTimer.pause();
 
 		for (int i = 0; i < activePrompts.size(); i++) {
 			PromptPopup pp = activePrompts.get(i);

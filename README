@@ -1,4 +1,71 @@
-ePad 2.0  is a computerized touch-screen tool for art therapists.
+ePad 2.0
+
+1. DESCRIPTION
+
+ePad is a computerized touch-screen tool for art therapists.
 The tool allows therapists to design individualized computer applications for particular clients. The resulting applications look like painting programs, but are usually simpler, can follow the therapeutic goals of the therapist designer, and can be adapted to particular user's needs, taking into account visual, auditory and motor capabilities. The tool also contains an artificially intelligent program that assists the art therapist in the task of keeping the user engaged.
+
+See the website for more details: http://www.dmitry.pyryeskin.com/researcher/research-projects/epad-2-0
+
+
+2. FEATURES
+
+The main features of ePad software are the painting functionality, the ability to create and modify the drawing interface on the fly and the prompting functionality designed to recapture the user's attention and to guide the set-up process. On one hand the tool is simple enough for persons with limited cognitive abilities (such as people with dementia) to use. On the other hand the tool is highly customizable and flexible to enable art therapists and caretakers to design interfaces for specific activities and meet the needs of particular clients.
+
+2.1. GUI
+
+Currently the system features two rotating drawers which are filled with widgets (such as brushes and paints). Widgets can be dragged out of the drawers and placed anywhere on the screen, when a drawer is open. When a drawer is closed, its objects cannot be moved. To remove an object, user can place it back into the original drawer.
+
+Canvas can be moved, resized and rotated when one of the rotating drawers is open.
+
+Another drawer located on the top of the screen contains control buttons such as Save, Load, Clear, Reset and Print.
+
+2.2 PAINTING
+
+Basic painting has been implemented, currently the system has 5 types of painting tools:
+
+- Pencil: draws with lines of various thickness)
+- Hard bristle brushes, both round and rectangular: bristles are simulated using a cloud of randomly generated particles
+- "Spider brush": draws thicker lines and connects points that are close enough with thin lines (which looks somewhat like a spider web)
+- Eraser: draws thick lines of the same colour as background
+- Stamps: prints a single-colour image onto the canvas
+
+Most of these tools have options, like size, that can be specified. Colour of the brush depends on the selected paint, which can be added to the screen in the same way as other widgets.
+
+2.3 PROMPTS
+
+ePad application features 3 types of prompts:
+
+- Set-up prompts that help a new user to create a new drawing interface (one for the paints drawer and another for the brushes drawer)
+	- Each set up prompt is displayed after a certain period after the application is started and only if the drawer it is related to was not opened yet
+- Engagement prompts that are displayed to recapture the attention of a user
+	- These prompts are displayed after a certain period of inactivity (when no item on the screen is touched)
+- Exit prompt that is displayed after a long period of inactivity and presents a user with buttons to save, print or reset the painting
+
+2.4 SAVING AND LOADING
+
+The application is able to save and then load both the current painting and the interface layout. Saved information is stored in .sav files in /data/save folder by default. Each save file has a data folder with the same name that contains drawing image, interface layout and a thumbnail image. If a certain save file should be removed, delete the corresponding data folder as well.
+
+
+3. INSTALLATION
+
+ePad application requires Java Runtime Environment (JRE) to run. Make sure that you have at least JRE 6 installed. You can use the following web page to update or install your Java: http://www.java.com/getjava
+
+To run the application on Windows platform simple double-click either ePad.jar or ePad.bat file in the main application folder.
+
+3.1 SET UP
+
+Most settings used by the application can be modified by editing settings.xml file in the \data folder. Most importantly you can specify the dimentions of the monitor, the source of touch events, location of important files such as the defaut layout and the timings for prompts. For a detailed description of the variables in the settings file see http://dpyryesk.github.com/ePad/ca/uwaterloo/epad/util/Settings.html
+
+The default layout file is loaded whenever the application is started or reset. There are 2 default layout files: layout_1080.xml and layout_768.xml that are designed for hi-resolution and low-resolution monitors respectively.
+
+The GUI layout is stored in gui.xml file. It specifies the colour scheme of the appication and drawers and declares the brushes and colours that should be added to the drawers. Usually the gui file should ne be modified.
+
+
+4. DEVELOPMENT
+
+The code of ePad tool is open-source and is available for download at http://github.com/dpyryesk/epad
+
 Online Javadoc is available here: http://dpyryesk.github.com/ePad
-See the website for more details: http://www.dmitry.pyryeskin.com/researcher/research-projects/epad-2-0/
+
+For more information contact Dmitry at dmitry@pyryeskin.com or http://www.dmitry.pyryeskin.com

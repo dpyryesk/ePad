@@ -174,7 +174,7 @@ public class Application extends PApplet implements ActionListener {
 
 		TouchClient.init(this, source);
 		TouchClient.setWarnUnimplemented(false);
-		TouchClient.setTouchDraw(TouchDraw.SMOOTH, 0);
+		TouchClient.setDrawTouchPoints(TouchDraw.SMOOTH, 0);
 
 		loadGUI();
 		loadLayout(Settings.dataFolder + Settings.defaultLayoutFile);

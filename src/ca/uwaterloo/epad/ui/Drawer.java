@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import processing.core.PMatrix3D;
 import processing.core.PVector;
 import vialab.SMT.Touch;
 import vialab.SMT.TouchClient;
@@ -64,6 +65,18 @@ public abstract class Drawer extends Zone {
 	protected boolean isOpen;
 	// Drawer position variable, it can be LEFT, RIGHT, TOP or BOTTOM
 	protected int position;
+	// Is the drawer being touched
+	protected boolean isTouched = false;
+
+	/**
+	 * The visible width at which the drawer is considered open.
+	 */
+	public int openWidth = 100;
+	/**
+	 * Auto close flag to indicate whether or not the drawer should close
+	 * automatically.
+	 */
+	public boolean autoClose = true;
 
 	// Colours
 	protected int primaryColour = Application.primaryColour;
@@ -98,6 +111,13 @@ public abstract class Drawer extends Zone {
 	@Override
 	protected void touchDownImpl(Touch touch) {
 		TouchClient.putZoneOnTop(this);
+		isTouched = true;
+	}
+
+	// Action on the touch up event
+	@Override
+	protected void touchUpImpl(Touch touch) {
+		isTouched = false;
 	}
 
 	// Action on the touch event
@@ -115,6 +135,47 @@ public abstract class Drawer extends Zone {
 				notifyListeners(CLOSED);
 		}
 		Application.setActionPerformed();
+	}
+
+	protected void slide(float dx, float dy) {
+		if (dx == 0 && dy == 0) {
+			return;
+		}
+
+		pushMatrix();
+		setMatrix(new PMatrix3D());
+
+		if (dragX && dx != 0) {
+			translate(dx, 0);
+		}
+
+		if (dragY && dy != 0) {
+			translate(0, dy);
+		}
+
+		PVector prevPos = fromZoneVector(new PVector(0, 0));
+
+		int maxLeftMove = -(int) (prevPos.x - dragXMin);
+		int maxRightMove = (int) (dragXMax - (prevPos.x + width));
+		int maxUpMove = -(int) (prevPos.y - dragYMin);
+		int maxDownMove = (int) (dragYMax - (prevPos.y + height));
+
+		// respect the limits by translating back to limit if needed
+		if (dx < maxLeftMove) {
+			translate(-(dx - maxLeftMove), 0);
+		}
+		if (dx > maxRightMove) {
+			translate(-(dx - maxRightMove), 0);
+		}
+		if (dy < maxUpMove) {
+			translate(0, -(dy - maxUpMove));
+		}
+		if (dy > maxDownMove) {
+			translate(0, -(dy - maxDownMove));
+		}
+
+		matrix.preApply(new PMatrix3D(getMatrix()));
+		popMatrix();
 	}
 
 	/**

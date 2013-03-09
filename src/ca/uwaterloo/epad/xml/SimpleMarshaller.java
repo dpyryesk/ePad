@@ -85,6 +85,8 @@ public class SimpleMarshaller {
 	private static final String ATTR_SECONDARY_COLOUR = "secondaryColour";
 	private static final String ATTR_BACKGROUND_COLOUR = "backgroundColour";
 	private static final String ATTR_OVERLAY = "overlay";
+	private static final String ATTR_DRAWER_OPEN_WIDTH = "openWidth";
+	private static final String ATTR_DRAWER_AUTO_CLOSE = "autoClose";
 
 	private static final String LEFT = "left";
 	private static final String RIGHT = "right";
@@ -445,10 +447,17 @@ public class SimpleMarshaller {
 			if (childNode.getNodeName().equals(NODE_ROTATING_DRAWER)) {
 				RotatingDrawer drawer = null;
 				int drawerId = -1;
+				int openWidth = 100;
+				boolean autoClose = false;
+
 				attributeMap = childNode.getAttributes();
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
+				if (attributeMap.getNamedItem(ATTR_DRAWER_OPEN_WIDTH) != null)
+					openWidth = Integer.parseInt(attributeMap.getNamedItem(ATTR_DRAWER_OPEN_WIDTH).getNodeValue());
+				if (attributeMap.getNamedItem(ATTR_DRAWER_AUTO_CLOSE) != null)
+					autoClose = Boolean.parseBoolean(attributeMap.getNamedItem(ATTR_DRAWER_AUTO_CLOSE).getNodeValue());
 
 				if (LEFT.equals(pos)) {
 					drawer = RotatingDrawer.makeLeftDrawer(app);
@@ -461,15 +470,25 @@ public class SimpleMarshaller {
 					throw (new DOMException((short) 0, "Layout error"));
 				}
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
+				drawer.openWidth = openWidth;
+				drawer.autoClose = autoClose;
+
 				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);
 			} else if (childNode.getNodeName().equals(NODE_SLIDING_DRAWER)) {
 				SlidingDrawer drawer = null;
 				int drawerId = -1;
+				int openWidth = 100;
+				boolean autoClose = false;
+
 				attributeMap = childNode.getAttributes();
 				String pos = attributeMap.getNamedItem(ATTR_POSITION).getNodeValue();
 				int primaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_PRIMARY_COLOUR).getNodeValue().substring(1), 16);
 				int secondaryColour = Integer.parseInt(attributeMap.getNamedItem(ATTR_SECONDARY_COLOUR).getNodeValue().substring(1), 16);
+				if (attributeMap.getNamedItem(ATTR_DRAWER_OPEN_WIDTH) != null)
+					openWidth = Integer.parseInt(attributeMap.getNamedItem(ATTR_DRAWER_OPEN_WIDTH).getNodeValue());
+				if (attributeMap.getNamedItem(ATTR_DRAWER_AUTO_CLOSE) != null)
+					autoClose = Boolean.parseBoolean(attributeMap.getNamedItem(ATTR_DRAWER_AUTO_CLOSE).getNodeValue());
 
 				// Determine drawer width
 				int drawerWidth = app.height / 3;
@@ -492,6 +511,9 @@ public class SimpleMarshaller {
 				}
 
 				drawer.setColourScheme(primaryColour + 0xFF000000, secondaryColour + 0xFF000000);
+				drawer.openWidth = openWidth;
+				drawer.autoClose = autoClose;
+
 				Application.setDrawer(drawer, drawerId);
 				unmarshallDrawerItems(drawerId, childNode);
 			}

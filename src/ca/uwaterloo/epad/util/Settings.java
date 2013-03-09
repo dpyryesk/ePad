@@ -135,6 +135,12 @@ public class Settings {
 
 	// Common GUI settings
 	/**
+	 * The rate at which a drawer should be closed automatically (in pixels per
+	 * frame).
+	 */
+	@XmlAttribute
+	public static int drawerAutoClosingSpeed = 5;
+	/**
 	 * The angle between neighbouring items in a rotating container. Should be
 	 * increased for the screens with smaller resolution.
 	 */

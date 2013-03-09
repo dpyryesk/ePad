@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Application backgroundColour="#FFFFFF" backgroundImage="textures\background_1024x768.png" primaryColour="#33B5E5" secondaryColour="#0099CC" textColour="0" transparentColour="0"
 	transparentAlpha="50" deleteColour="#CC0000">
-	<SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900" width="160">
+	<SlidingDrawer position="top" primaryColour="#99CC00" secondaryColour="#669900" width="160" openWidth="100" autoClose="true">
 	</SlidingDrawer>
-	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900">
+	<RotatingDrawer position="left" primaryColour="#99CC00" secondaryColour="#669900" openWidth="200" autoClose="true">
 		<!-- Brushes -->
 		<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="images\brushes\pencil1.png" size="3" />
 		<MoveableItem class="ca.uwaterloo.epad.painting.Pencil" image="images\brushes\marker1.png" size="15" />
@@ -47,7 +47,7 @@
 		<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="vector\stamps\phone.svg" image="images\stamps\phone.png" />
 		<MoveableItem class="ca.uwaterloo.epad.painting.Stamp" stampFile="vector\stamps\plane.svg" image="images\stamps\plane.png" />
 	</RotatingDrawer>
-	<RotatingDrawer position="right" primaryColour="#99CC00" secondaryColour="#669900">
+	<RotatingDrawer position="right" primaryColour="#99CC00" secondaryColour="#669900" openWidth="200" autoClose="true">
 		<!-- Red -->
 		<MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#CA002A" />
 		<MoveableItem class="ca.uwaterloo.epad.painting.Paint" paintColour="#F42941" />

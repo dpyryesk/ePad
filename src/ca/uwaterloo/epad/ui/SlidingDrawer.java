@@ -20,6 +20,7 @@
 
 package ca.uwaterloo.epad.ui;
 
+import ca.uwaterloo.epad.util.Settings;
 import processing.core.PApplet;
 import processing.core.PVector;
 import vialab.SMT.Zone;
@@ -71,6 +72,19 @@ public class SlidingDrawer extends Drawer {
 	// Draw the drawer
 	@Override
 	protected void drawImpl() {
+		if (autoClose) {
+			float v = getVisibleWidth();
+			if (v < openWidth && v > 0 && !isTouched) {
+				if (position == TOP)
+					slide(0, -Settings.drawerAutoClosingSpeed);
+			}
+
+			// TODO: close automatically after a certain period of time
+//			if (System.currentTimeMillis() - lastUpdate.getMicroseconds() > 1000) {
+//				slide(-5, -5);
+//			}
+		}
+
 		pushMatrix();
 
 		if (position == TOP) {
@@ -111,7 +125,7 @@ public class SlidingDrawer extends Drawer {
 	// Calculate whether or not the drawer is opened
 	@Override
 	protected boolean calculateOpenedState() {
-		if (getVisibleWidth() > 100) {
+		if (getVisibleWidth() >= openWidth) {
 			return true;
 		} else {
 			return false;

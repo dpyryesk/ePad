@@ -30,6 +30,7 @@
 	<defaultLayoutFile>layout_1080.xml</defaultLayoutFile>
 	
 	<!-- Common GUI settings -->
+	<drawerAutoClosingSpeed>5</drawerAutoClosingSpeed>
 	<rotatingContainerOffsetAngle>12</rotatingContainerOffsetAngle>
 	<rotatingContainerOffsetDistance>60</rotatingContainerOffsetDistance>
 	<fileBrowserColumns>5</fileBrowserColumns>
